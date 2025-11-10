@@ -1418,4 +1418,5 @@ function init() {
 }
 init();
 
-}
+} );
+
