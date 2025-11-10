@@ -1,3 +1,0 @@
-<script>
-  window.location.href = "main.html";
-</script>
