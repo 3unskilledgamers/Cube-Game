@@ -817,6 +817,9 @@ window.addEventListener("keyup", e => {
   if ("wasd".includes(key)) keys[key] = false;
 });
 
+
+console.log("toggleBtn element:", document.getElementById("toggleBtn"));
+
 window.addEventListener("keyup", e => { if ("wasd".includes(e.key.toLowerCase())) keys[e.key.toLowerCase()] = false; });
 canvas.addEventListener("mousedown", e => {
   const r = canvas.getBoundingClientRect();
