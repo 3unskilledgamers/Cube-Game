@@ -1,4 +1,8 @@
+For laziness 
+https://cdn.jsdelivr.net/gh/3unskilledgamers/Cube-Game@main/main.html
 
+
+For better understanding and coding, see below: 
 Download these 3 files and put them in a structure like this
 
 Cube-Game/
