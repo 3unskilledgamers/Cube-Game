@@ -1,17 +1,59 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Cube Game</title>
-  <link rel="stylesheet" href="css/style.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Cubes Game — Specials</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div id="gameContainer">
-    <canvas id="gameCanvas" width="960" height="540"></canvas>
+<div class="wrap">
+  <div class="hud topline">
+    <div class="stat" id="moneyDisplay">Money: 0</div>
+    <div class="stat" id="incomeDisplay">Income/sec: 0</div>
+    <div class="stat" id="houseDisplay">House value: 0</div>
+    <div style="flex:1"></div>
+    <div class="small muted">Move: WASD or click to set target</div>
   </div>
 
-  <!-- Load main JS -->
+  <div class="game">
+    <canvas id="gameCanvas" width="960" height="540"></canvas>
+
+    <div class="bottom-row">
+      <div class="legend" id="legendContainer"></div>
+
+<div class="controls">
+  <button id="toggleBtn">Upgrade Cubes</button>
+  <button id="saveBtn">💾 Save</button>
+  <button id="loadBtn">📂 Load</button>
+  <div class="hint">Press the button to swap visible cube set</div>
+</div>
+
+    <!-- 🧭 Inventory / Drop Counter -->
+     <!-- 
+    <div class="inventory" style="color:white;">
+      <div class="legend-label">🧺 Inventory</div>
+      <div id="inventoryList" style="margin-top:6px; line-height:1.5;"></div>
+    </div>
+    -->
+      <!-- 🧭 Inventory / Drop Counter -->
+    <div id="inventoryContainer" style="color:white;">
+      <div class="legend-label">🧺 Inventory</div>
+      <div id="inventoryList" style="margin-top:6px; line-height:1.5;"></div>
+    </div>
+
+    <!-- 🏪 SHOP AREA (hidden until inside house) -->
+    <div id="shopContainer" style="display:none; color:white;">
+      <div class="legend-label">🏪 SHOP</div>
+      <div id="shopItems" style="margin-top:6px; line-height:1.5;"></div>
+    </div>
+
+ </div>
+ </div>
+</div>
+
   <script src="main.js" defer></script>
 </body>
 </html>
+
+
