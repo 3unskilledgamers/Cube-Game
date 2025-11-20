@@ -33,6 +33,62 @@
   .topline{display:flex;gap:10px;align-items:center;margin-bottom:10px}
   .small{font-size:12px;color:var(--muted)}
 
+  #bossDropsContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;     /* move anywhere you want */
+    z-index: 10000;
+
+    background: rgba(15, 15, 20, 0.85);
+    padding: 10px 12px;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    color: #cdeaff;
+    font-family: sans-serif;
+    min-width: 220px;
+  }
+
+  #bossDropsContainer summary {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  color: #00ccff;
+  }
+
+  #bossDropsContainer details[open] summary {
+  color: #00ffff;
+  }
+
+
+#shopPurchasesContainer {
+  position: fixed;
+  top: 20px;
+  left: 20px;      /* Put shop on left, boss on right */
+  z-index: 10000;
+
+  background: rgba(20, 15, 0, 0.85);
+  padding: 10px 12px;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  color: #ffe9a3;
+  font-family: sans-serif;
+  min-width: 220px;
+}
+
+#shopPurchasesContainer summary {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  color: #ffcc00;
+}
+
+#shopPurchasesContainer details[open] summary {
+  color: #ffe066;
+}
+
+
 </style>
 </head>
 <body>
@@ -51,23 +107,16 @@
     <div class="bottom-row">
       <div class="legend" id="legendContainer"></div>
 
-<div class="controls">
-  <button id="toggleBtn">Upgrade Cubes</button>
-  <button id="saveBtn">💾 Save</button>
-  <button id="loadBtn">📂 Load</button>
-  <div class="hint">Press the button to swap visible cube set</div>
-</div>
+      <div class="controls">
+        <button id="toggleBtn">Upgrade Cubes</button>
+        <button id="saveBtn">💾 Save</button>
+        <button id="loadBtn">📂 Load</button>
+        <div class="hint">Press the button to swap visible cube set</div>
+      </div>
 
-    <!-- 🧭 Inventory / Drop Counter -->
-     <!-- 
-    <div class="inventory" style="color:white;">
-      <div class="legend-label">🧺 Inventory</div>
-      <div id="inventoryList" style="margin-top:6px; line-height:1.5;"></div>
-    </div>
-    -->
       <!-- 🧭 Inventory / Drop Counter -->
     <div id="inventoryContainer" style="color:white;">
-      <div class="legend-label">🧺 Inventory</div>
+      <div class="legend-label"></div>
       <div id="inventoryList" style="margin-top:6px; line-height:1.5;"></div>
     </div>
 
@@ -107,6 +156,78 @@ let weatherOverlayAlpha = 0;
 
 let weatherParticles = [];
 
+// put this at top-level, once
+let equippedCategory = null;
+
+// make equipCategory callable from inline onclick in the generated HTML
+window.equipCategory = function(cat) {
+  // toggle: equip if different, unequip if same
+  equippedCategory = (equippedCategory === cat) ? null : cat;
+  // refresh inventory UI
+  updateInventoryDisplay();
+};
+
+let equippedItems = {}; // e.g. { Swords: "Iron Sword", Relics: "Magic Relic" }
+
+
+let equippedSwordSpecial = 0;
+let equippedRelicSpecial = 1;
+let equippedEggSpecial = 0;
+let equippedSkinSpecial = 1;
+let equippedPotionSpecial = 1;
+
+// Potion event state
+let potionActive = false;
+let potionMultiplier = 1;
+let potionEndTime = 0;
+
+let swordicon ="";
+
+const skins = {
+  1:   { color: "#ff2b2b" },
+  2:  { color: "#4d7cff" },
+  3: { color: "#a45ee5" },
+  4:  { color: "#ffd700" },
+  5:  { color: "#e9ecef" }
+};
+
+
+window.equipItem = function equipItem(category, itemName) {
+  const item = shopItems[category].find(i => i.name === itemName);
+  if (!item) return;
+
+  // Assign special values to corresponding global variable
+  switch (category) {
+    case "Swords":
+      equippedSwordSpecial = item.special;
+      swordicon = item.icon;
+      break;
+    case "Relics":
+      equippedRelicSpecial = item.special;
+      break;
+    case "Eggs":
+      equippedEggSpecial = item.special;
+      break;
+    case "Skins":
+      equippedSkinSpecial = item.special;
+       character.color = skins[equippedSkinSpecial].color;
+      break;
+    case "Potions":
+      equippedPotionSpecial = item.special;
+      activatePotionEvent(item.special);  // ← NEW: Activates the potion
+
+      break;
+  }
+
+  // Optionally store the name as well, if needed later
+  playerInventory[category].forEach(i => i.equipped = (i.name === itemName));
+
+  console.log(`✅ Equipped ${item.name} (${category}) — special: ${item.special}`);
+  updateInventoryDisplay();
+}
+
+
+
 
 // === WEATHER LIST ===
 const weatherEvents = [
@@ -142,6 +263,7 @@ return value == null ? defaultValue : value;
 
 
 
+
 /**
 Purpose:
 Updates the HTML inventory UI (#inventoryList) to show:
@@ -156,35 +278,94 @@ Pulls data from dropCounters, dropLimits, and playerInventory.
 function updateInventoryDisplay() {
   //const inv = document.getElementById('inventoryDisplay');
   const inv = document.getElementById("inventoryList");
+
+  const bossOpen = document.getElementById("detailsBossDrops")?.open ?? true;
+  const shopOpen = document.getElementById("detailsShopPurchases")?.open ?? true;
+
   if (!inv) return;
 
+  
   // --- Existing inventory (drops) ---
-  let html = `
-    <b>Inventory</b><br>
-    🦴 Skeleton Bones: ${nvl(dropCounters["🦴 Skeleton Bones"],0)}/${dropLimits.bones}<br>
-    📿 Crossbones Relic: ${nvl(dropCounters["📿 Crossbones Relic"],0)}/${dropLimits.relic}<br>
-    ⬜💀 Skeleton Skin: ${nvl(dropCounters["⬜💀 Skeleton Skin"],0)}/${dropLimits.skin}<br>
-    ⬜☠️ Crossbones Cube: ${nvl(dropCounters["⬜☠️ Crossbones Cube"],0)}/${dropLimits.cube}<br><br>
-  `;
+let html = `
+   <div id="bossDropsContainer">
+  <details id="detailsBossDrops" open style="margin-top:8px;">
+    <summary style="cursor:pointer; font-weight:bold; color:#00ccff;">📦 Boss Drops</summary>
+    <div style="margin-left:10px; margin-top:5px;">
+      🦴 Skeleton Bones: ${nvl(dropCounters["🦴 Skeleton Bones"],0)}/${dropLimits.bones}<br>
+      📿 Crossbones Relic: ${nvl(dropCounters["📿 Crossbones Relic"],0)}/${dropLimits.relic}<br>
+      ⬜💀 Skeleton Skin: ${nvl(dropCounters["⬜💀 Skeleton Skin"],0)}/${dropLimits.skin}<br>
+      ⬜☠️ Crossbones Cube: ${nvl(dropCounters["⬜☠️ Crossbones Cube"],0)}/${dropLimits.cube}<br>
+    </div>
+  </details>
+   </div>
+`;
+
 
   // --- Shop Inventory ---
-  html += `<b>Shop Purchases</b><br>`;
-
+  //html += `<b>Shop Purchases</b><br>`;
+  html += '<div id="shopPurchasesContainer"><details id="detailsShopPurchases" open style="margin-top:8px;"><summary style="cursor:pointer; font-weight:bold; color:#ffcc00;">🛒 Shop Purchases</summary><div style="margin-left:10px; margin-top:5px;"><div>';
+  
   const categories = ["Swords", "Relics", "Eggs", "Skins", "Potions"];
 
   categories.forEach(cat => {
-    if (playerInventory[cat]) {
-      html += `<u>${cat}</u><br>`;
-      playerInventory[cat].forEach(item => {
-        const limit =
-          cat === "Eggs" || cat === "Potions" ? 999 : 1;
-        html += `${item.icon} ${item.name}: ${item.count}/${limit}<br>`;
-      });
-      //html += `<br>`;
-    }
+    const items = playerInventory[cat];
+    if (!items || items.length === 0) return;
+
+    html += `<u>${cat}</u><br>`;
+
+    playerInventory[cat].forEach(item => {
+      const limit = (cat === "Eggs" || cat === "Potions") ? 999 : 1;
+      const isEquipped = !!item.equipped;
+
+      // Get the correct special value for this category
+      let equippedSpecial = 0;
+      switch (cat) {
+        case "Swords":   equippedSpecial = equippedSwordSpecial; break;
+        case "Relics":   equippedSpecial = equippedRelicSpecial; break;
+        case "Eggs":     equippedSpecial = equippedEggSpecial; break;
+        case "Skins":    equippedSpecial = equippedSkinSpecial; break;
+        case "Potions":  equippedSpecial = equippedPotionSpecial; break;
+      }
+
+      // Build the button label safely
+      const btnLabel = isEquipped ? `Equipped (⭐${equippedSpecial})` : 'Equip';
+
+      // Append to HTML string (all quotes/backticks properly closed)
+      html += `
+        ${item.icon} ${item.name}: ${item.count}/${limit}
+        <button
+          onclick="equipItem('${cat}', '${item.name}')"
+          style="
+            margin-left:5px; 
+            padding:2px 6px; 
+            border-radius:5px; 
+            background:${isEquipped ? '#28a745' : '#333'}; 
+            color:white; 
+            border:none; 
+            cursor:pointer;
+          ">
+          ${btnLabel}
+        </button><br>
+      `;
+    });
+
+
+
+    html += `<br>`;
   });
 
+  html += '</div></details>';
   inv.innerHTML = html;
+  document.getElementById("detailsBossDrops").open = bossOpen;
+  document.getElementById("detailsShopPurchases").open = shopOpen;
+
+
+}
+
+// --- Equip logic ---
+function equipCategory(cat) {
+  equippedCategory = (equippedCategory === cat) ? null : cat;
+  updateInventoryDisplay();
 }
 
 /**
@@ -400,7 +581,7 @@ const character = {
   y: H / 2 - CUBE_SIZE / 2,
   w: CUBE_SIZE,
   h: CUBE_SIZE,
-  color: "#ff2b2b",
+  color: skins[equippedSkinSpecial].color,
   speed: 250,
   target: null,
   assignedName: null,
@@ -448,41 +629,42 @@ let insideHouse = false;
 // === 🛒 SHOP CONFIGURATION ===
 const shopItems = {
   Swords: [
-    { icon: "⚔️", price: 100_000_000n, name: "Iron Sword", limit: 1 },
-    { icon: "🗡️", price: 100_000_000_000n, name: "Steel Sword", limit: 1 },
-    { icon: "💎", price: 10_000_000_000_000n, name: "Crystal Sword", limit: 1 },
-    { icon: "🔥", price: 100_000_000_000_000_000n, name: "Flame Blade", limit: 1 },
-    { icon: "⚡", price: 100_000_000_000_000_000_000n, name: "Thunder Edge", limit: 1 },
+    { icon: "⚔️", price: 100_000_000n, name: "Iron Sword", limit: 1, special: 2 },
+    { icon: "🗡️", price: 100_000_000_000n, name: "Steel Sword", limit: 1, special: 3 },
+    { icon: "💎", price: 10_000_000_000_000n, name: "Crystal Sword", limit: 1, special: 4 },
+    { icon: "🔥", price: 100_000_000_000_000_000n, name: "Flame Blade", limit: 1, special: 3 },
+    { icon: "⚡", price: 100_000_000_000_000_000_000n, name: "Thunder Edge", limit: 1, special: 5 },
   ],
   Relics: [
-    { icon: "📿", price: 100_000_000n, name: "Relic of Light", limit: 1 },
-    { icon: "🪶", price: 100_000_000_000n, name: "Relic of Wind", limit: 1 },
-    { icon: "💀", price: 100_000_000_000_000n, name: "Relic of Death", limit: 1 },
-    { icon: "🌙", price: 1_000_000_000_000_000_000n, name: "Relic of Night", limit: 1 },
-    { icon: "☀️", price: 100_000_000_000_000_000_000n, name: "Relic of Sun", limit: 1 },
+    { icon: "📿", price: 100_000_000n, name: "Relic of Light", limit: 1, special: 1.1 },
+    { icon: "🪶", price: 100_000_000_000n, name: "Relic of Wind", limit: 1, special: 1.15 },
+    { icon: "💀", price: 100_000_000_000_000n, name: "Relic of Death", limit: 1, special: 1.20 },
+    { icon: "🌙", price: 1_000_000_000_000_000_000n, name: "Relic of Night", limit: 1, special: 1.25 },
+    { icon: "☀️", price: 100_000_000_000_000_000_000n, name: "Relic of Sun", limit: 1, special: 1.30 },
   ],
   Eggs: [
-    { icon: "🥚", price: 100_000_000n, name: "Basic Egg", limit: 999 },
-    { icon: "🐣", price: 100_000_000_000n, name: "Rare Egg", limit: 999 },
-    { icon: "🐉", price: 100_000_000_000_000n, name: "Dragon Egg", limit: 999 },
-    { icon: "✨", price: 1_000_000_000_000_000_000n, name: "Mythic Egg", limit: 999 },
-    { icon: "🪺", price: 10_000_000_000_000_000_000_000n, name: "Celestial Egg", limit: 999 },
+    { icon: "🥚", price: 100_000_000n, name: "Basic Egg", limit: 999, special: 1 },
+    { icon: "🐣", price: 100_000_000_000n, name: "Rare Egg", limit: 999, special: 1 },
+    { icon: "🐉", price: 100_000_000_000_000n, name: "Dragon Egg", limit: 999, special: 1 },
+    { icon: "✨", price: 1_000_000_000_000_000_000n, name: "Mythic Egg", limit: 999, special: 1 },
+    { icon: "🪺", price: 10_000_000_000_000_000_000_000n, name: "Celestial Egg", limit: 999, special: 1 },
   ],
   Skins: [
-    { icon: "🟥", price: 1_000_000_000n, name: "Red Skin", limit: 1 },
-    { icon: "🟦", price: 1_000_000_000_000n, name: "Blue Skin", limit: 1 },
-    { icon: "🟪", price: 1_000_000_000_000_000n, name: "Purple Skin", limit: 1 },
-    { icon: "🟨", price: 10_000_000_000_000_000n, name: "Gold Skin", limit: 1 },
-    { icon: "⬜", price: 1_000_000_000_000_000_000_000n, name: "Diamond Skin", limit: 1 },
+    { icon: "🟥", price: 1_000_000_000n, name: "Red Skin", limit: 1, special: 1 },
+    { icon: "🟦", price: 1_000_000_000_000n, name: "Blue Skin", limit: 1, special: 2 },
+    { icon: "🟪", price: 1_000_000_000_000_000n, name: "Purple Skin", limit: 1, special: 3 },
+    { icon: "🟨", price: 10_000_000_000_000_000n, name: "Gold Skin", limit: 1, special: 4 },
+    { icon: "⬜", price: 1_000_000_000_000_000_000_000n, name: "Diamond Skin", limit: 1, special: 5 },
   ],
   Potions: [
-    { icon: "🧪", price: 1_000_000n, name: "Health Potion", limit: 999 },
-    { icon: "💊", price: 10_000_000_000n, name: "Energy Potion", limit: 999 },
-    { icon: "⚗️", price: 100_000_000_000_000n, name: "Alchemy Potion", limit: 999 },
-    { icon: "🧉", price: 1_000_000_000_000_000_000n, name: "Mystic Potion", limit: 999 },
-    { icon: "🥤", price: 10_000_000_000_000_000_000_000n, name: "Divine Potion", limit: 999 },
+    { icon: "🧪", price: 1_000_000n, name: "Health Potion", limit: 999, special: 2 },
+    { icon: "💊", price: 10_000_000_000n, name: "Energy Potion", limit: 999, special: 3 },
+    { icon: "⚗️", price: 100_000_000_000_000n, name: "Alchemy Potion", limit: 999, special: 4 },
+    { icon: "🧉", price: 1_000_000_000_000_000_000n, name: "Mystic Potion", limit: 999, special: 5 },
+    { icon: "🥤", price: 10_000_000_000_000_000_000_000n, name: "Divine Potion", limit: 999, special: 6 },
   ]
 };
+
 
 const playerInventory = {
   Swords: [],
@@ -594,7 +776,7 @@ function checkHouseDeposit() {
 
     //renderLegendUI(); // switch to shop
 
-    // Optional: perform deposit logic if desired
+    // Optional: perform deposit logic 4if desired
     if (character.assignedValue && money >= character.assignedValue) {
       money -= character.assignedValue;
       houseValue += character.assignedValue;
@@ -616,22 +798,44 @@ function checkHouseDeposit() {
 }
 
 
+/**
+ * Recomputes the total income per second based on the current legend counts and income rates.
+ * Applies the current weather multiplier to the total income.
+ * Updates the income display with the new total income per second.
+ * @returns {undefined}
+ */
 function recomputeIncome() {
+  // Initialize total income per second to 0
   incomePerSec = 0n;
-  for (let n in legendCounts) 
+
+  // Iterate through all legend counts
+  for (let n in legendCounts) {
+    // Add the product of the count and income rate to the total income
     incomePerSec += legendCounts[n] * (incomeRates[n] || 0n);
+  }
+  console.log("Income/Sec-0 " + incomePerSec);
 
-  const adjustedIncome = BigInt(Math.floor(Number(incomePerSec) * weatherMultiplier));
-
+  // Apply the current weather multiplier to the total income
+  //const adjustedIncome = BigInt(Math.floor( (Number(incomePerSec) * weatherMultiplier)*equippedRelicSpecial) );
+  const totalMultiplier = weatherMultiplier * equippedRelicSpecial * (potionActive ? potionMultiplier : 1);
+  const adjustedIncome = BigInt(Math.floor(Number(incomePerSec) * totalMultiplier));
+  
+  
   // Short version for display
   const shortText = formatBigInt(adjustedIncome);
+
   // Full version with commas for tooltip
   const fullText = formatBigInt2(adjustedIncome);
 
-
+  // Update the income display with the new total income per second
   incomeDisplay.textContent = "Income/sec: " + shortText;
   incomeDisplay.title = fullText; // ← hover tooltip
+  console.log("Income/Sec-1 " + shortText);
 
+  if (potionActive) {
+    const timeLeft = Math.ceil((potionEndTime - Date.now()) / 1000);
+    incomeDisplay.textContent += ` 🧪(${timeLeft}s)`;
+  }
 }
 
 
@@ -679,6 +883,36 @@ function endWeatherEvent() {
 
 }
 
+function activatePotionEvent(multiplier) {
+
+  
+  potionActive = true;
+  potionMultiplier = multiplier;
+  potionEndTime = Date.now() + 60000; // 1 minute from now
+  
+  console.log(`🧪 Potion activated! ${multiplier}x income for 60 seconds`);
+  
+  // Recalculate income with new multiplier
+  recomputeIncome();
+  
+  // Set timeout to end potion effect after 60 seconds
+  setTimeout(() => {
+    potionActive = false;
+    potionMultiplier = 1;
+    console.log(`🧪 Potion effect ended`);
+    
+    // Unequip the potion - reset button to "Equip" status
+    if (playerInventory.Potions) {
+      playerInventory.Potions.forEach(i => i.equipped = false);
+    }
+    equippedPotionSpecial = 1;
+    
+    // Recalculate income back to normal
+    recomputeIncome();
+    // Update the UI to show "Equip" button again
+    updateInventoryDisplay();
+  }, 60000);
+}
 
 /**
  * Starts a weather animation based on the given type.
@@ -820,7 +1054,15 @@ document.addEventListener("keydown", e => {
   if (e.key === "]") triggerWeatherEvent();
 });
 
-setInterval(() => { money += incomePerSec; updateDisplays(); }, 1000);
+//setInterval(() => { money += incomePerSec; updateDisplays(); }, 1000);
+setInterval(() => { 
+  money += incomePerSec; 
+  updateDisplays(); 
+  
+  if (potionActive) {
+    recomputeIncome(); // Updates the countdown timer every second
+  }
+}, 1000);
 
 function updateDisplays() {
   moneyDisplay.textContent = "Money: " + formatBigInt(money);  
@@ -828,6 +1070,7 @@ function updateDisplays() {
 
   incomeDisplay.textContent = "Income/sec: " + formatBigInt(incomePerSec);
   incomeDisplay.title = formatBigInt2(incomePerSec);
+  console.log("Income/Sec-2 " + incomeDisplay.title);
 
   houseDisplay.textContent = "House value: " + formatBigInt(houseValue);
   houseDisplay.title = formatBigInt2(houseValue);
@@ -923,7 +1166,17 @@ saveBtn.addEventListener("click", () => {
     upgraded,
     bossDrops // 🧠 added here
   };
+
+  data.equipped = {
+      swords: equippedSwordSpecial,
+      relics: equippedRelicSpecial,
+      eggs: equippedEggSpecial,
+      skins: equippedSkinSpecial,
+      potions: equippedPotionSpecial
+    };
   localStorage.setItem("cubeGameSave", JSON.stringify(data));
+  
+
   alert("✅ Progress Saved!");
 });
 
@@ -952,6 +1205,16 @@ loadBtn.addEventListener("click", () => {
         playerInventory[cat] = data.playerInventory[cat];
       }
     }
+
+
+    if (data.equipped) {
+      equippedSwordSpecial = data.equipped.swords || 0;
+      equippedRelicSpecial = data.equipped.relics || 0;
+      equippedEggSpecial = data.equipped.eggs || 0;
+      equippedSkinSpecial = data.equipped.skins || 0;
+      equippedPotionSpecial = data.equipped.potions || 0;
+    }
+
     if (data.bossDrops) bossDrops = data.bossDrops;
 
     toggleBtn.textContent = upgraded ? "Downgrade Cubes" : "Upgrade Cubes";
@@ -959,6 +1222,7 @@ loadBtn.addEventListener("click", () => {
     renderLegendUI();
     updateDisplays();
     updateInventoryDisplay(); // refresh inventory UI
+
 
     alert("✅ Progress Loaded!");
   } catch (err) {
@@ -1188,78 +1452,81 @@ if (boss.hitsRemaining <= 0) {
   // ctx.strokeRect(swordBox.x, swordBox.y, swordBox.w, swordBox.h);
 
   if (rectsOverlap(swordBox, boss) && !boss.hitCooldown && !boss.retreating) {
-  boss.hitsRemaining--;
-  boss.flash = true;
-  spawnSlash(boss.x + boss.w / 2, boss.y + boss.h / 2, Math.random() * Math.PI * 2);
+    // 🔥 Apply sword special multiplier damage
+    const dmg = Math.max(1, equippedSwordSpecial);
+    boss.hitsRemaining -= dmg;
 
-  // Boss retreats randomly around 30–50px away
-  boss.retreating = true;
-  boss.invulnerable = true; // can’t hurt player during retreat
+    boss.flash = true;
+    spawnSlash(boss.x + boss.w / 2, boss.y + boss.h / 2, Math.random() * Math.PI * 2);
 
-  const angle = Math.random() * 2 * Math.PI;
-  const distance = 30 + Math.random() * 20; // 30–50px random distance
-  const newX = boss.x + Math.cos(angle) * distance;
-  const newY = boss.y + Math.sin(angle) * distance;
+    // Boss retreats randomly around 30–50px away
+    boss.retreating = true;
+    boss.invulnerable = true; // can’t hurt player during retreat
 
-  const startX = boss.x;
-  const startY = boss.y;
-  const startTime = performance.now();
-  const retreatDuration = 400; // 0.4s retreat
+    const angle = Math.random() * 2 * Math.PI;
+    const distance = 30 + Math.random() * 20; // 30–50px random distance
+    const newX = boss.x + Math.cos(angle) * distance;
+    const newY = boss.y + Math.sin(angle) * distance;
 
-  function retreatAnimation(now) {
-    const progress = Math.min((now - startTime) / retreatDuration, 1);
-    boss.x = startX + (newX - startX) * progress;
-    boss.y = startY + (newY - startY) * progress;
+    const startX = boss.x;
+    const startY = boss.y;
+    const startTime = performance.now();
+    const retreatDuration = 400; // 0.4s retreat
 
-    if (progress < 1) {
-      requestAnimationFrame(retreatAnimation);
-    } else {
-      boss.retreating = false;
-      boss.invulnerable = false;
+    function retreatAnimation(now) {
+      const progress = Math.min((now - startTime) / retreatDuration, 1);
+      boss.x = startX + (newX - startX) * progress;
+      boss.y = startY + (newY - startY) * progress;
+
+      if (progress < 1) {
+        requestAnimationFrame(retreatAnimation);
+      } else {
+        boss.retreating = false;
+        boss.invulnerable = false;
+      }
     }
-  }
-  requestAnimationFrame(retreatAnimation);
+    requestAnimationFrame(retreatAnimation);
 
-  setTimeout(() => (boss.flash = false), 150);
-  boss.hitCooldown = true;
-  setTimeout(() => (boss.hitCooldown = false), 300);
+    setTimeout(() => (boss.flash = false), 150);
+    boss.hitCooldown = true;
+    setTimeout(() => (boss.hitCooldown = false), 300);
 
- if (boss.hitsRemaining <= 0) {
-  boss.visible = false;
-  boss.hitsRemaining = boss.hitsToDie;
-  boss.playerHits = 0;
-  nextBossSpawn = Date.now() + bossSpawnInterval;
+  if (boss.hitsRemaining <= 0) {
+    boss.visible = false;
+    boss.hitsRemaining = boss.hitsToDie;
+    boss.playerHits = 0;
+    nextBossSpawn = Date.now() + bossSpawnInterval;
 
-  // 🧩 Loot drop logic
-  const drops = [];
+    // 🧩 Loot drop logic
+    const drops = [];
 
-  // Each roll uses Math.random()
-  // 100% drop
-  if (Math.random() <= 1.0) drops.push("🦴 Skeleton Bones");
-  // 30% drop
-  if (Math.random() <= 0.30) drops.push("📿 Crossbones Relic");
-  // 5% drop
-  if (Math.random() <= 0.05) drops.push("⬜💀 Skeleton Skin");
-  // 1% drop
-  if (Math.random() <= 0.01) drops.push("⬜☠️ Crossbones Cube");
+    // Each roll uses Math.random()
+    // 100% drop
+    if (Math.random() <= 1.0) drops.push("🦴 Skeleton Bones");
+    // 30% drop
+    if (Math.random() <= 0.30) drops.push("📿 Crossbones Relic");
+    // 5% drop
+    if (Math.random() <= 0.05) drops.push("⬜💀 Skeleton Skin");
+    // 1% drop
+    if (Math.random() <= 0.01) drops.push("⬜☠️ Crossbones Cube");
 
-  // Store drops to display them visually
-  bossDrops.push({
-    x: boss.x + boss.w / 2,
-    y: boss.y,
-    items: drops,
-    timer: 3000, // display for 3 seconds
-    opacity: 1
+    // Store drops to display them visually
+    bossDrops.push({
+      x: boss.x + boss.w / 2,
+      y: boss.y,
+      items: drops,
+      timer: 3000, // display for 3 seconds
+      opacity: 1
+    });
+
+  // 🧾 Update inventory + drop counters
+  drops.forEach(item => {
+    if (inventory[item] !== undefined) {
+      inventory[item]++;
+      dropCounters[item]++; // track total count per item type
+    }
   });
-
-// 🧾 Update inventory + drop counters
-drops.forEach(item => {
-  if (inventory[item] !== undefined) {
-    inventory[item]++;
-    dropCounters[item]++; // track total count per item type
-  }
-});
-updateInventoryDisplay();
+  updateInventoryDisplay();
 
 } 
 }
@@ -1325,24 +1592,24 @@ if (!boss.visible) {
 
 
   if (character.hasSword) {
-  const swordEmoji = '🗡️';
-  const centerX = character.x + character.w + 12; // sword center x
-  const centerY = character.y + character.h / 2;  // sword center y
-  ctx.save();              // save current canvas state
-  ctx.translate(centerX, centerY);   // move origin to sword center
-  ctx.rotate(Math.PI);     // rotate 180 degrees (π radians)
-  ctx.font = '24px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(swordEmoji, 0, 0);    // draw at new origin
-  
-        // if slashing, move it slightly forward or up for effect
-      if (character.slashing) {
-        //ctx.fillText(swordEmoji, character.x + character.w + 24, character.y + character.h/2 - 6);
-            ctx.fillText(swordEmoji, -6, 7); // adjust these numbers as needed
+    const swordEmoji =  swordicon ;  //'🗡️';
+    const centerX = character.x + character.w + 12; // sword center x
+    const centerY = character.y + character.h / 2;  // sword center y
+    ctx.save();              // save current canvas state
+    ctx.translate(centerX, centerY);   // move origin to sword center
+    ctx.rotate(Math.PI);     // rotate 180 degrees (π radians)
+    ctx.font = '24px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(swordEmoji, 0, 0);    // draw at new origin
+    
+          // if slashing, move it slightly forward or up for effect
+        if (character.slashing) {
+          //ctx.fillText(swordEmoji, character.x + character.w + 24, character.y + character.h/2 - 6);
+              ctx.fillText(swordEmoji, -6, 7); // adjust these numbers as needed
 
-      }
-      ctx.restore();           // restore canvas state
+        }
+        ctx.restore();           // restore canvas state
 
   }
 
