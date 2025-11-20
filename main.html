@@ -132,6 +132,107 @@
 
 <script>
 const canvas = document.getElementById('gameCanvas');
+
+
+// === ADMIN ABUSE EVENTS CONFIGURATION ===
+const adminAbuseEvents = [
+  {
+    name: "Blackhole",
+    triggers: [
+      { date: new Date('2025-11-21T11:00:00-05:00') } // 11am CDT
+    ],
+    key: "!",
+    duration: 120000, // 2 minutes in ms
+    incomeBoost: 1.30, // 30% boost
+    bg: "radial-gradient(circle at center, #000000 0%, #1a0033 30%, #330066 60%, #000000 100%)",
+    overlay: "rgba(0,0,0,0.3)",
+    animation: "blackhole"
+  },
+  {
+    name: "Hurricane",
+    triggers: [
+      { date: new Date('2025-11-21T11:40:00-05:00') },
+      { date: new Date('2025-11-21T11:44:40-05:00') }
+    ],
+    key: "@",
+    duration: 60000, // 1 minute
+    incomeBoost: 1.15,
+    bg: "radial-gradient(circle, #334455 0%, #1a2a3a 50%, #0d1520 100%)",
+    overlay: "rgba(100,120,150,0.25)",
+    animation: "hurricane"
+  },
+  {
+    name: "Disco",
+    triggers: [
+      { date: new Date('2025-11-21T11:41:15-05:00') },
+      { date: new Date('2025-11-21T11:46:00-05:00') }
+    ],
+    key: "#",
+    duration: 95000, // 1 min 35 sec
+    incomeBoost: 1.25,
+    bg: "linear-gradient(45deg, #ff00ff 0%, #00ffff 25%, #ffff00 50%, #ff00ff 75%, #00ffff 100%)",
+    overlay: "rgba(255,255,255,0.1)",
+    animation: "disco"
+  },
+  {
+    name: "Volcano",
+    triggers: [
+      { date: new Date('2025-11-21T11:43:05-05:00') },
+      { date: new Date('2025-11-21T11:49:00-05:00') }
+    ],
+    key: "$",
+    duration: 45000, // 45 seconds
+    incomeBoost: 1.35,
+    bg: "linear-gradient(180deg, #330000 0%, #660000 30%, #ff4400 60%, #ff8800 100%)",
+    overlay: "rgba(255,100,0,0.3)",
+    animation: "volcano"
+  },
+  {
+    name: "Earthquake",
+    triggers: [
+      { date: new Date('2025-11-21T11:44:10-05:00') }
+    ],
+    key: "%",
+    duration: 15000, // 15 seconds
+    incomeBoost: 1.50,
+    bg: "linear-gradient(180deg, #2a2520 0%, #3a2a20 50%, #2a2520 100%)",
+    overlay: "rgba(100,80,60,0.2)",
+    animation: "earthquake"
+  },
+  {
+    name: "Glitched",
+    triggers: [
+      { date: new Date('2025-11-21T11:47:50-05:00') }
+    ],
+    key: "^",
+    duration: 60000, // 1 minute
+    incomeBoost: 1.35,
+    bg: "linear-gradient(90deg, #000 0%, #0f0 2%, #000 4%, #f0f 6%, #000 8%, #0ff 10%, #000 100%)",
+    overlay: "rgba(0,255,0,0.15)",
+    animation: "glitched"
+  },
+  {
+    name: "Galactic",
+    triggers: [
+      { date: new Date('2025-11-21T11:50:00-05:00') }
+    ],
+    key: "&",
+    duration: 180000, // 3 minutes
+    incomeBoost: 1.20,
+    bg: "radial-gradient(circle at 20% 30%, #4a0080 0%, #000033 40%, #000000 100%)",
+    overlay: "rgba(80,60,150,0.2)",
+    animation: "galactic"
+  }
+];
+
+// Admin Abuse event state
+let currentAdminEvent = null;
+let adminEventTimer = null;
+let adminEventParticles = [];
+let adminEventOverlayAlpha = 0;
+let adminEventShakeX = 0;
+let adminEventShakeY = 0;
+
 const ctx = canvas.getContext('2d');
 
 const W = canvas.width, H = canvas.height;
@@ -817,9 +918,16 @@ function recomputeIncome() {
 
   // Apply the current weather multiplier to the total income
   //const adjustedIncome = BigInt(Math.floor( (Number(incomePerSec) * weatherMultiplier)*equippedRelicSpecial) );
-  const totalMultiplier = weatherMultiplier * equippedRelicSpecial * (potionActive ? potionMultiplier : 1);
+  //const totalMultiplier = weatherMultiplier * equippedRelicSpecial * (potionActive ? potionMultiplier : 1);
+  const adminMultiplier = currentAdminEvent ? currentAdminEvent.incomeBoost : 1;
+  const totalMultiplier = weatherMultiplier * equippedRelicSpecial * (potionActive ? potionMultiplier : 1) * adminMultiplier;
+
+  console.log("totalMultiplier " + totalMultiplier);
+  console.log("adminMultiplier " + adminMultiplier);
+
   const adjustedIncome = BigInt(Math.floor(Number(incomePerSec) * totalMultiplier));
   
+  incomePerSec = adjustedIncome;
   
   // Short version for display
   const shortText = formatBigInt(adjustedIncome);
@@ -882,6 +990,11 @@ function endWeatherEvent() {
   stopWeatherAnimation();
 
 }
+
+
+
+
+
 
 function activatePotionEvent(multiplier) {
 
@@ -1002,6 +1115,315 @@ function updateWeatherAnimation(dt) {
   }
 }
 
+
+// === ADMIN ABUSE EVENT FUNCTIONS ===
+function triggerAdminEvent(event) {
+  if (currentAdminEvent) {
+    console.log(`⚠️ Admin event ${currentAdminEvent.name} already active, skipping ${event.name}`);
+    return;
+  }
+  
+  currentAdminEvent = event;
+  document.body.style.background = event.bg;
+  adminEventOverlayAlpha = 0.3;
+  
+  console.log(`🎮 Admin Abuse: ${event.name} started! +${(event.incomeBoost - 1) * 100}% income for ${event.duration/1000}s`);
+  
+  recomputeIncome();
+  startAdminAnimation(event.animation);
+  
+  adminEventTimer = setTimeout(() => endAdminEvent(), event.duration);
+}
+
+function endAdminEvent() {
+  if (!currentAdminEvent) return;
+  
+  console.log(`✅ Admin event ${currentAdminEvent.name} ended`);
+  currentAdminEvent = null;
+  document.body.style.background = "linear-gradient(#111,#07101a)";
+  adminEventOverlayAlpha = 0;
+  adminEventShakeX = 0;
+  adminEventShakeY = 0;
+  
+  recomputeIncome();
+  stopAdminAnimation();
+}
+
+function startAdminAnimation(type) {
+  adminEventParticles = [];
+  
+  switch(type) {
+    case "blackhole":
+      for (let i = 0; i < 100; i++) {
+        adminEventParticles.push({
+          angle: Math.random() * Math.PI * 2,
+          distance: 200 + Math.random() * 300,
+          speed: 50 + Math.random() * 100,
+          size: 1 + Math.random() * 2
+        });
+      }
+      break;
+      
+    case "hurricane":
+      for (let i = 0; i < 150; i++) {
+        adminEventParticles.push({
+          angle: Math.random() * Math.PI * 2,
+          distance: Math.random() * Math.max(W, H),
+          speed: 100 + Math.random() * 200,
+          size: 2 + Math.random() * 3,
+          isRain: Math.random() > 0.7
+        });
+      }
+      break;
+      
+    case "disco":
+      for (let i = 0; i < 50; i++) {
+        adminEventParticles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          size: 10 + Math.random() * 20,
+          hue: Math.random() * 360,
+          alpha: 0.5 + Math.random() * 0.5
+        });
+      }
+      break;
+      
+    case "volcano":
+      for (let i = 0; i < 80; i++) {
+        adminEventParticles.push({
+          x: W / 2 + (Math.random() - 0.5) * 100,
+          y: H,
+          vx: (Math.random() - 0.5) * 200,
+          vy: -300 - Math.random() * 200,
+          size: 3 + Math.random() * 5,
+          life: 1
+        });
+      }
+      break;
+      
+    case "glitched":
+      // Glitch blocks
+      for (let i = 0; i < 30; i++) {
+        adminEventParticles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          w: 20 + Math.random() * 100,
+          h: 5 + Math.random() * 30
+        });
+      }
+      break;
+      
+    case "galactic":
+      // Stars and planets
+      for (let i = 0; i < 100; i++) {
+        adminEventParticles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          size: 1 + Math.random() * 3,
+          twinkle: Math.random()
+        });
+      }
+      // Add some planets
+      for (let i = 0; i < 5; i++) {
+        adminEventParticles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          size: 20 + Math.random() * 40,
+          isPlanet: true,
+          hue: Math.random() * 360
+        });
+      }
+      break;
+  }
+}
+
+function stopAdminAnimation() {
+  adminEventParticles = [];
+}
+
+function updateAdminAnimation(dt) {
+  if (!currentAdminEvent) return;
+  
+  const type = currentAdminEvent.animation;
+  
+  switch(type) {
+    case "blackhole":
+      adminEventParticles.forEach(p => {
+        p.distance -= p.speed * dt;
+        if (p.distance < 10) p.distance = 500;
+      });
+      break;
+      
+    case "hurricane":
+      adminEventParticles.forEach(p => {
+        p.angle += p.speed * dt * 0.01;
+        if (p.isRain) {
+          p.distance += 50 * dt;
+          if (p.distance > Math.max(W, H)) p.distance = 0;
+        }
+      });
+      break;
+      
+    case "disco":
+      adminEventParticles.forEach(p => {
+        p.hue = (p.hue + 100 * dt) % 360;
+      });
+      break;
+      
+    case "volcano":
+      adminEventParticles.forEach(p => {
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.vy += 400 * dt; // gravity
+        p.life -= dt * 0.5;
+        
+        if (p.life <= 0) {
+          p.x = W / 2 + (Math.random() - 0.5) * 100;
+          p.y = H;
+          p.vx = (Math.random() - 0.5) * 200;
+          p.vy = -300 - Math.random() * 200;
+          p.life = 1;
+        }
+      });
+      break;
+      
+    case "earthquake":
+      adminEventShakeX = (Math.random() - 0.5) * 10;
+      adminEventShakeY = (Math.random() - 0.5) * 10;
+      break;
+      
+    case "glitched":
+      if (Math.random() < 0.1) {
+        adminEventParticles.forEach(p => {
+          p.x = Math.random() * W;
+          p.y = Math.random() * H;
+        });
+      }
+      break;
+      
+    case "galactic":
+      adminEventParticles.forEach(p => {
+        if (!p.isPlanet) {
+          p.twinkle = (p.twinkle + dt) % 1;
+        }
+      });
+      break;
+  }
+}
+
+function drawAdminAnimation(ctx) {
+  if (!currentAdminEvent) return;
+  
+  ctx.save();
+  
+  const type = currentAdminEvent.animation;
+  const centerX = W / 2;
+  const centerY = H / 2;
+  
+  switch(type) {
+    case "blackhole":
+      ctx.fillStyle = "rgba(138,43,226,0.3)";
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 50, 0, Math.PI * 2);
+      ctx.fill();
+      
+      adminEventParticles.forEach(p => {
+        const x = centerX + Math.cos(p.angle) * p.distance;
+        const y = centerY + Math.sin(p.angle) * p.distance;
+        ctx.fillStyle = `rgba(200,150,255,${1 - p.distance/500})`;
+        ctx.fillRect(x, y, p.size, p.size);
+      });
+      break;
+      
+    case "hurricane":
+      adminEventParticles.forEach(p => {
+        if (p.isRain) {
+          const x = centerX + Math.cos(p.angle) * p.distance;
+          const y = centerY + Math.sin(p.angle) * p.distance;
+          ctx.strokeStyle = "rgba(150,200,255,0.4)";
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x, y + 10);
+          ctx.stroke();
+        } else {
+          const x = centerX + Math.cos(p.angle) * p.distance;
+          const y = centerY + Math.sin(p.angle) * p.distance;
+          ctx.strokeStyle = "rgba(255,255,255,0.2)";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x + Math.cos(p.angle) * 20, y + Math.sin(p.angle) * 20);
+          ctx.stroke();
+        }
+      });
+      break;
+      
+    case "disco":
+      adminEventParticles.forEach(p => {
+        ctx.fillStyle = `hsla(${p.hue}, 100%, 50%, ${p.alpha})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      break;
+      
+    case "volcano":
+      adminEventParticles.forEach(p => {
+        if (p.life > 0) {
+          ctx.fillStyle = `rgba(255,${100 + p.life * 150},0,${p.life})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+      break;
+      
+    case "glitched":
+      adminEventParticles.forEach(p => {
+        const colors = ['#ff0000', '#00ff00', '#0000ff', '#ff00ff', '#00ffff'];
+        ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+        ctx.globalAlpha = 0.3;
+        ctx.fillRect(p.x, p.y, p.w, p.h);
+      });
+      ctx.globalAlpha = 1;
+      break;
+      
+    case "galactic":
+      adminEventParticles.forEach(p => {
+        if (p.isPlanet) {
+          ctx.fillStyle = `hsl(${p.hue}, 70%, 50%)`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillStyle = `rgba(255,255,255,${0.3 + p.twinkle * 0.7})`;
+          ctx.fillRect(p.x, p.y, p.size, p.size);
+        }
+      });
+      break;
+  }
+  
+  ctx.restore();
+}
+
+// Check for scheduled admin events
+function checkScheduledAdminEvents() {
+  const now = new Date();
+  
+  adminAbuseEvents.forEach(event => {
+    event.triggers.forEach(trigger => {
+      if (!trigger.triggered && trigger.date <= now) {
+        trigger.triggered = true;
+        triggerAdminEvent(event);
+      }
+    });
+  });
+}
+
+// Check every second for scheduled events
+setInterval(checkScheduledAdminEvents, 1000);
+
 /**
  * Draws the weather animation based on the current weather type.
  * This function is called continuously by the requestAnimationFrame loop.
@@ -1111,7 +1533,7 @@ function handleSlash() {
   });
 }
 
-
+/// WINDOW EVENT LISTENERS
 const keys = {};
 //window.addEventListener("keydown", e => { if ("wasd".includes(e.key.toLowerCase())) keys[e.key.toLowerCase()] = true; });
 window.addEventListener("keydown", e => {
@@ -1128,6 +1550,13 @@ window.addEventListener("keydown", e => {
 }
 
   if (e.key === "'") spawnBoss();
+
+  // === ADMIN ABUSE EVENT TRIGGERS ===
+  const adminEvent = adminAbuseEvents.find(evt => evt.key === e.key);
+  if (adminEvent) {
+    triggerAdminEvent(adminEvent);
+  }
+
 });
 
 window.addEventListener("keyup", e => {
@@ -1553,6 +1982,14 @@ for (let i = bossDrops.length - 1; i >= 0; i--) {
 
 
 function render() {
+  
+  
+  // Apply earthquake shake
+  if (currentAdminEvent && currentAdminEvent.animation === "earthquake") {
+    ctx.save();
+    ctx.translate(adminEventShakeX, adminEventShakeY);
+  }
+
   ctx.clearRect(0, 0, W, H);
   ctx.fillStyle = 'rgba(255,255,255,0.02)';
   ctx.fillRect(12, 8, W - 24, 110);
@@ -1718,11 +2155,18 @@ bossDrops.forEach(drop => {
   ctx.fillStyle = '#fff';
   drop.items.forEach((item, i) => {
     ctx.fillText(item, drop.x, drop.y - i * 22);
-  });
+  });  
   ctx.restore();
-});
+  });
+  
+  drawAdminAnimation(ctx);
 
-}
+  // Reset earthquake shake
+  if (currentAdminEvent && currentAdminEvent.animation === "earthquake") {
+    ctx.restore();
+  }
+};
+
 
 let lastTime = performance.now();
 
@@ -1753,8 +2197,10 @@ function loop(t) {
   lastTime = t;
   update(dt);
   updateWeatherAnimation(dt);
+  updateAdminAnimation(dt);
   render();
   drawWeatherAnimation(ctx);
+  drawAdminAnimation(ctx);  
   requestAnimationFrame(loop);
 }
 
