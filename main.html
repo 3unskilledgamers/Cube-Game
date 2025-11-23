@@ -333,7 +333,12 @@ function changeDayNightCycle(newCycle, isManual = false) {
   }
   
   updateEventIndicator();
+    // Update shop display if player is in house
+  if (insideHouse) {
+    updateShopDisplay();
+  }
 }
+
 
 // Auto cycle with transitions
 function checkDayNightCycle() {
@@ -805,6 +810,7 @@ function updateShopDisplay() {
     Potions: 999
   };
 
+  // Regular shop items
   for (const [category, items] of Object.entries(shopItems)) {
     const row = document.createElement('div');
     row.style.display = "flex";
@@ -822,13 +828,56 @@ function updateShopDisplay() {
       btn.style.fontSize = "10px";
       btn.style.padding = "4px 6px";
 
-btn.onclick = () => buyItem(category, i);
-
+      btn.onclick = () => buyItem(category, i);
 
       row.appendChild(btn);
     });
 
     shopContainer.appendChild(row);
+  }
+
+  // === EVENT SHOPS ===
+  for (const [eventKey, eventShop] of Object.entries(eventShops)) {
+    if (eventShop.activeWhen()) {
+      const separator = document.createElement('div');
+      separator.style.marginTop = "15px";
+      separator.style.borderTop = "2px solid rgba(255,255,255,0.2)";
+      separator.style.paddingTop = "10px";
+      shopContainer.appendChild(separator);
+
+      const eventTitle = document.createElement('div');
+      eventTitle.className = 'legend-label';
+      eventTitle.textContent = eventShop.displayName;
+      eventTitle.style.color = "#FFD700";
+      shopContainer.appendChild(eventTitle);
+
+      for (const [category, items] of Object.entries(eventShop.items)) {
+        const row = document.createElement('div');
+        row.style.display = "flex";
+        row.style.gap = "10px";
+        row.style.marginTop = "8px";
+        row.innerHTML = `<strong style='min-width:70px;color:#FFD700'>${category}:</strong>`;
+
+        items.forEach((item) => {
+          const btn = document.createElement('button');
+          btn.innerText = `${item.icon} ${item.name}\n💰${shortLabel(item.price)}`;
+          btn.style.display = "flex";
+          btn.style.flexDirection = "column";
+          btn.style.alignItems = "center";
+          btn.style.justifyContent = "center";
+          btn.style.fontSize = "10px";
+          btn.style.padding = "4px 6px";
+          btn.style.background = "#4a3000";
+          btn.style.border = "1px solid #FFD700";
+
+          btn.onclick = () => buyEventItem(eventKey, category, item);
+
+          row.appendChild(btn);
+        });
+
+        shopContainer.appendChild(row);
+      }
+    }
   }
 }
 
@@ -1260,31 +1309,102 @@ function initPetTimers() {
 // Get cooldown for pet ability (in milliseconds)
 function getPetCooldown(ability) {
   const cooldowns = {
-    "purple_spawn": 5 * 60 * 1000,      // 5 min
-    "cube_grabber": 15 * 60 * 1000,     // 15 min
-    "day_trigger": 5 * 60 * 1000,       // 5 min
-    "ember_mutator": 30 * 60 * 1000,    // 30 min
-    "shooting_star": 15 * 60 * 1000,    // 15 min
-    "boss_spawn": 15 * 60 * 1000,       // 15 min
-    "glitch_mutator": 10 * 60 * 1000,   // 10 min
-    "ability_copy": 20 * 60 * 1000,     // 20 min
-    "egg_giver": 70 * 1000,             // 70 sec
-    "money_doubler": 5 * 60 * 1000,     // 5 min
-    "entity_spawner": 15 * 60 * 1000,   // 15 min
-    "glitch_event": 5 * 60 * 1000,      // 5 min
-    "weather_trigger": 10 * 60 * 1000,  // 10 min
-    "bone_giver": 10 * 60 * 1000,       // 10 min
-    "blackhole_event": 5 * 60 * 1000,   // 5 min
-    "cycle_changer": 3 * 60 * 1000,     // 3 min
-    "timer_reducer": 999 * 60 * 1000,   // One-time passive
-    "rain_event": 5 * 60 * 1000,        // 5 min
-    "earthquake_event": 10 * 60 * 1000, // 10 min
-    "random_event": 5 * 60 * 1000,      // 5 min
-    "galactic_event": 5 * 60 * 1000     // 5 min
+    "purple_spawn": 5 * 60 * 1000,
+    "cube_grabber": 15 * 60 * 1000,
+    "day_trigger": 5 * 60 * 1000,
+    "ember_mutator": 30 * 60 * 1000,
+    "shooting_star": 15 * 60 * 1000,
+    "boss_spawn": 15 * 60 * 1000,
+    "glitch_mutator": 10 * 60 * 1000,
+    "ability_copy": 20 * 60 * 1000,
+    "egg_giver": 70 * 1000,
+    "money_doubler": 5 * 60 * 1000,
+    "entity_spawner": 15 * 60 * 1000,
+    "glitch_event": 5 * 60 * 1000,
+    "weather_trigger": 10 * 60 * 1000,
+    "bone_giver": 10 * 60 * 1000,
+    "blackhole_event": 5 * 60 * 1000,
+    "cycle_changer": 3 * 60 * 1000,
+    "timer_reducer": 999 * 60 * 1000,
+    "rain_event": 5 * 60 * 1000,
+    "earthquake_event": 10 * 60 * 1000,
+    "random_event": 5 * 60 * 1000,
+    "galactic_event": 5 * 60 * 1000,
+    // NEW EVENT PET ABILITIES
+    "day_income_boost": 999 * 60 * 1000,    // Passive
+    "day_speed_boost": 999 * 60 * 1000,     // Passive
+    "ember_giver": 10 * 60 * 1000,          // 10 min
+    "night_income_boost": 999 * 60 * 1000,  // Passive
+    "night_speed_boost": 999 * 60 * 1000,   // Passive
+    "cooldown_reducer": 999 * 60 * 1000,    // Passive
+    "mutation_giver": 5 * 60 * 1000         // 5 min
   };
   
-  return cooldowns[ability] || 60000; // default 1 min
+  return cooldowns[ability] || 60000;
 }
+// === EVENT SHOP CONFIGURATION ===
+const eventShops = {
+  "day": {
+    displayName: "☀️ Sunny Shop",
+    activeWhen: () => dayNightCycle.current === "day",
+    items: {
+      Swords: [
+        { icon: "☀️🗡️", price: 1_000_000_000_000n, name: "Sunny Sword", limit: 1, special: 3, description: "3 damage" }
+      ],
+      Relics: [
+        { icon: "☀️📿", price: 50_000_000_000_000n, name: "Sunny Relic", limit: 1, special: 1.18, description: "1.18x money" }
+      ],
+      Eggs: [
+        { icon: "☀️🥚", price: 1_000_000_000_000_000n, name: "Sunny Egg", limit: 999, special: 1, description: "3 Sunny Pets" }
+      ],
+      Skins: [
+        { icon: "☀️💎", price: 100_000_000_000_000_000n, name: "Sunny Skin", limit: 1, special: 6, description: "#FFF917" }
+      ],
+      Potions: [
+        { icon: "☀️🧪", price: 10_000_000_000_000_000_000n, name: "Sunny Potion", limit: 999, special: 5.1, description: "5.1x income" }
+      ]
+    }
+  },
+  "night": {
+    displayName: "🌙 Night Shop",
+    activeWhen: () => dayNightCycle.current === "night",
+    items: {
+      Swords: [
+        { icon: "🌙🗡️", price: 1_000_000_000_000_000n, name: "Night Sword", limit: 1, special: 4, description: "4 damage" }
+      ],
+      Relics: [
+        { icon: "🌙📿", price: 10_000_000_000_000_000_000_000n, name: "Dark Relic", limit: 1, special: 1.6, description: "1.6x money" }
+      ],
+      Eggs: [
+        { icon: "🌙🥚", price: 1_000_000_000_000_000_000_000_000n, name: "Night Egg", limit: 999, special: 1, description: "4 Night Pets" }
+      ],
+      Skins: [
+        { icon: "🌙💎", price: 100_000_000_000_000_000_000_000_000_000_000n, name: "Night Skin", limit: 1, special: 7, description: "#312F36" }
+      ],
+      Potions: [
+        { icon: "🌙🧪", price: 100_000_000_000_000_000_000_000n, name: "Night Potion", limit: 999, special: 7, description: "7x income" }
+      ]
+    }
+  }
+};
+
+// Add new pets to database
+petDatabase["Sunny Egg"] = [
+  { name: "Sunny Yellow Cube", color: "#FFF917", icon: "☀️🟨", ability: "day_income_boost", value: 1.20, chance: 0.60, description: "+20% income during day" },
+  { name: "Red Orange Cube", color: "#FF6B35", icon: "🟧☀️", ability: "day_speed_boost", value: 1.30, chance: 0.39, description: "+30% speed during day" },
+  { name: "Sunny Red Cube", color: "#FF4500", icon: "🟥☀️", ability: "ember_giver", value: 1, chance: 0.01, description: "Gives Ember mutation (10min)" }
+];
+
+petDatabase["Night Egg"] = [
+  { name: "Onyx Cube", color: "#0a0a0a", icon: "⬛🌙", ability: "night_income_boost", value: 1.30, chance: 0.50, description: "+30% income during night" },
+  { name: "Crow Cube", color: "#1c1c1c", icon: "🐦‍⬛", ability: "night_speed_boost", value: 1.40, chance: 0.40, description: "+40% speed during night" },
+  { name: "Coal Cube", color: "#3d3d3d", icon: "🪨", ability: "cooldown_reducer", value: 0.10, chance: 0.099, description: "-10% cooldowns for pets" },
+  { name: "Obsidian Cube", color: "#000000", icon: "💎🌙", ability: "mutation_giver", value: 1, chance: 0.001, description: "Random mutations (5min)" }
+];
+
+// Add new skins
+skins[6] = { color: "#FFF917" }; // Sunny
+skins[7] = { color: "#312F36" }; // Night
 // Make pet functions globally accessible
 window.togglePetEquip = togglePetEquip;
 window.deletePet = deletePet;
@@ -1306,32 +1426,25 @@ const dropLimits = {
 
 
 
-function buyItem(category, index) {
-  const item = shopItems[category][index];
-
-  // --- Determine item limit by category ---
+// Buy items from event shops
+function buyEventItem(eventKey, category, item) {
   const limit = (category === "Eggs" || category === "Potions") ? 999n : 1n;
+  const inventoryKey = item.name;
+  const owned = BigInt(inventory[inventoryKey] || 0n);
 
-  // --- Check current amount owned ---
-  const owned = BigInt(inventory[item.name] || 0n);
-
-  // --- Check purchase limit ---
   if (owned >= limit) {
     alert(`You already own the maximum number of ${item.name}s!`);
     return;
   }
 
-  // --- Check money ---
   if (money < item.price) {
     alert(`Not enough money to buy ${item.name}!`);
     return;
   }
 
-  // --- Process purchase ---
   money -= item.price;
-  inventory[item.name] = owned + 1n;
+  inventory[inventoryKey] = owned + 1n;
 
-  // --- Update player inventory by category ---
   const existing = playerInventory[category].find(i => i.name === item.name);
   if (existing) {
     existing.count++;
@@ -1339,19 +1452,22 @@ function buyItem(category, index) {
     playerInventory[category].push({
       icon: item.icon,
       name: item.name,
-      count: 1
+      count: 1,
+      special: item.special
     });
   }
-  // --- EGGS: Open immediately and hatch a pet ---
+
+  // Eggs: Open immediately and hatch a pet
   if (category === "Eggs") {
     const pet = openEgg(item.name);
     if (pet) {
       alert(`🎉 Hatched ${pet.icon} ${pet.name}!\n${pet.description}`);
     }
   }
-  // --- Update all UI displays ---
+
   updateDisplays();
   updateInventoryDisplay();
+  updateShopDisplay();
 }
 
 
@@ -1400,11 +1516,8 @@ function checkHouseDeposit() {
   if (nowInside && !insideHouse) {
     insideHouse = true;
     document.getElementById("shopContainer").style.display = "block";
-    updateShopDisplay();
+    updateShopDisplay(); // This will now show event shops if active
 
-    //renderLegendUI(); // switch to shop
-
-    // Optional: perform deposit logic 4if desired
     if (character.assignedValue && money >= character.assignedValue) {
       money -= character.assignedValue;
       houseValue += character.assignedValue;
@@ -1414,17 +1527,12 @@ function checkHouseDeposit() {
       character.assignedValue = 0n;
       character.assignedName = null;
     }
-  } else   if (nowInside && !insideHouse) {
-    insideHouse = true;
-    renderLegendUI();
   } else if (!nowInside && insideHouse) {
     insideHouse = false;
     document.getElementById("shopContainer").style.display = "none";
     renderLegendUI();
   }
-
 }
-
 
 /**
  * Recomputes the total income per second based on the current legend counts and income rates.
@@ -1442,6 +1550,7 @@ function recomputeIncome() {
   // === PET BONUSES ===
   let petIncomeMultiplier = 1.0;
   let petSpeedMultiplier = 1.0;
+  let petCooldownReduction = 0;
   
   equippedPets.forEach(pet => {
     // Passive income pets
@@ -1454,9 +1563,34 @@ function recomputeIncome() {
       petIncomeMultiplier *= pet.abilityValue;
     }
     
+    // Day income boost (only during day)
+    if (pet.ability === "day_income_boost" && dayNightCycle.current === "day") {
+      petIncomeMultiplier *= pet.abilityValue;
+    }
+    
+    // Night income boost (only during night)
+    if (pet.ability === "night_income_boost" && dayNightCycle.current === "night") {
+      petIncomeMultiplier *= pet.abilityValue;
+    }
+    
     // Speed boost pet
     if (pet.ability === "speed_boost") {
       petSpeedMultiplier *= pet.abilityValue;
+    }
+    
+    // Day speed boost (only during day)
+    if (pet.ability === "day_speed_boost" && dayNightCycle.current === "day") {
+      petSpeedMultiplier *= pet.abilityValue;
+    }
+    
+    // Night speed boost (only during night)
+    if (pet.ability === "night_speed_boost" && dayNightCycle.current === "night") {
+      petSpeedMultiplier *= pet.abilityValue;
+    }
+    
+    // Cooldown reducer
+    if (pet.ability === "cooldown_reducer") {
+      petCooldownReduction += pet.abilityValue; // 10% reduction
     }
     
     // Apply mutation bonuses
@@ -2148,25 +2282,28 @@ window.addEventListener("keydown", e => {
   // Existing code
   if (key === "q") character.hasSword = !character.hasSword;
   if (key === "z" && character.hasSword && !character.slashing) {
-  character.slashing = true;
-  setTimeout(() => { character.slashing = false; }, character.slashDuration);
-}
+    character.slashing = true;
+    setTimeout(() => { character.slashing = false; }, character.slashDuration);
+  }
 
   if (e.key === "'") spawnBoss();
-
-  // Add these lines inside the existing keydown event listener
-if (e.key === "(") changeDayNightCycle("day", true);
-if (e.key === ")") changeDayNightCycle("night", true);
-if (e.key === "-") changeDayNightCycle("sunset", true);
-if (e.key === "+") changeDayNightCycle("sunrise", true);
-
+  
+  // Day/Night cycle controls
+  if (e.key === "(") changeDayNightCycle("day", true);
+  if (e.key === ")") changeDayNightCycle("night", true);
+  
+  // DEBUG: Money cheat (backtick key)
+  if (e.key === "`") {
+    money += 100_000_000_000_000_000_000_000_000_000_000n; // 100DC
+    updateDisplays();
+    console.log("💰 DEBUG: Added 100DC money!");
+  }
 
   // === ADMIN ABUSE EVENT TRIGGERS ===
   const adminEvent = adminAbuseEvents.find(evt => evt.key === e.key);
   if (adminEvent) {
     triggerAdminEvent(adminEvent);
   }
-
 });
 
 window.addEventListener("keyup", e => {
@@ -3056,16 +3193,22 @@ initializeGame();
 
 // Update pet positions and trigger abilities
 function updatePets(dt) {
-  const radius = 60; // distance from character
-  const rotationSpeed = 1; // rotation speed
+  const radius = 60;
+  const rotationSpeed = 1;
+  
+  // Calculate total cooldown reduction
+  let cooldownReduction = 0;
+  equippedPets.forEach(pet => {
+    if (pet.ability === "cooldown_reducer") {
+      cooldownReduction += pet.abilityValue;
+    }
+  });
   
   equippedPets.forEach((pet, index) => {
-    // Orbit around character
     pet.offsetAngle += rotationSpeed * dt;
-    pet.x = character.x + character.w/2 + Math.cos(pet.offsetAngle) * radius - 24;
-    pet.y = character.y + character.h/2 + Math.sin(pet.offsetAngle) * radius - 24;
+    pet.x = character.x + character.w/2 + Math.cos(pet.offsetAngle) * radius - 16;
+    pet.y = character.y + character.h/2 + Math.sin(pet.offsetAngle) * radius - 16;
     
-    // Check ability cooldowns
     if (!petTimers[pet.id]) {
       petTimers[pet.id] = { lastTrigger: Date.now(), cooldown: getPetCooldown(pet.ability) };
     }
@@ -3073,7 +3216,10 @@ function updatePets(dt) {
     const timer = petTimers[pet.id];
     const now = Date.now();
     
-    if (now - timer.lastTrigger >= timer.cooldown) {
+    // Apply cooldown reduction
+    const effectiveCooldown = timer.cooldown * (1 - cooldownReduction);
+    
+    if (now - timer.lastTrigger >= effectiveCooldown) {
       triggerPetAbility(pet);
       timer.lastTrigger = now;
     }
@@ -3269,6 +3415,27 @@ case "purple_spawn":
       const galacticEvent = adminAbuseEvents.find(e => e.name === "Galactic");
       if (galacticEvent) triggerAdminEvent(galacticEvent);
       console.log(`${pet.name} started Galactic event!`);
+      break;
+
+      case "ember_giver":
+      const targetPet = equippedPets[Math.floor(Math.random() * equippedPets.length)];
+      if (targetPet && !targetPet.mutation) {
+        targetPet.mutation = "Ember";
+        console.log(`${pet.name} gave ${targetPet.name} Ember mutation!`);
+        updateInventoryDisplay();
+      }
+      break;
+      
+    case "mutation_giver":
+      const mutationTypes = Object.keys(petMutations);
+      equippedPets.forEach(p => {
+        if (!p.mutation && Math.random() < 0.5) {
+          const randomMutation = mutationTypes[Math.floor(Math.random() * mutationTypes.length)];
+          p.mutation = randomMutation;
+          console.log(`${pet.name} gave ${p.name} ${randomMutation} mutation!`);
+        }
+      });
+      updateInventoryDisplay();
       break;
   }
 }
