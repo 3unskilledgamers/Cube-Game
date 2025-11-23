@@ -524,36 +524,49 @@ const skins = {
 
 
 window.equipItem = function equipItem(category, itemName) {
-  const item = shopItems[category].find(i => i.name === itemName);
-  if (!item) return;
+  // Find item in player inventory
+  const inventoryCategory = playerInventory[category];
+  if (!inventoryCategory) {
+    console.error("Category not found:", category);
+    return;
+  }
+  
+  const item = inventoryCategory.find(i => i.name === itemName);
+  if (!item) {
+    console.error("Item not found:", itemName);
+    return;
+  }
 
   // Assign special values to corresponding global variable
   switch (category) {
     case "Swords":
-      equippedSwordSpecial = item.special;
+      equippedSwordSpecial = item.special || 0;
       swordicon = item.icon;
       break;
     case "Relics":
-      equippedRelicSpecial = item.special;
+      equippedRelicSpecial = item.special || 1;
       break;
     case "Eggs":
-      equippedEggSpecial = item.special;
+      equippedEggSpecial = item.special || 0;
       break;
     case "Skins":
-      equippedSkinSpecial = item.special;
-       character.color = skins[equippedSkinSpecial].color;
+      equippedSkinSpecial = item.special || 1;
+      // Update character color based on skin
+      if (skins[equippedSkinSpecial]) {
+        character.color = skins[equippedSkinSpecial].color;
+      }
       break;
     case "Potions":
-      equippedPotionSpecial = item.special;
-      activatePotionEvent(item.special);  // ← NEW: Activates the potion
-
+      equippedPotionSpecial = item.special || 1;
+      activatePotionEvent(item.special);
       break;
   }
 
-  // Optionally store the name as well, if needed later
+  // Mark as equipped in inventory
   playerInventory[category].forEach(i => i.equipped = (i.name === itemName));
 
   console.log(`✅ Equipped ${item.name} (${category}) — special: ${item.special}`);
+  recomputeIncome(); // Recalculate with new equipment
   updateInventoryDisplay();
 }
 
@@ -881,7 +894,55 @@ function updateShopDisplay() {
   }
 }
 
+function buyItem(category, index) {
+  const item = shopItems[category][index];
+  if (!item) {
+    console.error("Item not found:", category, index);
+    return;
+  }
 
+  const limit = (category === "Eggs" || category === "Potions") ? 999n : 1n;
+  
+  // Fix: Use item.name as the key
+  const inventoryKey = item.name;
+  const owned = BigInt(inventory[inventoryKey] || 0n);
+
+  if (owned >= limit) {
+    alert(`You already own the maximum number of ${item.name}s!`);
+    return;
+  }
+
+  if (money < item.price) {
+    alert(`Not enough money to buy ${item.name}!`);
+    return;
+  }
+
+  money -= item.price;
+  inventory[inventoryKey] = owned + 1n;
+
+  const existing = playerInventory[category].find(i => i.name === item.name);
+  if (existing) {
+    existing.count++;
+  } else {
+    playerInventory[category].push({
+      icon: item.icon,
+      name: item.name,
+      count: 1,
+      special: item.special  // Make sure special is saved
+    });
+  }
+
+  // Eggs: Open immediately and hatch a pet
+  if (category === "Eggs") {
+    const pet = openEgg(item.name);
+    if (pet) {
+      alert(`🎉 Hatched ${pet.icon} ${pet.name}!\n${pet.description}`);
+    }
+  }
+
+  updateDisplays();
+  updateInventoryDisplay();
+}
 
 
 
