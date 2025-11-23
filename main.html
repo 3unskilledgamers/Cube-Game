@@ -29,6 +29,7 @@
   .controls{display:flex;flex-direction:column;gap:8px}
   button{background:#123;color:var(--text);padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);cursor:pointer;font-size:14px}
   button:active{transform:translateY(1px)}
+  button:disabled{opacity:0.5;cursor:not-allowed}
   .hint{font-size:12px;color:var(--muted)}
   .topline{display:flex;gap:10px;align-items:center;margin-bottom:10px}
   .small{font-size:12px;color:var(--muted)}
@@ -107,12 +108,18 @@
     <div class="bottom-row">
       <div class="legend" id="legendContainer"></div>
 
-      <div class="controls">
-        <button id="toggleBtn">Upgrade Cubes</button>
-        <button id="saveBtn">💾 Save</button>
-        <button id="loadBtn">📂 Load</button>
-        <div class="hint">Press the button to swap visible cube set</div>
-      </div>
+<div class="controls">
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button id="upgradeBtn" style="flex:1;">⬆️ Upgrade Cubes</button>
+    <div id="eventIndicator" style="font-size:24px;width:40px;text-align:center;flex-shrink:0;" title="No active event">—</div>
+  </div>
+  <button id="downgradeBtn">⬇️ Downgrade Cubes</button>
+  <button id="saveBtn">💾 Save</button>
+  <button id="loadBtn">📂 Load</button>
+  <button id="rebirthBtn">🔄 Rebirth</button>
+  <div class="hint" id="tierHint">Current Tier: 1</div>
+  <div class="hint" id="rebirthHint">Rebirths: 0 (1x)</div>
+</div>
 
       <!-- 🧭 Inventory / Drop Counter -->
     <div id="inventoryContainer" style="color:white;">
@@ -138,9 +145,6 @@ const canvas = document.getElementById('gameCanvas');
 const adminAbuseEvents = [
   {
     name: "Blackhole",
-    triggers: [
-      { date: new Date('2025-11-21T11:00:00-05:00') } // 11am CDT
-    ],
     key: "!",
     duration: 120000, // 2 minutes in ms
     incomeBoost: 1.30, // 30% boost
@@ -150,10 +154,6 @@ const adminAbuseEvents = [
   },
   {
     name: "Hurricane",
-    triggers: [
-      { date: new Date('2025-11-21T11:40:00-05:00') },
-      { date: new Date('2025-11-21T11:44:40-05:00') }
-    ],
     key: "@",
     duration: 60000, // 1 minute
     incomeBoost: 1.15,
@@ -163,10 +163,6 @@ const adminAbuseEvents = [
   },
   {
     name: "Disco",
-    triggers: [
-      { date: new Date('2025-11-21T11:41:15-05:00') },
-      { date: new Date('2025-11-21T11:46:00-05:00') }
-    ],
     key: "#",
     duration: 95000, // 1 min 35 sec
     incomeBoost: 1.25,
@@ -176,10 +172,6 @@ const adminAbuseEvents = [
   },
   {
     name: "Volcano",
-    triggers: [
-      { date: new Date('2025-11-21T11:43:05-05:00') },
-      { date: new Date('2025-11-21T11:49:00-05:00') }
-    ],
     key: "$",
     duration: 45000, // 45 seconds
     incomeBoost: 1.35,
@@ -189,9 +181,6 @@ const adminAbuseEvents = [
   },
   {
     name: "Earthquake",
-    triggers: [
-      { date: new Date('2025-11-21T11:44:10-05:00') }
-    ],
     key: "%",
     duration: 15000, // 15 seconds
     incomeBoost: 1.50,
@@ -201,9 +190,6 @@ const adminAbuseEvents = [
   },
   {
     name: "Glitched",
-    triggers: [
-      { date: new Date('2025-11-21T11:47:50-05:00') }
-    ],
     key: "^",
     duration: 60000, // 1 minute
     incomeBoost: 1.35,
@@ -213,9 +199,6 @@ const adminAbuseEvents = [
   },
   {
     name: "Galactic",
-    triggers: [
-      { date: new Date('2025-11-21T11:50:00-05:00') }
-    ],
     key: "&",
     duration: 180000, // 3 minutes
     incomeBoost: 1.20,
@@ -224,6 +207,87 @@ const adminAbuseEvents = [
     animation: "galactic"
   }
 ];
+// === REBIRTH SYSTEM CONFIGURATION ===
+const rebirthLevels = [
+  {
+    level: 1,
+    cost: 1_000_000_000n, // 1B
+    requiredCube: "Red",
+    requiredCount: 10,
+    incomeMultiplier: 0.5,
+    description: "Rebirth 1: +0.5x Income"
+  },
+  {
+    level: 2,
+    cost: 1_000_000_000_000n, // 1T
+    requiredCube: "Light Blue",
+    requiredCount: 10,
+    incomeMultiplier: 0.5,
+    description: "Rebirth 2: +0.5x Income"
+  },
+  {
+    level: 3,
+    cost: 1_000_000_000_000_000n, // 1QA
+    requiredCube: "Light Orange",
+    requiredCount: 10,
+    incomeMultiplier: 0.5,
+    description: "Rebirth 3: +0.5x Income"
+  },
+  {
+    level: 4,
+    cost: 1_000_000_000_000_000_000n, // 1QI
+    requiredCube: "Light Gray",
+    requiredCount: 10,
+    incomeMultiplier: 0.5,
+    description: "Rebirth 4: +0.5x Income"
+  },
+  {
+    level: 5,
+    cost: 1_000_000_000_000_000_000_000n, // 1SX
+    requiredCube: "Indigo",
+    requiredCount: 10,
+    incomeMultiplier: 0.5,
+    description: "Rebirth 5: +0.5x Income"
+  },
+  {
+    level: 6,
+    cost: 1_000_000_000_000_000_000_000_000n, // 1SP
+    requiredCube: "Dark Purple",
+    requiredCount: 10,
+    incomeMultiplier: 0.5,
+    description: "Rebirth 6: +0.5x Income"
+  },
+  {
+    level: 7,
+    cost: 1_000_000_000_000_000_000_000_000_000n, // 1OC
+    requiredCube: "Neon Green",
+    requiredCount: 10,
+    incomeMultiplier: 0.5,
+    description: "Rebirth 7: +0.5x Income"
+  },
+  {
+    level: 8,
+    cost: 100_000_000_000_000_000_000_000_000_000n, // 100OC (1NO)
+    requiredCube: "Bright Orange",
+    requiredCount: 10,
+    incomeMultiplier: 0.5,
+    description: "Rebirth 8: +0.5x Income"
+  },
+  {
+    level: 9,
+    cost: 100_000_000_000_000_000_000_000_000_000_000n, // 1DC
+    requiredCube: "Dark Brown",
+    requiredCount: 10,
+    incomeMultiplier: 0.5,
+    description: "Rebirth 9: +0.5x Income (MAX)"
+  }
+];
+
+let rebirthCount = 0;
+let rebirthMultiplier = 1.0;
+
+const rebirthBtn = document.getElementById('rebirthBtn');
+const rebirthHint = document.getElementById('rebirthHint');
 
 // Admin Abuse event state
 let currentAdminEvent = null;
@@ -245,9 +309,11 @@ const moneyDisplay = document.getElementById('moneyDisplay');
 const incomeDisplay = document.getElementById('incomeDisplay');
 const houseDisplay = document.getElementById('houseDisplay');
 const legendContainer = document.getElementById('legendContainer');
-const toggleBtn = document.getElementById('toggleBtn');
+const upgradeBtn = document.getElementById('upgradeBtn');
+const downgradeBtn = document.getElementById('downgradeBtn');
+const tierHint = document.getElementById('tierHint');
 
-let upgraded = false;
+let cubeTier = 0; // 0 = base, 1 = tier 2, 2 = tier 3
 
 let currentWeather = null;
 let weatherTimer = null;
@@ -357,7 +423,19 @@ const weatherEvents = [
     overlay: "rgba(255,255,150,0.25)"
   }
 ];
-
+// Event emoji mapping
+const eventEmojis = {
+  "Wind": "💨",
+  "Rain": "🌧️",
+  "Thunder": "⛈️",
+  "Blackhole": "⚫",
+  "Hurricane": "🌀",
+  "Disco": "🪩",
+  "Volcano": "🌋",
+  "Earthquake": "🫨",
+  "Glitched": "⚜️",
+  "Galactic": "🚀"
+};
 function nvl(value, defaultValue) {
 return value == null ? defaultValue : value;
 }
@@ -617,21 +695,25 @@ function formatBigInt(b) {
 function shortLabel(n) {
   const num = BigInt(n);
   const abs = num < 0n ? -num : num;
-  const units = [
-                 [1_000_000_000_000_000_000_000n, "SX"], 
-                 [1_000_000_000_000_000_000n, "QI"], 
-                 [1_000_000_000_000_000n, "QA"], 
-                 [1_000_000_000_000n, "T"], 
-                 [1_000_000_000n, "B"], 
-                 [1_000_000n, "M"], 
-                 [1_000n, "K"]
-                ];
+const units = [
+  [1_000_000_000_000_000_000_000_000_000_000_000n, "DC"], // decillion
+  [1_000_000_000_000_000_000_000_000_000_000n, "NO"], // nonillion
+  [1_000_000_000_000_000_000_000_000_000n, "OC"], // octillion
+  [1_000_000_000_000_000_000_000_000n, "SP"], // septillion
+  [1_000_000_000_000_000_000_000n, "SX"], // sextillion
+  [1_000_000_000_000_000_000n, "QI"], // quintillion
+  [1_000_000_000_000_000n, "QA"], // quadrillion
+  [1_000_000_000_000n, "T"], // trillion
+  [1_000_000_000n, "B"], // billion
+  [1_000_000n, "M"], // million
+  [1_000n, "K"] // thousand
+];
 
   for (let [v, l] of units) if (abs >= v) return (num < 0n ? "-" : "") + Number(abs / v) + l;
   return num.toString();
 }
 
-const baseCubes = [
+const tier1Cubes = [
   { name: "Green", color: "#3bbf6e", value: 100n },
   { name: "Blue", color: "#3b8ebf", value: 1000n },
   { name: "Black", color: "#222222", value: 10000n },
@@ -641,7 +723,7 @@ const baseCubes = [
   { name: "Red", color: "#c53030", value: 100000000n },
   { name: "White", color: "#e9ecef", value: 1000000000n },
 ];
-const upgradeCubes = [
+const tier2Cubes = [
   { name: "Light Green", color: "#9be6b8", value: 10000000000n },
   { name: "Light Blue", color: "#9bd3e6", value: 100000000000n },
   { name: "Dark Grey", color: "#6b6b6b", value: 1000000000000n },
@@ -651,14 +733,45 @@ const upgradeCubes = [
   { name: "Light Red", color: "#ffb8b8", value: 10000000000000000n },
   { name: "Light Gray", color: "#d0d0d0", value: 100000000000000000n },
 ];
-
+const tier3Cubes = [
+  { name: "Dark Green", color: "#0a5f38", value: 1000000000000000000n }, // 1QI
+  { name: "Dark Blue", color: "#1a4d7a", value: 10000000000000000000n }, // 10QI
+  { name: "Indigo", color: "#4b0082", value: 100000000000000000000n }, // 100QI
+  { name: "Dark Yellow", color: "#9b870c", value: 1000000000000000000000n }, // 1SX
+  { name: "Dark Orange", color: "#cc5500", value: 10000000000000000000000n }, // 10SX
+  { name: "Dark Purple", color: "#5a1d5a", value: 100000000000000000000000n }, // 100SX
+  { name: "Dark Red", color: "#8b0000", value: 1000000000000000000000000n }, // 1SP ✅
+  { name: "Neon Green", color: "#39ff14", value: 10000000000000000000000000n }, // 10SP ✅
+];
+const tier4Cubes = [
+  { name: "Leafy Green", color: "#7cb342", value: 100000000000000000000000000n }, // 100SP ✅
+  { name: "Aquamarine", color: "#7fffd4", value: 1000000000000000000000000000n }, // 1OC ✅
+  { name: "Noir", color: "#0a0a0a", value: 10000000000000000000000000000n }, // 10OC ✅
+  { name: "Bright Orange", color: "#ff9500", value: 100000000000000000000000000000n }, // 100OC ✅
+  { name: "Sunny Orange", color: "#ffcc33", value: 1000000000000000000000000000000n }, // 1NO ✅
+  { name: "Pink", color: "#ff69b4", value: 10000000000000000000000000000000n }, // 10NO ✅
+  { name: "Dark Brown", color: "#5c4033", value: 100000000000000000000000000000000n }, // 1DC ✅
+  { name: "Neon Blue", color: "#1b03a3", value: 1000000000000000000000000000000000n }, // 10DC ✅
+];
 
 const incomeRates = {
-  "Green": 2n, "Blue": 20n, "Black": 200n, "Yellow": 2000n, "Orange": 20000n, "Purple": 200000n,
-  "Red": 2000000n, "White": 20000000n,
+  // Tier 1
+  "Green": 2n, "Blue": 20n, "Black": 200n, "Yellow": 2000n, 
+  "Orange": 20000n, "Purple": 200000n, "Red": 2000000n, "White": 20000000n,
+  // Tier 2
   "Light Green": 200000000n, "Light Blue": 2000000000n, "Dark Grey": 20000000000n,
   "Light Yellow": 200000000000n, "Light Orange": 2000000000000n, "Light Purple": 20000000000000n,
   "Light Red": 200000000000000n, "Light Gray": 2000000000000000n,
+  // Tier 3
+  "Dark Green": 20000000000000000n, "Dark Blue": 200000000000000000n, "Indigo": 2000000000000000000n,
+  "Dark Yellow": 20000000000000000000n, "Dark Orange": 200000000000000000000n, 
+  "Dark Purple": 2000000000000000000000n, "Dark Red": 20000000000000000000000n,
+  "Neon Green": 200000000000000000000000n,
+  // Tier 4
+  "Leafy Green": 2000000000000000000000000n, "Aquamarine": 20000000000000000000000000n,
+  "Noir": 200000000000000000000000000n, "Bright Orange": 2000000000000000000000000000n,
+  "Sunny Orange": 20000000000000000000000000000n, "Pink": 200000000000000000000000000000n,
+  "Dark Brown": 2000000000000000000000000000000n, "Neon Blue": 20000000000000000000000000000000n,
 };
 
 function computeCubePositions() {
@@ -671,7 +784,12 @@ function computeCubePositions() {
   return arr;
 }
 const cubePositions = computeCubePositions();
-function currentCubes() { return upgraded ? upgradeCubes : baseCubes; }
+function currentCubes() {
+  if (cubeTier === 0) return tier1Cubes;
+  if (cubeTier === 1) return tier2Cubes;
+  if (cubeTier === 2) return tier3Cubes;
+  return tier4Cubes;
+}
 function buildCubes() { return currentCubes().map((c, i) => ({ ...c, pos: cubePositions[i], visible: true })); }
 
 let cubes = buildCubes();
@@ -724,7 +842,7 @@ let bossSpawnInterval = 10 * 60 * 1000; // 10 minutes in ms
 let nextBossSpawn = Date.now() + bossSpawnInterval;
 
 const legendCounts = {};
-[...baseCubes, ...upgradeCubes].forEach(c => legendCounts[c.name] = 0n);
+[...tier1Cubes, ...tier2Cubes, ...tier3Cubes, ...tier4Cubes].forEach(c => legendCounts[c.name] = 0n);
 let insideHouse = false;
 
 // === 🛒 SHOP CONFIGURATION ===
@@ -754,7 +872,7 @@ const shopItems = {
     { icon: "🟥", price: 1_000_000_000n, name: "Red Skin", limit: 1, special: 1 },
     { icon: "🟦", price: 1_000_000_000_000n, name: "Blue Skin", limit: 1, special: 2 },
     { icon: "🟪", price: 1_000_000_000_000_000n, name: "Purple Skin", limit: 1, special: 3 },
-    { icon: "🟨", price: 10_000_000_000_000_000n, name: "Gold Skin", limit: 1, special: 4 },
+    { icon: "🟨", price: 10_000_000_000_000_000_000n, name: "Gold Skin", limit: 1, special: 4 },
     { icon: "⬜", price: 1_000_000_000_000_000_000_000n, name: "Diamond Skin", limit: 1, special: 5 },
   ],
   Potions: [
@@ -906,38 +1024,28 @@ function checkHouseDeposit() {
  * @returns {undefined}
  */
 function recomputeIncome() {
-  // Initialize total income per second to 0
   incomePerSec = 0n;
 
-  // Iterate through all legend counts
   for (let n in legendCounts) {
-    // Add the product of the count and income rate to the total income
     incomePerSec += legendCounts[n] * (incomeRates[n] || 0n);
   }
   console.log("Income/Sec-0 " + incomePerSec);
 
-  // Apply the current weather multiplier to the total income
-  //const adjustedIncome = BigInt(Math.floor( (Number(incomePerSec) * weatherMultiplier)*equippedRelicSpecial) );
-  //const totalMultiplier = weatherMultiplier * equippedRelicSpecial * (potionActive ? potionMultiplier : 1);
   const adminMultiplier = currentAdminEvent ? currentAdminEvent.incomeBoost : 1;
-  const totalMultiplier = weatherMultiplier * equippedRelicSpecial * (potionActive ? potionMultiplier : 1) * adminMultiplier;
+  const totalMultiplier = weatherMultiplier * equippedRelicSpecial * (potionActive ? potionMultiplier : 1) * adminMultiplier * rebirthMultiplier;
 
   console.log("totalMultiplier " + totalMultiplier);
-  console.log("adminMultiplier " + adminMultiplier);
+  console.log("rebirthMultiplier " + rebirthMultiplier);
 
   const adjustedIncome = BigInt(Math.floor(Number(incomePerSec) * totalMultiplier));
   
   incomePerSec = adjustedIncome;
   
-  // Short version for display
   const shortText = formatBigInt(adjustedIncome);
-
-  // Full version with commas for tooltip
   const fullText = formatBigInt2(adjustedIncome);
 
-  // Update the income display with the new total income per second
   incomeDisplay.textContent = "Income/sec: " + shortText;
-  incomeDisplay.title = fullText; // ← hover tooltip
+  incomeDisplay.title = fullText;
   console.log("Income/Sec-1 " + shortText);
 
   if (potionActive) {
@@ -957,7 +1065,7 @@ function recomputeIncome() {
  * @returns {undefined}
  */
 function triggerWeatherEvent() {
-  if (currentWeather) return; // prevent overlap
+  if (currentWeather) return;
   const w = weatherEvents[Math.floor(Math.random() * weatherEvents.length)];
   currentWeather = w.name;
   weatherMultiplier = w.incomeBoost;
@@ -966,11 +1074,9 @@ function triggerWeatherEvent() {
   weatherOverlayAlpha = 0.3;
   console.log(`🌦 Weather started: ${w.name}`);
 
-  // End after duration
   weatherTimer = setTimeout(endWeatherEvent, w.duration);
-
   startWeatherAnimation(currentWeather);
-
+  updateEventIndicator(); // ← ADD THIS
 }
 
 /**
@@ -988,22 +1094,57 @@ function endWeatherEvent() {
   weatherOverlayAlpha = 0;
 
   stopWeatherAnimation();
+  updateEventIndicator(); // ← ADD THIS
+}
 
+
+function updateEventIndicator() {
+  const indicator = document.getElementById('eventIndicator');
+  if (!indicator) return;
+  
+  // Check for admin event first (higher priority)
+  if (currentAdminEvent) {
+    const emoji = eventEmojis[currentAdminEvent.name] || "🎮";
+    indicator.textContent = emoji;
+    indicator.title = `Active: ${currentAdminEvent.name} (+${(currentAdminEvent.incomeBoost - 1) * 100}% income)`;
+    return;
+  }
+  
+  // Check for weather event
+  if (currentWeather) {
+    const emoji = eventEmojis[currentWeather] || "🌤️";
+    indicator.textContent = emoji;
+    indicator.title = `Active: ${currentWeather} (+${(weatherMultiplier - 1) * 100}% income)`;
+    return;
+  }
+  
+  // No active events
+  indicator.textContent = "—";
+  indicator.title = "No active event";
 }
 
 
 
-
-
-
 function activatePotionEvent(multiplier) {
-
-  
   potionActive = true;
   potionMultiplier = multiplier;
   potionEndTime = Date.now() + 60000; // 1 minute from now
   
   console.log(`🧪 Potion activated! ${multiplier}x income for 60 seconds`);
+  
+  // Find and consume the equipped potion
+  const equippedPotion = playerInventory.Potions.find(i => i.equipped);
+  if (equippedPotion && equippedPotion.count > 0) {
+    equippedPotion.count--;
+    
+    // If count reaches 0, remove the potion from inventory
+    if (equippedPotion.count === 0) {
+      const index = playerInventory.Potions.indexOf(equippedPotion);
+      if (index > -1) {
+        playerInventory.Potions.splice(index, 1);
+      }
+    }
+  }
   
   // Recalculate income with new multiplier
   recomputeIncome();
@@ -1025,7 +1166,11 @@ function activatePotionEvent(multiplier) {
     // Update the UI to show "Equip" button again
     updateInventoryDisplay();
   }, 60000);
+  
+  // Update inventory display immediately to show reduced count
+  updateInventoryDisplay();
 }
+
 
 /**
  * Starts a weather animation based on the given type.
@@ -1131,6 +1276,7 @@ function triggerAdminEvent(event) {
   
   recomputeIncome();
   startAdminAnimation(event.animation);
+  updateEventIndicator(); // ← ADD THIS
   
   adminEventTimer = setTimeout(() => endAdminEvent(), event.duration);
 }
@@ -1147,6 +1293,7 @@ function endAdminEvent() {
   
   recomputeIncome();
   stopAdminAnimation();
+  updateEventIndicator(); // ← ADD THIS
 }
 
 function startAdminAnimation(type) {
@@ -1576,8 +1723,146 @@ canvas.addEventListener("mousedown", e => {
   const r = canvas.getBoundingClientRect();
   character.target = { x: e.clientX - r.left - character.w / 2, y: e.clientY - r.top - character.h / 2 };
 });
-toggleBtn.addEventListener("click", () => { upgraded = !upgraded; toggleBtn.textContent = upgraded ? "Downgrade Cubes" : "Upgrade Cubes"; cubes = buildCubes(); renderLegendUI(); updateDisplays(); });
+// === TIER SYSTEM BUTTONS ===
+function updateTierButtons() {
+  upgradeBtn.disabled = (cubeTier >= 3);
+  downgradeBtn.disabled = (cubeTier <= 0);
+  tierHint.textContent = `Current Tier: ${cubeTier + 1}`;
+}
+function performRebirth() {
+  if (rebirthCount >= rebirthLevels.length) {
+    alert("🎉 You've reached the maximum rebirth level!");
+    return;
+  }
 
+  const nextRebirth = rebirthLevels[rebirthCount];
+  
+  // Check if player has enough money
+  if (money < nextRebirth.cost) {
+    alert(`❌ Not enough money! Need ${formatBigInt(nextRebirth.cost)}`);
+    return;
+  }
+
+  // Debug: Show all cube counts
+  console.log("=== REBIRTH DEBUG ===");
+  console.log("Looking for cube:", nextRebirth.requiredCube);
+  console.log("All legend counts:", legendCounts);
+  
+  // Check if player has enough cubes
+  const cubeCount = legendCounts[nextRebirth.requiredCube] || 0n;
+  // Debug: Show what we're looking for
+console.log("Required Cube Name:", nextRebirth.requiredCube);
+console.log("Legend Counts Keys:", Object.keys(legendCounts));
+console.log("Cube Count Found:", legendCounts[nextRebirth.requiredCube]);
+  console.log("Found count:", cubeCount);
+  
+  if (cubeCount < BigInt(nextRebirth.requiredCount)) {
+    // Show all available cubes for debugging
+    let availableCubes = "";
+    for (let key in legendCounts) {
+      if (legendCounts[key] > 0n) {
+        availableCubes += `\n${key}: ${legendCounts[key]}`;
+      }
+    }
+    
+    alert(`❌ Need ${nextRebirth.requiredCount} ${nextRebirth.requiredCube} cubes!\nYou have: ${cubeCount}\n\nYour cubes:${availableCubes}`);
+    return;
+  }
+
+  // Confirm rebirth
+  const confirmMsg = `🔄 REBIRTH ${nextRebirth.level}
+  
+Cost: ${formatBigInt(nextRebirth.cost)}
+Required: ${nextRebirth.requiredCount}x ${nextRebirth.requiredCube}
+Reward: +0.5x Income Multiplier
+
+⚠️ This will reset:
+- Money → 1K
+- Income/sec → 0
+- House Value → 0
+- All Legend Counts → 0
+
+Continue?`;
+
+  if (!confirm(confirmMsg)) {
+    return;
+  }
+
+  // Perform rebirth
+  rebirthCount++;
+  rebirthMultiplier += nextRebirth.incomeMultiplier;
+  
+  // Reset everything
+  money = 1000n;
+  incomePerSec = 0n;
+  houseValue = 0n;
+  
+  // Reset all legend counts
+  for (let key in legendCounts) {
+    legendCounts[key] = 0n;
+  }
+  
+  // Reset character
+  character.assignedValue = 0n;
+  character.assignedName = null;
+  
+  // Recalculate income
+  recomputeIncome();
+  updateDisplays();
+  updateRebirthUI();
+  
+  // Auto-save
+  saveBtn.click();
+  
+  alert(`✅ Rebirth ${rebirthCount} Complete!\nIncome Multiplier: ${rebirthMultiplier}x`);
+}
+
+function updateRebirthUI() {
+  rebirthHint.textContent = `Rebirths: ${rebirthCount} (${rebirthMultiplier}x)`;
+  
+  if (rebirthCount >= rebirthLevels.length) {
+    rebirthBtn.textContent = "🔄 Rebirth (MAX)";
+    rebirthBtn.disabled = true;
+  } else {
+    const nextRebirth = rebirthLevels[rebirthCount];
+    rebirthBtn.textContent = `🔄 Rebirth ${nextRebirth.level}`;
+    rebirthBtn.disabled = false;
+  }
+}
+function initializeGame() {
+  cubes = buildCubes();
+  renderLegendUI();
+  updateInventoryDisplay();
+  updateDisplays();
+  updateTierButtons();
+  updateRebirthUI();
+  updateEventIndicator(); // ← ADD THIS
+  
+  setTimeout(spawnBoss, 600000);
+  specials.forEach(s => setTimeout(() => spawnSpecial(s), randomSpawnInterval(s.respawn)));
+}
+upgradeBtn.addEventListener("click", () => {
+  if (cubeTier < 3) {
+    cubeTier++;
+    cubes = buildCubes();
+    renderLegendUI();
+    updateDisplays();
+    updateTierButtons();
+  }
+});
+
+downgradeBtn.addEventListener("click", () => {
+  if (cubeTier > 0) {
+    cubeTier--;
+    cubes = buildCubes();
+    renderLegendUI();
+    updateDisplays();
+    updateTierButtons();
+  }
+});
+rebirthBtn.addEventListener("click", () => {
+  performRebirth();
+});
 // --- SAVE & LOAD PROGRESS ---
 const saveBtn = document.getElementById("saveBtn");
 const loadBtn = document.getElementById("loadBtn");
@@ -1592,23 +1877,23 @@ saveBtn.addEventListener("click", () => {
     ),
     dropCounters,
     playerInventory,
-    upgraded,
-    bossDrops // 🧠 added here
+    cubeTier,
+    bossDrops,
+    rebirthCount,
+    rebirthMultiplier
   };
 
   data.equipped = {
-      swords: equippedSwordSpecial,
-      relics: equippedRelicSpecial,
-      eggs: equippedEggSpecial,
-      skins: equippedSkinSpecial,
-      potions: equippedPotionSpecial
-    };
-  localStorage.setItem("cubeGameSave", JSON.stringify(data));
+    swords: equippedSwordSpecial,
+    relics: equippedRelicSpecial,
+    eggs: equippedEggSpecial,
+    skins: equippedSkinSpecial,
+    potions: equippedPotionSpecial
+  };
   
-
+  localStorage.setItem("cubeGameSave", JSON.stringify(data));
   alert("✅ Progress Saved!");
 });
-
 
 
 loadBtn.addEventListener("click", () => {
@@ -1625,9 +1910,12 @@ loadBtn.addEventListener("click", () => {
     incomePerSec = BigInt(data.incomePerSec);
     houseValue = BigInt(data.houseValue);
     for (let k in data.legendCounts) legendCounts[k] = BigInt(data.legendCounts[k]);
-    upgraded = data.upgraded;
+    cubeTier = data.cubeTier || 0;
+    
+    // Restore rebirth data
+    rebirthCount = data.rebirthCount || 0;
+    rebirthMultiplier = data.rebirthMultiplier || 1.0;
 
-    // 🧺 Restore drop counters and player inventory
     if (data.dropCounters) Object.assign(dropCounters, data.dropCounters);
     if (data.playerInventory) {
       for (let cat in data.playerInventory) {
@@ -1635,23 +1923,22 @@ loadBtn.addEventListener("click", () => {
       }
     }
 
-
     if (data.equipped) {
       equippedSwordSpecial = data.equipped.swords || 0;
-      equippedRelicSpecial = data.equipped.relics || 0;
+      equippedRelicSpecial = data.equipped.relics || 1;
       equippedEggSpecial = data.equipped.eggs || 0;
-      equippedSkinSpecial = data.equipped.skins || 0;
-      equippedPotionSpecial = data.equipped.potions || 0;
+      equippedSkinSpecial = data.equipped.skins || 1;
+      equippedPotionSpecial = data.equipped.potions || 1;
     }
 
     if (data.bossDrops) bossDrops = data.bossDrops;
 
-    toggleBtn.textContent = upgraded ? "Downgrade Cubes" : "Upgrade Cubes";
     cubes = buildCubes();
     renderLegendUI();
     updateDisplays();
-    updateInventoryDisplay(); // refresh inventory UI
-
+    updateInventoryDisplay();
+    updateTierButtons();
+    updateRebirthUI();
 
     alert("✅ Progress Loaded!");
   } catch (err) {
@@ -2014,18 +2301,32 @@ if (!boss.visible) {
 
 
 
-  cubes.forEach(c => {
-    const p = c.pos;
-    ctx.fillStyle = c.color;
-    ctx.fillRect(p.x, p.y, p.w, p.h);
-    ctx.strokeStyle = 'rgba(0,0,0,0.6)';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(p.x + 0.5, p.y + 0.5, p.w - 1, p.h - 1);
-    ctx.fillStyle = (c.color === '#e9ecef' || c.color === '#fff1a8' || c.color === '#ffc89b') ? '#111' : '#fff';
-    ctx.font = 'bold 14px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(shortLabel(c.value), p.x + p.w / 2, p.y + p.h / 2);
+cubes.forEach(c => {
+  const p = c.pos;
+  ctx.fillStyle = c.color;
+  ctx.fillRect(p.x, p.y, p.w, p.h);
+  ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(p.x + 0.5, p.y + 0.5, p.w - 1, p.h - 1);
+  ctx.fillStyle = (c.color === '#e9ecef' || c.color === '#fff1a8' || c.color === '#ffc89b' || c.color === '#7fffd4' || c.color === '#ffcc33') ? '#111' : '#fff';
+  ctx.font = 'bold 14px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  
+  // Custom labels for tier 3 and 4 cubes
+  let displayLabel = shortLabel(c.value);
+  if (c.name === "Dark Red") displayLabel = "1SP";
+  else if (c.name === "Neon Green") displayLabel = "10SP";
+  else if (c.name === "Leafy Green") displayLabel = "100SP";
+  else if (c.name === "Aquamarine") displayLabel = "1OC";
+  else if (c.name === "Noir") displayLabel = "10OC";
+  else if (c.name === "Bright Orange") displayLabel = "100OC";
+  else if (c.name === "Sunny Orange") displayLabel = "1NO";
+  else if (c.name === "Pink") displayLabel = "10NO";
+  else if (c.name === "Dark Brown") displayLabel = "100NO";
+  else if (c.name === "Neon Blue") displayLabel = "1DC";
+  
+  ctx.fillText(displayLabel, p.x + p.w / 2, p.y + p.h / 2);
 
 
   if (character.hasSword) {
@@ -2176,7 +2477,7 @@ function initializeGame() {
   renderLegendUI();
   updateInventoryDisplay();
   updateDisplays();
-
+  updateTierButtons();
   // Schedule boss spawn
   setTimeout(spawnBoss, 600000);
 
