@@ -371,7 +371,6 @@ function checkDayNightCycle() {
 
 // Check cycle every second
 setInterval(checkDayNightCycle, 1000);
-// === REBIRTH SYSTEM CONFIGURATION ===
 const rebirthLevels = [
   {
     level: 1,
@@ -387,7 +386,8 @@ const rebirthLevels = [
     requiredCube: "Light Blue",
     requiredCount: 10,
     incomeMultiplier: 0.5,
-    description: "Rebirth 2: +0.5x Income"
+    petSlotReward: 1,
+    description: "Rebirth 2: +0.5x Income, +1 Pet Slot"
   },
   {
     level: 3,
@@ -403,7 +403,8 @@ const rebirthLevels = [
     requiredCube: "Light Gray",
     requiredCount: 10,
     incomeMultiplier: 0.5,
-    description: "Rebirth 4: +0.5x Income"
+    petSlotReward: 1,
+    description: "Rebirth 4: +0.5x Income, +1 Pet Slot"
   },
   {
     level: 5,
@@ -427,7 +428,8 @@ const rebirthLevels = [
     requiredCube: "Neon Green",
     requiredCount: 10,
     incomeMultiplier: 0.5,
-    description: "Rebirth 7: +0.5x Income"
+    petSlotReward: 1,
+    description: "Rebirth 7: +0.5x Income, +1 Pet Slot"
   },
   {
     level: 8,
@@ -443,12 +445,15 @@ const rebirthLevels = [
     requiredCube: "Dark Brown",
     requiredCount: 10,
     incomeMultiplier: 0.5,
-    description: "Rebirth 9: +0.5x Income (MAX)"
+    petSlotReward: 2,
+    goldenSwordReward: true,
+    description: "Rebirth 9: +0.5x Income, +2 Pet Slots, Golden Sword (MAX)"
   }
 ];
 
 let rebirthCount = 0;
 let rebirthMultiplier = 1.0;
+let maxPetSlots = 3; // NEW: Track max pet slots
 
 const rebirthBtn = document.getElementById('rebirthBtn');
 const rebirthHint = document.getElementById('rebirthHint');
@@ -568,6 +573,7 @@ window.equipItem = function equipItem(category, itemName) {
   console.log(`✅ Equipped ${item.name} (${category}) — special: ${item.special}`);
   recomputeIncome(); // Recalculate with new equipment
   updateInventoryDisplay();
+  html += `<span style="color:#aaa;">Equipped: ${equippedPets.length}/${maxPetSlots}</span>`;
 }
 
 // Draw pets following the character
@@ -689,53 +695,124 @@ let html = `
 
     html += `<u>${cat}</u><br>`;
 
-    playerInventory[cat].forEach(item => {
-      const limit = (cat === "Eggs" || cat === "Potions") ? 999 : 1;
-      const isEquipped = !!item.equipped;
+playerInventory[cat].forEach(item => {
+  const limit = (cat === "Eggs" || cat === "Potions") ? 999 : 1;
+  const isEquipped = !!item.equipped;
 
-      // Get the correct special value for this category
-      let equippedSpecial = 0;
-      switch (cat) {
-        case "Swords":   equippedSpecial = equippedSwordSpecial; break;
-        case "Relics":   equippedSpecial = equippedRelicSpecial; break;
-        case "Eggs":     equippedSpecial = equippedEggSpecial; break;
-        case "Skins":    equippedSpecial = equippedSkinSpecial; break;
-        case "Potions":  equippedSpecial = equippedPotionSpecial; break;
-      }
+  // Get the correct special value for this category
+  let equippedSpecial = 0;
+  switch (cat) {
+    case "Swords":   equippedSpecial = equippedSwordSpecial; break;
+    case "Relics":   equippedSpecial = equippedRelicSpecial; break;
+    case "Eggs":     equippedSpecial = equippedEggSpecial; break;
+    case "Skins":    equippedSpecial = equippedSkinSpecial; break;
+    case "Potions":  equippedSpecial = equippedPotionSpecial; break;
+  }
 
-      // Build the button label safely
-      const btnLabel = isEquipped ? `Equipped (⭐${equippedSpecial})` : 'Equip';
+  // Use item.special if it exists, otherwise show equipped value
+  const displaySpecial = item.special || equippedSpecial;
 
-      // Append to HTML string (all quotes/backticks properly closed)
+  // Build the button label
+  const btnLabel = isEquipped ? `Equipped (⭐${displaySpecial})` : 'Equip';
+
+  // Append to HTML string
+  html += `${item.icon} ${item.name}: ${item.count}/${limit}`;
+  
+  // Add Equip button for non-eggs
+  if (cat !== "Eggs") {
+    html += `
+      <button
+        onclick="equipItem('${cat}', '${item.name}')"
+        style="
+          margin-left:5px; 
+          padding:2px 6px; 
+          border-radius:5px; 
+          background:${isEquipped ? '#28a745' : '#333'}; 
+          color:white; 
+          border:none; 
+          cursor:pointer;
+        ">
+        ${btnLabel}
+      </button>`;
+  }
+  
+  // Add Open buttons for eggs
+  if (cat === "Eggs" && item.count > 0) {
+    html += `
+      <button
+        onclick="openEggFromInventory('${item.name}', 1)"
+        style="
+          margin-left:5px; 
+          padding:2px 6px; 
+          border-radius:5px; 
+          background:#FFA500; 
+          color:white; 
+          border:none; 
+          cursor:pointer;
+        ">
+        Open 1
+      </button>`;
+    
+    if (item.count >= 10) {
       html += `
-        ${item.icon} ${item.name}: ${item.count}/${limit}
         <button
-          onclick="equipItem('${cat}', '${item.name}')"
+          onclick="openEggFromInventory('${item.name}', 10)"
           style="
             margin-left:5px; 
             padding:2px 6px; 
             border-radius:5px; 
-            background:${isEquipped ? '#28a745' : '#333'}; 
+            background:#FF8C00; 
             color:white; 
             border:none; 
             cursor:pointer;
           ">
-          ${btnLabel}
-        </button><br>
-      `;
-    });
+          Open 10
+        </button>`;
+    }
+  }
+  
+  html += `<br>`;
+});
 
 
 
     html += `<br>`;
   });
-// --- Pet Inventory ---
+// --- Pet Inventory (ONLY ONE SECTION) ---
 html += '<div style="margin-top:15px;"><u>🐾 Pets</u><br>';
 
 if (playerPets.length === 0) {
   html += '<span style="color:#888;">No pets yet. Buy eggs to hatch pets!</span><br>';
 } else {
-  html += `<span style="color:#aaa;">Equipped: ${equippedPets.length}/3</span><br>`;
+  html += `<span style="color:#aaa;">Equipped: ${equippedPets.length}/${maxPetSlots}</span>`;
+  
+  // Add bulk delete button
+  html += `<button onclick="bulkDeletePets()" style="margin-left:10px;padding:2px 8px;border-radius:5px;background:#dc3545;color:white;border:none;cursor:pointer;">🗑️ Delete All Unequipped</button><br>`;
+  
+// Add search bar with tips
+html += `
+  <div style="margin-top:8px;margin-bottom:8px;">
+    <input 
+      type="text" 
+      id="petSearchInput" 
+      placeholder="🔍 Search pets..." 
+      style="padding:4px 8px;border-radius:5px;border:1px solid #555;background:#222;color:white;width:200px;"
+      oninput="filterPets(this.value)"
+    />
+    <button 
+      onclick="clearPetSearch()" 
+      style="margin-left:5px;padding:4px 8px;border-radius:5px;background:#555;color:white;border:none;cursor:pointer;">
+      Clear
+    </button>
+    <br>
+    <span style="font-size:10px;color:#888;margin-left:2px;">
+      💡 Tips: Search by name, ability, mutation, or try: "equipped", "unequipped", "mutated"
+    </span>
+  </div>
+`;
+  
+  // Pet list container
+  html += '<div id="petListContainer">';
   
   playerPets.forEach(pet => {
     const mutationText = pet.mutation ? ` [${petMutations[pet.mutation].emoji} ${pet.mutation}]` : '';
@@ -745,9 +822,13 @@ if (playerPets.length === 0) {
     
     const deleteBtn = '<button onclick="deletePet(' + pet.id + ')" style="margin-left:5px;padding:2px 6px;border-radius:5px;background:#dc3545;color:white;border:none;cursor:pointer;">🗑️</button>';
     
+    html += `<div class="pet-item" data-pet-name="${pet.name.toLowerCase()}" data-pet-ability="${pet.ability.toLowerCase()}" data-pet-mutation="${(pet.mutation || '').toLowerCase()}">`;
     html += `${pet.icon} ${pet.name}${mutationText} ${equippedBtn} ${deleteBtn}<br>`;
     html += `<span style="font-size:11px;color:#888;margin-left:20px;">${pet.description}</span><br>`;
+    html += `</div>`;
   });
+  
+  html += '</div>'; // Close petListContainer
 }
 
 html += '</div>';
@@ -809,7 +890,80 @@ function addToInventory(itemName) {
     updateInventoryDisplay();
   }
 }
+// ADD THIS ENTIRE FUNCTION HERE (before updateShopDisplay)
+function buyItem(category, index, skipOdds = false) {
+  const item = shopItems[category][index];
+  if (!item) {
+    console.error("Item not found:", category, index);
+    return;
+  }
 
+  const limit = (category === "Eggs" || category === "Potions") ? 999n : 1n;
+  
+  const inventoryKey = item.name;
+  const owned = BigInt(inventory[inventoryKey] || 0n);
+
+  if (owned >= limit) {
+    alert(`You already own the maximum number of ${item.name}s!`);
+    return;
+  }
+
+  if (money < item.price) {
+    alert(`Not enough money to buy ${item.name}!`);
+    return;
+  }
+
+  // === EGGS: Show odds before purchase (unless shift is held) ===
+  if (category === "Eggs" && !skipOdds) {
+    const oddsInfo = showEggOdds(item.name);
+    const confirmPurchase = confirm(`${oddsInfo}\nPurchase ${item.name} for ${formatBigInt(item.price)}?`);
+    
+    if (!confirmPurchase) {
+      return; // User cancelled
+    }
+  }
+
+  money -= item.price;
+  inventory[inventoryKey] = owned + 1n;
+
+  const existing = playerInventory[category].find(i => i.name === item.name);
+  if (existing) {
+    existing.count++;
+  } else {
+    playerInventory[category].push({
+      icon: item.icon,
+      name: item.name,
+      count: 1,
+      special: item.special
+    });
+  }
+
+  updateDisplays();
+  updateInventoryDisplay();
+}
+
+// Show egg odds before purchase
+// Display pet odds for an egg type
+function showEggOdds(eggType) {
+  const pets = petDatabase[eggType];
+  if (!pets) {
+    return "Unknown egg type";
+  }
+  
+  let oddsText = `🥚 ${eggType} Contents:\n\n`;
+  
+  // Sort pets by chance descending for better display
+  const sortedPets = [...pets].sort((a, b) => b.chance - a.chance);
+  
+  sortedPets.forEach(pet => {
+    const percentage = (pet.chance * 100).toFixed(2);
+    oddsText += `${pet.icon} ${pet.name}\n`;
+    oddsText += `   ${pet.description}\n`;
+    oddsText += `   Chance: ${percentage}%\n\n`;
+  });
+  
+  return oddsText;
+}
 function updateShopDisplay() {
   const shopContainer = document.getElementById('shopContainer');
   if (!shopContainer) return;
@@ -831,21 +985,29 @@ function updateShopDisplay() {
     row.style.marginTop = "8px";
     row.innerHTML = `<strong style='min-width:70px'>${category}:</strong>`;
 
-    items.forEach((item, i) => {
-      const btn = document.createElement('button');
-      btn.innerText = `${item.icon} ${item.name}\n💰${shortLabel(item.price)}`;
-      btn.style.display = "flex";
-      btn.style.flexDirection = "column";
-      btn.style.alignItems = "center";
-      btn.style.justifyContent = "center";
-      btn.style.fontSize = "10px";
-      btn.style.padding = "4px 6px";
+items.forEach((item, index) => {
+  const btn = document.createElement('button');
+  btn.innerText = `${item.icon} ${item.name}\n💰${shortLabel(item.price)}`;
+  btn.style.display = "flex";
+  btn.style.flexDirection = "column";
+  btn.style.alignItems = "center";
+  btn.style.justifyContent = "center";
+  btn.style.fontSize = "10px";
+  btn.style.padding = "4px 6px";
+  btn.style.background = "#4a3000";
+  btn.style.border = "1px solid #FFD700";
 
-      btn.onclick = () => buyItem(category, i);
+  // FIX: Use buyItem for regular shop, not buyEventItem
+  btn.onclick = (e) => {
+    if (category === "Eggs" && e.shiftKey) {
+      buyItem(category, index, true); // Skip odds with shift
+    } else {
+      buyItem(category, index, false); // Show odds normally
+    }
+  };
 
-      row.appendChild(btn);
-    });
-
+  row.appendChild(btn);
+});
     shopContainer.appendChild(row);
   }
 
@@ -894,16 +1056,8 @@ function updateShopDisplay() {
   }
 }
 
-function buyItem(category, index) {
-  const item = shopItems[category][index];
-  if (!item) {
-    console.error("Item not found:", category, index);
-    return;
-  }
-
+function buyEventItem(eventKey, category, item) {
   const limit = (category === "Eggs" || category === "Potions") ? 999n : 1n;
-  
-  // Fix: Use item.name as the key
   const inventoryKey = item.name;
   const owned = BigInt(inventory[inventoryKey] || 0n);
 
@@ -917,6 +1071,16 @@ function buyItem(category, index) {
     return;
   }
 
+  // === EGGS: Show odds before purchase ===
+  if (category === "Eggs") {
+    const oddsInfo = showEggOdds(item.name);
+    const confirmPurchase = confirm(`${oddsInfo}\nPurchase ${item.name} for ${formatBigInt(item.price)}?`);
+    
+    if (!confirmPurchase) {
+      return; // User cancelled
+    }
+  }
+
   money -= item.price;
   inventory[inventoryKey] = owned + 1n;
 
@@ -928,7 +1092,7 @@ function buyItem(category, index) {
       icon: item.icon,
       name: item.name,
       count: 1,
-      special: item.special  // Make sure special is saved
+      special: item.special
     });
   }
 
@@ -936,12 +1100,14 @@ function buyItem(category, index) {
   if (category === "Eggs") {
     const pet = openEgg(item.name);
     if (pet) {
-      alert(`🎉 Hatched ${pet.icon} ${pet.name}!\n${pet.description}`);
+      const mutationText = pet.mutation ? `\n\n🎉 MUTATION: ${pet.mutation} ${petMutations[pet.mutation].emoji}` : '';
+      alert(`🎉 Hatched ${pet.icon} ${pet.name}!\n${pet.description}${mutationText}`);
     }
   }
 
   updateDisplays();
   updateInventoryDisplay();
+  updateShopDisplay();
 }
 
 
@@ -1163,7 +1329,9 @@ const shopItems = {
     { icon: "💎", price: 10_000_000_000_000n, name: "Crystal Sword", limit: 1, special: 4 },
     { icon: "🔥", price: 100_000_000_000_000_000n, name: "Flame Blade", limit: 1, special: 3 },
     { icon: "⚡", price: 100_000_000_000_000_000_000n, name: "Thunder Edge", limit: 1, special: 5 },
+    { icon: "🏆", price: 999_999_999_999_999_999_999_999_999_999_999n, name: "Golden Sword", limit: 1, special: 6, rebirthLocked: 9 }, // NEW
   ],
+  // ... rest of shop items
   Relics: [
     { icon: "📿", price: 100_000_000n, name: "Relic of Light", limit: 1, special: 1.1 },
     { icon: "🪶", price: 100_000_000_000n, name: "Relic of Wind", limit: 1, special: 1.15 },
@@ -1226,11 +1394,11 @@ const petDatabase = {
     { name: "Neon Blue Cube", color: "#1b03a3", icon: "🔵", ability: "timer_reducer", value: 5, chance: 0.002, description: "Reduces all timers -5min" }
   ],
   "Celestial Egg": [
-    { name: "Leafy Green Cube", color: "#7cb342", icon: "🍃", ability: "rain_event", value: 1, chance: 0.40, description: "Starts Rain event (5min)" },
+   
     { name: "Aquamarine Cube", color: "#7fffd4", icon: "💠", ability: "earthquake_event", value: 0.30, chance: 0.20, description: "Starts Earthquake (10min)" },
     { name: "Bright Orange Cube", color: "#ff9500", icon: "🟠", ability: "random_event", value: 1, chance: 0.15, description: "Random event (5min)" },
     { name: "Sunny Orange Cube", color: "#ffcc33", icon: "☀️", ability: "passive_income", value: 1.30, chance: 0.10, description: "+30% income" },
-    { name: "Noir Cube", color: "#0a0a0a", icon: "⬛", ability: "night_bonus", value: 1.50, chance: 0.099, description: "+50% income at night" },
+   { name: "Noir Cube", color: "#0a0a0a", icon: "⬛", ability: "night_bonus", value: 1.50, chance: 0.9, description: "+50% income at night" },
     { name: "Celestial Blue Cube", color: "#4169E1", icon: "🌌", ability: "galactic_event", value: 1, chance: 0.001, description: "Starts Galactic event (5min)" }
   ]
 };
@@ -1308,6 +1476,62 @@ function openEgg(eggType) {
   
   return null;
 }
+// Open multiple eggs from inventory
+function openEggFromInventory(eggName, count) {
+  const eggItem = playerInventory.Eggs.find(i => i.name === eggName);
+  if (!eggItem || eggItem.count < count) {
+    alert(`Not enough ${eggName}s!`);
+    return;
+  }
+  
+  let results = [];
+  
+  for (let i = 0; i < count; i++) {
+    if (eggItem.count > 0) {
+      eggItem.count--;
+      const pet = openEgg(eggName);
+      if (pet) {
+        const mutationText = pet.mutation ? ` [${petMutations[pet.mutation].emoji}]` : '';
+        results.push(`${pet.icon} ${pet.name}${mutationText}`);
+      }
+    }
+  }
+  
+  // Remove egg from inventory if count reaches 0
+  if (eggItem.count === 0) {
+    const index = playerInventory.Eggs.indexOf(eggItem);
+    if (index > -1) {
+      playerInventory.Eggs.splice(index, 1);
+    }
+  }
+  
+  updateInventoryDisplay();
+  
+  if (results.length > 0) {
+    alert(`🎉 Hatched ${count} ${eggName}(s)!\n\n${results.join('\n')}`);
+  }
+}
+
+// Make function globally accessible
+window.openEggFromInventory = openEggFromInventory;
+// Display pet odds for an egg type
+function showEggOdds(eggType) {
+  const pets = petDatabase[eggType];
+  if (!pets) {
+    return "Unknown egg type";
+  }
+  
+  let oddsText = `🥚 ${eggType} Contents:\n\n`;
+  
+  pets.forEach(pet => {
+    const percentage = (pet.chance * 100).toFixed(2);
+    oddsText += `${pet.icon} ${pet.name}\n`;
+    oddsText += `   ${pet.description}\n`;
+    oddsText += `   Chance: ${percentage}%\n\n`;
+  });
+  
+  return oddsText;
+}
 // Equip/unequip a pet
 function togglePetEquip(petId) {
   const pet = playerPets.find(p => p.id === petId);
@@ -1318,15 +1542,15 @@ function togglePetEquip(petId) {
     pet.equipped = false;
     equippedPets = equippedPets.filter(p => p.id !== petId);
   } else {
-    // Check max equipped limit
-    if (equippedPets.length >= 3) {
-      alert("⚠️ Maximum 3 pets can be equipped at once!");
+    // Check max equipped limit (now dynamic based on rebirths)
+    if (equippedPets.length >= maxPetSlots) {
+      alert(`⚠️ Maximum ${maxPetSlots} pets can be equipped at once!`);
       return;
     }
     
     // Equip
     pet.equipped = true;
-    pet.offsetAngle = equippedPets.length * (Math.PI * 2 / 3); // spread around character
+    pet.offsetAngle = equippedPets.length * (Math.PI * 2 / maxPetSlots); // Spread evenly
     equippedPets.push(pet);
   }
   
@@ -1354,7 +1578,38 @@ function deletePet(petId) {
   recomputeIncome();
   updateInventoryDisplay();
 }
+// Bulk delete all unequipped pets
+function bulkDeletePets() {
+  const unequippedCount = playerPets.filter(p => !p.equipped).length;
+  
+  if (unequippedCount === 0) {
+    alert("⚠️ No unequipped pets to delete!");
+    return;
+  }
+  
+  if (!confirm(`⚠️ Delete ${unequippedCount} unequipped pet(s)?\n\nThis cannot be undone!`)) {
+    return;
+  }
+  
+  // Remove all unequipped pets
+  playerPets = playerPets.filter(p => p.equipped);
+  
+  // Clean up timers
+  const validPetIds = new Set(playerPets.map(p => p.id));
+  for (let petId in petTimers) {
+    if (!validPetIds.has(Number(petId))) {
+      delete petTimers[petId];
+    }
+  }
+  
+  recomputeIncome();
+  updateInventoryDisplay();
+  
+  alert(`✅ Deleted ${unequippedCount} unequipped pet(s)!`);
+}
 
+// Make function globally accessible
+window.bulkDeletePets = bulkDeletePets;
 // Initialize pet timers
 function initPetTimers() {
   playerPets.forEach(pet => {
@@ -1366,7 +1621,61 @@ function initPetTimers() {
     }
   });
 }
-
+// Filter pets by search query
+// Advanced filter pets with multiple criteria
+function filterPets(searchQuery) {
+  const query = searchQuery.toLowerCase().trim();
+  const petItems = document.querySelectorAll('.pet-item');
+  
+  if (!query) {
+    // Show all pets if search is empty
+    petItems.forEach(item => {
+      item.style.display = '';
+    });
+    return;
+  }
+  
+  let foundCount = 0;
+  
+  // Check for special filter commands
+  const isEquippedFilter = query === 'equipped' || query === 'equip';
+  const isUnequippedFilter = query === 'unequipped' || query === 'unequip';
+  const isMutatedFilter = query === 'mutated' || query === 'mutation';
+  
+  petItems.forEach(item => {
+    const petName = item.getAttribute('data-pet-name');
+    const petAbility = item.getAttribute('data-pet-ability');
+    const petMutation = item.getAttribute('data-pet-mutation');
+    const isEquipped = item.innerHTML.includes('✓ Equipped');
+    const hasMutation = petMutation !== '';
+    
+    let matches = false;
+    
+    // Special filters
+    if (isEquippedFilter) {
+      matches = isEquipped;
+    } else if (isUnequippedFilter) {
+      matches = !isEquipped;
+    } else if (isMutatedFilter) {
+      matches = hasMutation;
+    } else {
+      // Normal search: name, ability, or mutation
+      matches = petName.includes(query) || 
+                petAbility.includes(query) || 
+                petMutation.includes(query);
+    }
+    
+    if (matches) {
+      item.style.display = '';
+      foundCount++;
+    } else {
+      item.style.display = 'none';
+    }
+  });
+  
+  // Show count in console for debugging
+  console.log(`Found ${foundCount} pet(s) matching "${searchQuery}"`);
+}
 // Get cooldown for pet ability (in milliseconds)
 function getPetCooldown(ability) {
   const cooldowns = {
@@ -2273,7 +2582,25 @@ setInterval(() => {
 document.addEventListener("keydown", e => {
   if (e.key === "]") triggerWeatherEvent();
 });
-
+// Focus search box with Ctrl+F or Cmd+F
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'f' && !insideHouse) {
+    e.preventDefault(); // Prevent browser search
+    const searchInput = document.getElementById('petSearchInput');
+    if (searchInput) {
+      searchInput.focus();
+    }
+  }
+  
+  // Clear search with ESC key
+  if (e.key === 'Escape') {
+    const searchInput = document.getElementById('petSearchInput');
+    if (searchInput && document.activeElement === searchInput) {
+      clearPetSearch();
+      searchInput.blur();
+    }
+  }
+});
 //setInterval(() => { money += incomePerSec; updateDisplays(); }, 1000);
 setInterval(() => { 
   money += incomePerSec; 
@@ -2404,18 +2731,8 @@ function performRebirth() {
     return;
   }
 
-  // Debug: Show all cube counts
-  console.log("=== REBIRTH DEBUG ===");
-  console.log("Looking for cube:", nextRebirth.requiredCube);
-  console.log("All legend counts:", legendCounts);
-  
   // Check if player has enough cubes
   const cubeCount = legendCounts[nextRebirth.requiredCube] || 0n;
-  // Debug: Show what we're looking for
-console.log("Required Cube Name:", nextRebirth.requiredCube);
-console.log("Legend Counts Keys:", Object.keys(legendCounts));
-console.log("Cube Count Found:", legendCounts[nextRebirth.requiredCube]);
-  console.log("Found count:", cubeCount);
   
   if (cubeCount < BigInt(nextRebirth.requiredCount)) {
     // Show all available cubes for debugging
@@ -2430,28 +2747,53 @@ console.log("Cube Count Found:", legendCounts[nextRebirth.requiredCube]);
     return;
   }
 
-  // Confirm rebirth
-  const confirmMsg = `🔄 REBIRTH ${nextRebirth.level}
+  // Build rewards message
+  let rewardsMsg = `🔄 REBIRTH ${nextRebirth.level}\n\n`;
+  rewardsMsg += `Cost: ${formatBigInt(nextRebirth.cost)}\n`;
+  rewardsMsg += `Required: ${nextRebirth.requiredCount}x ${nextRebirth.requiredCube}\n\n`;
+  rewardsMsg += `Rewards:\n`;
+  rewardsMsg += `• +0.5x Income Multiplier\n`;
   
-Cost: ${formatBigInt(nextRebirth.cost)}
-Required: ${nextRebirth.requiredCount}x ${nextRebirth.requiredCube}
-Reward: +0.5x Income Multiplier
+  if (nextRebirth.petSlotReward) {
+    rewardsMsg += `• +${nextRebirth.petSlotReward} Pet Slot(s)\n`;
+  }
+  
+  if (nextRebirth.goldenSwordReward) {
+    rewardsMsg += `• 🏆 Golden Sword (6 damage)\n`;
+  }
+  
+  rewardsMsg += `\n⚠️ This will reset:\n`;
+  rewardsMsg += `- Money → 1K\n`;
+  rewardsMsg += `- Income/sec → 0\n`;
+  rewardsMsg += `- House Value → 0\n`;
+  rewardsMsg += `- All Legend Counts → 0\n\n`;
+  rewardsMsg += `Continue?`;
 
-⚠️ This will reset:
-- Money → 1K
-- Income/sec → 0
-- House Value → 0
-- All Legend Counts → 0
-
-Continue?`;
-
-  if (!confirm(confirmMsg)) {
+  if (!confirm(rewardsMsg)) {
     return;
   }
 
   // Perform rebirth
   rebirthCount++;
   rebirthMultiplier += nextRebirth.incomeMultiplier;
+  
+  // Apply pet slot rewards
+  if (nextRebirth.petSlotReward) {
+    maxPetSlots += nextRebirth.petSlotReward;
+  }
+  
+  // Give Golden Sword
+  if (nextRebirth.goldenSwordReward) {
+    const existing = playerInventory.Swords.find(i => i.name === "Golden Sword");
+    if (!existing) {
+      playerInventory.Swords.push({
+        icon: "🏆",
+        name: "Golden Sword",
+        count: 1,
+        special: 6
+      });
+    }
+  }
   
   // Reset everything
   money = 1000n;
@@ -2470,16 +2812,26 @@ Continue?`;
   // Recalculate income
   recomputeIncome();
   updateDisplays();
+  updateInventoryDisplay();
   updateRebirthUI();
   
   // Auto-save
   saveBtn.click();
   
-  alert(`✅ Rebirth ${rebirthCount} Complete!\nIncome Multiplier: ${rebirthMultiplier}x`);
+  // Build completion message
+  let completionMsg = `✅ Rebirth ${rebirthCount} Complete!\n\n`;
+  completionMsg += `Income Multiplier: ${rebirthMultiplier}x\n`;
+  completionMsg += `Max Pet Slots: ${maxPetSlots}\n`;
+  
+  if (nextRebirth.goldenSwordReward) {
+    completionMsg += `\n🏆 Golden Sword unlocked in inventory!`;
+  }
+  
+  alert(completionMsg);
 }
 
 function updateRebirthUI() {
-  rebirthHint.textContent = `Rebirths: ${rebirthCount} (${rebirthMultiplier}x)`;
+  rebirthHint.textContent = `Rebirths: ${rebirthCount} (${rebirthMultiplier}x) | Pets: ${maxPetSlots}`;
   
   if (rebirthCount >= rebirthLevels.length) {
     rebirthBtn.textContent = "🔄 Rebirth (MAX)";
@@ -2541,7 +2893,8 @@ saveBtn.addEventListener("click", () => {
     cubeTier,
     bossDrops,
     rebirthCount,
-    rebirthMultiplier
+    rebirthMultiplier,
+    maxPetSlots // NEW
   };
 
   data.equipped = {
@@ -2585,6 +2938,7 @@ loadBtn.addEventListener("click", () => {
     
     rebirthCount = data.rebirthCount || 0;
     rebirthMultiplier = data.rebirthMultiplier || 1.0;
+    maxPetSlots = data.maxPetSlots || 3; // NEW
 
     if (data.dropCounters) Object.assign(dropCounters, data.dropCounters);
     if (data.playerInventory) {
