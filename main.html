@@ -99,7 +99,7 @@
     <div class="stat" id="incomeDisplay">Income/sec: 0</div>
     <div class="stat" id="houseDisplay">House value: 0</div>
     <div style="flex:1"></div>
-    <div class="small muted">Move: WASD or click to set target</div>
+<div class="small muted">Move: WASD or click to set target</div>
   </div>
 
   <div class="game">
@@ -207,6 +207,165 @@ const adminAbuseEvents = [
     animation: "galactic"
   }
 ];
+// === DAY/NIGHT CYCLE CONFIGURATION ===
+const dayNightCycle = {
+  current: "day", // "day", "night", "sunrise", "sunset"
+  duration: 15 * 60 * 1000, // 15 minutes in milliseconds
+  transitionDuration: 5 * 60 * 1000, // 5 minutes for sunrise/sunset
+  nextChange: Date.now() + 10 * 60 * 1000, // 10 min until sunset starts
+  transitioning: false,
+  transitionProgress: 0,
+  
+  day: {
+    background: "linear-gradient(180deg, #87CEEB 0%, #E0F6FF 50%, #87CEEB 100%)",
+    canvasGradient: ["#B0E0FF", "#D0F0FF", "#B0E0FF"],
+    overlay: "rgba(255, 255, 150, 0.1)",
+    emoji: "☀️",
+    name: "Day",
+    celestialBody: "☀️",
+    celestialY: 80
+  },
+  
+  sunset: {
+    background: "linear-gradient(180deg, #FF6B35 0%, #FF8C42 30%, #FFA756 60%, #87CEEB 100%)",
+    canvasGradient: ["#FF6B35", "#FF8C42", "#FFA756"],
+    overlay: "rgba(255, 100, 50, 0.2)",
+    emoji: "🌅",
+    name: "Sunset",
+    celestialBody: "🌇",
+    celestialY: 200
+  },
+  
+  night: {
+    background: "linear-gradient(180deg, #0A1128 0%, #1A2238 50%, #0A1128 100%)",
+    canvasGradient: ["#0b2330", "#08202a", "#0b2330"],
+    overlay: "rgba(0, 0, 50, 0.4)",
+    emoji: "🌙",
+    name: "Night",
+    celestialBody: "🌙",
+    celestialY: 80
+  },
+  
+  sunrise: {
+    background: "linear-gradient(180deg, #1A2238 0%, #FF6B35 40%, #FFB347 70%, #87CEEB 100%)",
+    canvasGradient: ["#1A2238", "#FF6B35", "#FFB347"],
+    overlay: "rgba(255, 150, 100, 0.2)",
+    emoji: "🌄",
+    name: "Sunrise",
+    celestialBody: "🌅",
+    celestialY: 200
+  }
+};
+
+let dayNightStars = []; // for night time stars
+let sunsetClouds = []; // for sunset/sunrise clouds
+
+// Generate stars for night time
+function generateStars() {
+  dayNightStars = [];
+  for (let i = 0; i < 100; i++) {
+    dayNightStars.push({
+      x: Math.random() * W,
+      y: Math.random() * H * 0.6, // only in top 60% of screen
+      size: 1 + Math.random() * 2,
+      twinkle: Math.random(),
+      twinkleSpeed: 0.5 + Math.random() * 1.5
+    });
+  }
+}
+
+// Generate clouds for sunset/sunrise
+function generateClouds() {
+  sunsetClouds = [];
+  for (let i = 0; i < 8; i++) {
+    sunsetClouds.push({
+      x: Math.random() * W,
+      y: 100 + Math.random() * 150,
+      width: 60 + Math.random() * 80,
+      height: 30 + Math.random() * 20,
+      speed: 10 + Math.random() * 20,
+      opacity: 0.3 + Math.random() * 0.4
+    });
+  }
+}
+
+// Change day/night cycle
+// Change day/night cycle
+function changeDayNightCycle(newCycle, isManual = false) {
+  if (dayNightCycle.current === newCycle && !isManual) return;
+  
+  const oldCycle = dayNightCycle.current;
+  dayNightCycle.current = newCycle;
+  
+  // Set next change time based on cycle
+  if (isManual) {
+    // Manual trigger - set appropriate next auto change
+    if (newCycle === "day") {
+      dayNightCycle.nextChange = Date.now() + 10 * 60 * 1000; // 10 min until sunset
+    } else if (newCycle === "sunset") {
+      dayNightCycle.nextChange = Date.now() + 5 * 60 * 1000; // 5 min until night
+    } else if (newCycle === "night") {
+      dayNightCycle.nextChange = Date.now() + 10 * 60 * 1000; // 10 min until sunrise
+    } else if (newCycle === "sunrise") {
+      dayNightCycle.nextChange = Date.now() + 5 * 60 * 1000; // 5 min until day
+    }
+  } else {
+    // Auto progression
+    if (newCycle === "sunset") {
+      dayNightCycle.nextChange = Date.now() + 5 * 60 * 1000; // 5 min until night
+    } else if (newCycle === "night") {
+      dayNightCycle.nextChange = Date.now() + 10 * 60 * 1000; // 10 min until sunrise
+    } else if (newCycle === "sunrise") {
+      dayNightCycle.nextChange = Date.now() + 5 * 60 * 1000; // 5 min until day
+    } else if (newCycle === "day") {
+      dayNightCycle.nextChange = Date.now() + 10 * 60 * 1000; // 10 min until sunset
+    }
+  }
+  
+  console.log(`🌍 ${dayNightCycle[newCycle].name} started! Next change in ${Math.round((dayNightCycle.nextChange - Date.now()) / 60000)} minutes`);
+  
+  // Generate appropriate particles
+  if (newCycle === "night" || newCycle === "sunrise") {
+    generateStars();
+  }
+  if (newCycle === "sunset" || newCycle === "sunrise") {
+    generateClouds();
+  }
+  
+  updateEventIndicator();
+}
+
+// Auto cycle with transitions
+function checkDayNightCycle() {
+  if (Date.now() >= dayNightCycle.nextChange) {
+    const current = dayNightCycle.current;
+    
+    // Progression: day -> sunset -> night -> sunrise -> day
+    if (current === "day") {
+      changeDayNightCycle("sunset");
+    } else if (current === "sunset") {
+      changeDayNightCycle("night");
+    } else if (current === "night") {
+      changeDayNightCycle("sunrise");
+    } else if (current === "sunrise") {
+      changeDayNightCycle("day");
+    }
+  }
+}
+
+// Check cycle every second
+setInterval(checkDayNightCycle, 1000);
+
+// Auto cycle every 15 minutes
+function checkDayNightCycle() {
+  if (Date.now() >= dayNightCycle.nextChange) {
+    const newCycle = dayNightCycle.current === "day" ? "night" : "day";
+    changeDayNightCycle(newCycle);
+  }
+}
+
+// Check cycle every second
+setInterval(checkDayNightCycle, 1000);
 // === REBIRTH SYSTEM CONFIGURATION ===
 const rebirthLevels = [
   {
@@ -1118,9 +1277,10 @@ function updateEventIndicator() {
     return;
   }
   
-  // No active events
-  indicator.textContent = "—";
-  indicator.title = "No active event";
+  // Show day/night cycle
+  const cycle = dayNightCycle[dayNightCycle.current];
+  indicator.textContent = cycle.emoji;
+  indicator.title = `Current: ${cycle.name}`;
 }
 
 
@@ -1259,7 +1419,28 @@ function updateWeatherAnimation(dt) {
     }
   }
 }
-
+// Update day/night stars
+// Update day/night stars and clouds
+function updateDayNightAnimation(dt) {
+  // Update stars for night and sunrise
+  if (dayNightCycle.current === "night" || dayNightCycle.current === "sunrise") {
+    dayNightStars.forEach(star => {
+      star.twinkle += dt * star.twinkleSpeed;
+      if (star.twinkle > 1) star.twinkle = 0;
+    });
+  }
+  
+  // Update clouds for sunset and sunrise
+  if (dayNightCycle.current === "sunset" || dayNightCycle.current === "sunrise") {
+    sunsetClouds.forEach(cloud => {
+      cloud.x += cloud.speed * dt;
+      if (cloud.x > W + cloud.width) {
+        cloud.x = -cloud.width;
+        cloud.y = 100 + Math.random() * 150;
+      }
+    });
+  }
+}
 
 // === ADMIN ABUSE EVENT FUNCTIONS ===
 function triggerAdminEvent(event) {
@@ -1697,6 +1878,13 @@ window.addEventListener("keydown", e => {
 }
 
   if (e.key === "'") spawnBoss();
+
+  // Add these lines inside the existing keydown event listener
+if (e.key === "(") changeDayNightCycle("day", true);
+if (e.key === ")") changeDayNightCycle("night", true);
+if (e.key === "-") changeDayNightCycle("sunset", true);
+if (e.key === "+") changeDayNightCycle("sunrise", true);
+
 
   // === ADMIN ABUSE EVENT TRIGGERS ===
   const adminEvent = adminAbuseEvents.find(evt => evt.key === e.key);
@@ -2278,6 +2466,69 @@ function render() {
   }
 
   ctx.clearRect(0, 0, W, H);
+ 
+  const cycle = dayNightCycle[dayNightCycle.current];
+  const gradient = ctx.createLinearGradient(0, 0, 0, H);
+  
+  const colors = cycle.canvasGradient;
+  gradient.addColorStop(0, colors[0]);
+  gradient.addColorStop(0.5, colors[1]);
+  gradient.addColorStop(1, colors[2]);
+  
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, W, H);
+  
+  // Draw stars at night and during sunrise (fading)
+  if (dayNightCycle.current === "night" || dayNightCycle.current === "sunrise") {
+    ctx.fillStyle = "white";
+    dayNightStars.forEach(star => {
+      let alpha = 0.3 + star.twinkle * 0.7;
+      
+      // Fade out stars during sunrise
+      if (dayNightCycle.current === "sunrise") {
+        alpha *= 0.4;
+      }
+      
+      ctx.globalAlpha = alpha;
+      ctx.fillRect(star.x, star.y, star.size, star.size);
+    });
+    ctx.globalAlpha = 1;
+  }
+  
+  // Draw clouds during sunset and sunrise
+  if (dayNightCycle.current === "sunset" || dayNightCycle.current === "sunrise") {
+    sunsetClouds.forEach(cloud => {
+      ctx.save();
+      ctx.globalAlpha = cloud.opacity;
+      
+      // Cloud color varies by time
+      if (dayNightCycle.current === "sunset") {
+        ctx.fillStyle = "#FF6B6B";
+      } else {
+        ctx.fillStyle = "#FFB347";
+      }
+      
+      // Draw simple cloud shape
+      ctx.beginPath();
+      ctx.ellipse(cloud.x, cloud.y, cloud.width / 2, cloud.height / 2, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(cloud.x + cloud.width / 3, cloud.y - cloud.height / 3, cloud.width / 3, cloud.height / 3, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(cloud.x - cloud.width / 3, cloud.y - cloud.height / 4, cloud.width / 3, cloud.height / 3, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.restore();
+    });
+  }
+  
+  // Draw celestial body (sun/moon) with appropriate position
+  ctx.font = "48px sans-serif";
+  ctx.textAlign = "right";
+  ctx.textBaseline = "top";
+  ctx.fillText(cycle.celestialBody, W - 20, cycle.celestialY);
+
   ctx.fillStyle = 'rgba(255,255,255,0.02)';
   ctx.fillRect(12, 8, W - 24, 110);
 
@@ -2299,7 +2550,16 @@ if (!boss.visible) {
   ctx.fillText(`Your HP: ${3 - boss.playerHits}/3`, 20, 40);
 }
 
+// Display day/night cycle timer
+const timeUntilChange = Math.max(0, dayNightCycle.nextChange - now);
+const minutes = Math.floor(timeUntilChange / 60000);
+const seconds = Math.floor((timeUntilChange % 60000) / 1000);
+const cycleName = dayNightCycle[dayNightCycle.current].name;
 
+ctx.fillStyle = 'white';
+ctx.font = '14px Arial';
+ctx.textAlign = 'left';
+ctx.fillText(`${cycleName} - Next: ${minutes}:${seconds.toString().padStart(2, '0')}`, 20, 60);
 
 cubes.forEach(c => {
   const p = c.pos;
@@ -2499,6 +2759,7 @@ function loop(t) {
   update(dt);
   updateWeatherAnimation(dt);
   updateAdminAnimation(dt);
+    updateDayNightAnimation(dt); // ← ADD THIS LINE
   render();
   drawWeatherAnimation(ctx);
   drawAdminAnimation(ctx);  
@@ -2510,6 +2771,9 @@ function init() {
   renderLegendUI();
   recomputeIncome();
   updateDisplays();
+    generateStars(); // ← ADD THIS LINE
+      generateClouds(); // ← ADD THIS LINE
+
   requestAnimationFrame(loop);
 }
 init();
