@@ -111,7 +111,7 @@
 <div class="controls">
   <div style="display:flex;gap:8px;align-items:center;">
     <button id="upgradeBtn" style="flex:1;">⬆️ Upgrade Cubes</button>
-    <div id="eventIndicator" style="font-size:24px;width:40px;text-align:center;flex-shrink:0;" title="No active event">—</div>
+       <div id="eventIndicator" style="font-size:24px;width:40px;text-align:center;flex-shrink:0;" title="No active event">—</div>
   </div>
   <button id="downgradeBtn">⬇️ Downgrade Cubes</button>
   <button id="saveBtn">💾 Save</button>
@@ -552,7 +552,27 @@ window.equipItem = function equipItem(category, itemName) {
   updateInventoryDisplay();
 }
 
-
+// Draw pets following the character
+function renderPets(ctx) {
+  equippedPets.forEach(pet => {
+    // Draw pet body
+    ctx.fillStyle = pet.color;
+    ctx.fillRect(pet.x, pet.y, 32, 32); // Smaller than character (48x48)
+    
+    // Draw pet icon
+    ctx.font = '20px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(pet.icon, pet.x + 16, pet.y + 16);
+    
+    // Draw mutation indicator if exists
+    if (pet.mutation) {
+      const mut = petMutations[pet.mutation];
+      ctx.font = '12px sans-serif';
+      ctx.fillText(mut.emoji, pet.x + 26, pet.y + 6);
+    }
+  });
+}
 
 
 // === WEATHER LIST ===
@@ -691,7 +711,28 @@ let html = `
 
     html += `<br>`;
   });
+// --- Pet Inventory ---
+html += '<div style="margin-top:15px;"><u>🐾 Pets</u><br>';
 
+if (playerPets.length === 0) {
+  html += '<span style="color:#888;">No pets yet. Buy eggs to hatch pets!</span><br>';
+} else {
+  html += `<span style="color:#aaa;">Equipped: ${equippedPets.length}/3</span><br>`;
+  
+  playerPets.forEach(pet => {
+    const mutationText = pet.mutation ? ` [${petMutations[pet.mutation].emoji} ${pet.mutation}]` : '';
+    const equippedBtn = pet.equipped 
+      ? '<button onclick="togglePetEquip(' + pet.id + ')" style="margin-left:5px;padding:2px 6px;border-radius:5px;background:#28a745;color:white;border:none;cursor:pointer;">✓ Equipped</button>'
+      : '<button onclick="togglePetEquip(' + pet.id + ')" style="margin-left:5px;padding:2px 6px;border-radius:5px;background:#333;color:white;border:none;cursor:pointer;">Equip</button>';
+    
+    const deleteBtn = '<button onclick="deletePet(' + pet.id + ')" style="margin-left:5px;padding:2px 6px;border-radius:5px;background:#dc3545;color:white;border:none;cursor:pointer;">🗑️</button>';
+    
+    html += `${pet.icon} ${pet.name}${mutationText} ${equippedBtn} ${deleteBtn}<br>`;
+    html += `<span style="font-size:11px;color:#888;margin-left:20px;">${pet.description}</span><br>`;
+  });
+}
+
+html += '</div>';
   html += '</div></details>';
   inv.innerHTML = html;
   document.getElementById("detailsBossDrops").open = bossOpen;
@@ -1042,8 +1083,211 @@ const shopItems = {
     { icon: "🥤", price: 10_000_000_000_000_000_000_000n, name: "Divine Potion", limit: 999, special: 6 },
   ]
 };
+// === PET SYSTEM CONFIGURATION ===
+const petDatabase = {
+  "Basic Egg": [
+    { name: "Blue Cube", color: "#3b8ebf", icon: "🟦", ability: "passive_income", value: 1.05, chance: 0.40, description: "+5% income" },
+    { name: "Orange Cube", color: "#ff8a2b", icon: "🟧", ability: "speed_boost", value: 1.10, chance: 0.30, description: "+10% speed" },
+    { name: "Purple Cube", color: "#8b3bff", icon: "🟪", ability: "purple_spawn", value: 1.20, chance: 0.15, description: "Spawns purple cube (5min)" },
+    { name: "Green Cube", color: "#3bbf6e", icon: "🟩", ability: "cube_grabber", value: 1, chance: 0.10, description: "Grabs random cube (15min)" },
+    { name: "Yellow Cube", color: "#e6d44a", icon: "🟨", ability: "day_trigger", value: 0.10, chance: 0.04, description: "Triggers day event (5min)" },
+    { name: "Red Cube", color: "#c53030", icon: "🟥", ability: "ember_mutator", value: 0.10, chance: 0.01, description: "Mutates pets with Ember (30min)" }
+  ],
+  "Rare Egg": [
+    { name: "Light Green Cube", color: "#9be6b8", icon: "🟩✨", ability: "double_damage", value: 2, chance: 0.50, description: "2x sword damage" },
+    { name: "Light Purple Cube", color: "#d8b8ff", icon: "🟪✨", ability: "passive_income", value: 1.15, chance: 0.30, description: "+15% income" },
+    { name: "Light Yellow Cube", color: "#fff1a8", icon: "🟨✨", ability: "shooting_star", value: 0.40, chance: 0.10, description: "Spawns shooting star (15min)" },
+    { name: "Light Orange Cube", color: "#ffc89b", icon: "🟧✨", ability: "boss_spawn", value: 0.15, chance: 0.05, description: "Spawns boss (15min)" },
+    { name: "Light Blue Cube", color: "#9bd3e6", icon: "🟦✨", ability: "glitch_mutator", value: 0.05, chance: 0.045, description: "Mutates with Glitched (10min)" },
+    { name: "Light Red Cube", color: "#ffb8b8", icon: "🟥✨", ability: "ability_copy", value: 1, chance: 0.005, description: "Copies nearby pet ability (20min)" }
+  ],
+  "Dragon Egg": [
+    { name: "Dark Yellow Cube", color: "#9b870c", icon: "🟨💎", ability: "egg_giver", value: 0.20, chance: 0.55, description: "Gives random egg (70s)" },
+    { name: "Dark Orange Cube", color: "#cc5500", icon: "🟧💎", ability: "money_doubler", value: 0.10, chance: 0.20, description: "Doubles money (5min)" },
+    { name: "Dark Blue Cube", color: "#1a4d7a", icon: "🟦💎", ability: "double_damage", value: 2, chance: 0.15, description: "2x sword damage" },
+    { name: "Dark Purple Cube", color: "#5a1d5a", icon: "🟪💎", ability: "entity_spawner", value: 1, chance: 0.05, description: "Spawns random entity (15min)" },
+    { name: "Dark Green Cube", color: "#0a5f38", icon: "🟩💎", ability: "glitch_event", value: 0.02, chance: 0.049, description: "Starts Glitch event (5min)" },
+    { name: "Dark Red Cube", color: "#8b0000", icon: "🟥💎", ability: "weather_trigger", value: 0.10, chance: 0.001, description: "Random weather (10min)" }
+  ],
+  "Mythic Egg": [
+    { name: "Teal Cube", color: "#008080", icon: "🔷", ability: "bone_giver", value: 1, chance: 0.60, description: "Gives skeleton bone (10min)" },
+    { name: "Indigo Cube", color: "#4b0082", icon: "🟣", ability: "blackhole_event", value: 0.10, chance: 0.30, description: "Starts Blackhole (5min)" },
+    { name: "Neon Green Cube", color: "#39ff14", icon: "🟢", ability: "cycle_changer", value: 0.60, chance: 0.098, description: "Changes day/night cycle (3min)" },
+    { name: "Neon Blue Cube", color: "#1b03a3", icon: "🔵", ability: "timer_reducer", value: 5, chance: 0.002, description: "Reduces all timers -5min" }
+  ],
+  "Celestial Egg": [
+    { name: "Leafy Green Cube", color: "#7cb342", icon: "🍃", ability: "rain_event", value: 1, chance: 0.40, description: "Starts Rain event (5min)" },
+    { name: "Aquamarine Cube", color: "#7fffd4", icon: "💠", ability: "earthquake_event", value: 0.30, chance: 0.20, description: "Starts Earthquake (10min)" },
+    { name: "Bright Orange Cube", color: "#ff9500", icon: "🟠", ability: "random_event", value: 1, chance: 0.15, description: "Random event (5min)" },
+    { name: "Sunny Orange Cube", color: "#ffcc33", icon: "☀️", ability: "passive_income", value: 1.30, chance: 0.10, description: "+30% income" },
+    { name: "Noir Cube", color: "#0a0a0a", icon: "⬛", ability: "night_bonus", value: 1.50, chance: 0.099, description: "+50% income at night" },
+    { name: "Celestial Blue Cube", color: "#4169E1", icon: "🌌", ability: "galactic_event", value: 1, chance: 0.001, description: "Starts Galactic event (5min)" }
+  ]
+};
 
+const petMutations = {
+  "Wet": { color: "#4da6ff", emoji: "💧", incomeBoost: 1.05, event: "Rain" },
+  "Shocked": { color: "#ffff00", emoji: "⚡", incomeBoost: 1.10, event: "Thunder" },
+  "Disco": { color: "#ff00ff", emoji: "🪩", incomeBoost: 1.20, event: "Disco" },
+  "Ember": { color: "#ff4400", emoji: "🔥", incomeBoost: 1.30, event: "Volcano" },
+  "Glitched": { color: "#00ff00", emoji: "⚜️", incomeBoost: 1.35, event: "Glitched" },
+  "Galactic": { color: "#4a0080", emoji: "🚀", incomeBoost: 1.40, event: "Galactic" }
+};
 
+let playerPets = []; // Array of pet objects
+let equippedPets = []; // Max 3 pets that follow character
+let petTimers = {}; // Track ability cooldowns
+// Open an egg and get a random pet
+function openEgg(eggType) {
+  const pets = petDatabase[eggType];
+  if (!pets) {
+    console.error("Unknown egg type:", eggType);
+    return null;
+  }
+  
+  const roll = Math.random();
+  let cumulative = 0;
+  
+  for (const pet of pets) {
+    cumulative += pet.chance;
+    if (roll <= cumulative) {
+      // Create pet instance
+      const newPet = {
+        id: Date.now() + Math.random(), // unique ID
+        name: pet.name,
+        color: pet.color,
+        icon: pet.icon,
+        ability: pet.ability,
+        abilityValue: pet.value,
+        description: pet.description,
+        eggType: eggType,
+        mutation: null,
+        equipped: false,
+        offsetAngle: 0, // for positioning around character
+        x: character.x,
+        y: character.y
+      };
+      
+      // Check for mutation during active event
+      if (Math.random() < 0.10) { // 10% mutation chance during events
+        if (currentAdminEvent) {
+          const eventName = currentAdminEvent.name;
+          for (const [mutName, mutData] of Object.entries(petMutations)) {
+            if (mutData.event === eventName) {
+              newPet.mutation = mutName;
+              console.log(`🎉 Pet mutated with ${mutName}!`);
+              break;
+            }
+          }
+        } else if (currentWeather) {
+          for (const [mutName, mutData] of Object.entries(petMutations)) {
+            if (mutData.event === currentWeather) {
+              newPet.mutation = mutName;
+              console.log(`🎉 Pet mutated with ${mutName}!`);
+              break;
+            }
+          }
+        }
+      }
+      
+      playerPets.push(newPet);
+      console.log(`🥚 Hatched: ${pet.name} from ${eggType}!`);
+      return newPet;
+    }
+  }
+  
+  return null;
+}
+// Equip/unequip a pet
+function togglePetEquip(petId) {
+  const pet = playerPets.find(p => p.id === petId);
+  if (!pet) return;
+  
+  if (pet.equipped) {
+    // Unequip
+    pet.equipped = false;
+    equippedPets = equippedPets.filter(p => p.id !== petId);
+  } else {
+    // Check max equipped limit
+    if (equippedPets.length >= 3) {
+      alert("⚠️ Maximum 3 pets can be equipped at once!");
+      return;
+    }
+    
+    // Equip
+    pet.equipped = true;
+    pet.offsetAngle = equippedPets.length * (Math.PI * 2 / 3); // spread around character
+    equippedPets.push(pet);
+  }
+  
+  recomputeIncome(); // Recalculate with pet bonuses
+  updateInventoryDisplay();
+}
+
+// Delete a pet
+function deletePet(petId) {
+  if (!confirm("⚠️ Are you sure you want to delete this pet?")) return;
+  
+  const index = playerPets.findIndex(p => p.id === petId);
+  if (index === -1) return;
+  
+  const pet = playerPets[index];
+  
+  // Remove from equipped if needed
+  if (pet.equipped) {
+    equippedPets = equippedPets.filter(p => p.id !== petId);
+  }
+  
+  // Remove from all pets
+  playerPets.splice(index, 1);
+  
+  recomputeIncome();
+  updateInventoryDisplay();
+}
+
+// Initialize pet timers
+function initPetTimers() {
+  playerPets.forEach(pet => {
+    if (!petTimers[pet.id]) {
+      petTimers[pet.id] = {
+        lastTrigger: Date.now(),
+        cooldown: getPetCooldown(pet.ability)
+      };
+    }
+  });
+}
+
+// Get cooldown for pet ability (in milliseconds)
+function getPetCooldown(ability) {
+  const cooldowns = {
+    "purple_spawn": 5 * 60 * 1000,      // 5 min
+    "cube_grabber": 15 * 60 * 1000,     // 15 min
+    "day_trigger": 5 * 60 * 1000,       // 5 min
+    "ember_mutator": 30 * 60 * 1000,    // 30 min
+    "shooting_star": 15 * 60 * 1000,    // 15 min
+    "boss_spawn": 15 * 60 * 1000,       // 15 min
+    "glitch_mutator": 10 * 60 * 1000,   // 10 min
+    "ability_copy": 20 * 60 * 1000,     // 20 min
+    "egg_giver": 70 * 1000,             // 70 sec
+    "money_doubler": 5 * 60 * 1000,     // 5 min
+    "entity_spawner": 15 * 60 * 1000,   // 15 min
+    "glitch_event": 5 * 60 * 1000,      // 5 min
+    "weather_trigger": 10 * 60 * 1000,  // 10 min
+    "bone_giver": 10 * 60 * 1000,       // 10 min
+    "blackhole_event": 5 * 60 * 1000,   // 5 min
+    "cycle_changer": 3 * 60 * 1000,     // 3 min
+    "timer_reducer": 999 * 60 * 1000,   // One-time passive
+    "rain_event": 5 * 60 * 1000,        // 5 min
+    "earthquake_event": 10 * 60 * 1000, // 10 min
+    "random_event": 5 * 60 * 1000,      // 5 min
+    "galactic_event": 5 * 60 * 1000     // 5 min
+  };
+  
+  return cooldowns[ability] || 60000; // default 1 min
+}
+// Make pet functions globally accessible
+window.togglePetEquip = togglePetEquip;
+window.deletePet = deletePet;
 const playerInventory = {
   Swords: [],
   Relics: [],
@@ -1098,7 +1342,13 @@ function buyItem(category, index) {
       count: 1
     });
   }
-
+  // --- EGGS: Open immediately and hatch a pet ---
+  if (category === "Eggs") {
+    const pet = openEgg(item.name);
+    if (pet) {
+      alert(`🎉 Hatched ${pet.icon} ${pet.name}!\n${pet.description}`);
+    }
+  }
   // --- Update all UI displays ---
   updateDisplays();
   updateInventoryDisplay();
@@ -1188,13 +1438,39 @@ function recomputeIncome() {
   for (let n in legendCounts) {
     incomePerSec += legendCounts[n] * (incomeRates[n] || 0n);
   }
-  console.log("Income/Sec-0 " + incomePerSec);
+
+  // === PET BONUSES ===
+  let petIncomeMultiplier = 1.0;
+  let petSpeedMultiplier = 1.0;
+  
+  equippedPets.forEach(pet => {
+    // Passive income pets
+    if (pet.ability === "passive_income") {
+      petIncomeMultiplier *= pet.abilityValue;
+    }
+    
+    // Night bonus pet (only active during night)
+    if (pet.ability === "night_bonus" && dayNightCycle.current === "night") {
+      petIncomeMultiplier *= pet.abilityValue;
+    }
+    
+    // Speed boost pet
+    if (pet.ability === "speed_boost") {
+      petSpeedMultiplier *= pet.abilityValue;
+    }
+    
+    // Apply mutation bonuses
+    if (pet.mutation) {
+      const mut = petMutations[pet.mutation];
+      petIncomeMultiplier *= mut.incomeBoost;
+    }
+  });
+  
+  // Update character speed with pet bonuses
+  character.speed = 250 * petSpeedMultiplier;
 
   const adminMultiplier = currentAdminEvent ? currentAdminEvent.incomeBoost : 1;
-  const totalMultiplier = weatherMultiplier * equippedRelicSpecial * (potionActive ? potionMultiplier : 1) * adminMultiplier * rebirthMultiplier;
-
-  console.log("totalMultiplier " + totalMultiplier);
-  console.log("rebirthMultiplier " + rebirthMultiplier);
+  const totalMultiplier = weatherMultiplier * equippedRelicSpecial * petIncomeMultiplier * (potionActive ? potionMultiplier : 1) * adminMultiplier * rebirthMultiplier;
 
   const adjustedIncome = BigInt(Math.floor(Number(incomePerSec) * totalMultiplier));
   
@@ -1205,7 +1481,6 @@ function recomputeIncome() {
 
   incomeDisplay.textContent = "Income/sec: " + shortText;
   incomeDisplay.title = fullText;
-  console.log("Income/Sec-1 " + shortText);
 
   if (potionActive) {
     const timeLeft = Math.ceil((potionEndTime - Date.now()) / 1000);
@@ -2025,7 +2300,7 @@ function initializeGame() {
   updateTierButtons();
   updateRebirthUI();
   updateEventIndicator(); // ← ADD THIS
-  
+  initPetTimers(); // ← ADD THIS LINE
   setTimeout(spawnBoss, 600000);
   specials.forEach(s => setTimeout(() => spawnSpecial(s), randomSpawnInterval(s.respawn)));
 }
@@ -2079,6 +2354,16 @@ saveBtn.addEventListener("click", () => {
     potions: equippedPotionSpecial
   };
   
+  // Save pets and timers
+  data.playerPets = JSON.parse(JSON.stringify(playerPets));
+  data.petTimers = {};
+  for (let petId in petTimers) {
+    data.petTimers[petId] = {
+      lastTrigger: petTimers[petId].lastTrigger,
+      cooldown: petTimers[petId].cooldown
+    };
+  }
+  
   localStorage.setItem("cubeGameSave", JSON.stringify(data));
   alert("✅ Progress Saved!");
 });
@@ -2100,7 +2385,6 @@ loadBtn.addEventListener("click", () => {
     for (let k in data.legendCounts) legendCounts[k] = BigInt(data.legendCounts[k]);
     cubeTier = data.cubeTier || 0;
     
-    // Restore rebirth data
     rebirthCount = data.rebirthCount || 0;
     rebirthMultiplier = data.rebirthMultiplier || 1.0;
 
@@ -2120,6 +2404,22 @@ loadBtn.addEventListener("click", () => {
     }
 
     if (data.bossDrops) bossDrops = data.bossDrops;
+    
+    // Load pets properly
+    playerPets = [];
+    equippedPets = [];
+    
+    if (data.playerPets && Array.isArray(data.playerPets)) {
+      playerPets = data.playerPets;
+      equippedPets = playerPets.filter(p => p.equipped);
+      console.log(`✅ Loaded ${playerPets.length} pets (${equippedPets.length} equipped)`);
+    }
+    
+    if (data.petTimers) {
+      petTimers = data.petTimers;
+    } else {
+      petTimers = {};
+    }
 
     cubes = buildCubes();
     renderLegendUI();
@@ -2127,6 +2427,8 @@ loadBtn.addEventListener("click", () => {
     updateInventoryDisplay();
     updateTierButtons();
     updateRebirthUI();
+    initPetTimers();
+    recomputeIncome();
 
     alert("✅ Progress Loaded!");
   } catch (err) {
@@ -2229,7 +2531,7 @@ if (keys.w || keys.arrowup) my -= 1;
 if (keys.s || keys.arrowdown) my += 1;
 if (keys.a || keys.arrowleft) mx -= 1;
 if (keys.d || keys.arrowright) mx += 1;
-
+ updatePets(dt); // ← ADD THIS LINE
   if (mx || my) {
     const len = Math.hypot(mx, my);
     character.x += (mx / len) * character.speed * dt * speedMultiplier;
@@ -2244,7 +2546,7 @@ if (keys.d || keys.arrowright) mx += 1;
 
   character.x = Math.max(0, Math.min(W - character.w, character.x));
   character.y = Math.max(0, Math.min(H - character.h, character.y));
-
+updatePets(dt); // ← ADD THIS LINE HERE
   specials.forEach(s => {
     if (s.visible && s.chase) {
       const dx = character.x - s.x, dy = character.y - s.y, dist = Math.hypot(dx, dy);
@@ -2355,84 +2657,83 @@ if (boss.hitsRemaining <= 0) {
   // ctx.strokeStyle = "yellow";
   // ctx.strokeRect(swordBox.x, swordBox.y, swordBox.w, swordBox.h);
 
-  if (rectsOverlap(swordBox, boss) && !boss.hitCooldown && !boss.retreating) {
-    // 🔥 Apply sword special multiplier damage
-    const dmg = Math.max(1, equippedSwordSpecial);
-    boss.hitsRemaining -= dmg;
-
-    boss.flash = true;
-    spawnSlash(boss.x + boss.w / 2, boss.y + boss.h / 2, Math.random() * Math.PI * 2);
-
-    // Boss retreats randomly around 30–50px away
-    boss.retreating = true;
-    boss.invulnerable = true; // can’t hurt player during retreat
-
-    const angle = Math.random() * 2 * Math.PI;
-    const distance = 30 + Math.random() * 20; // 30–50px random distance
-    const newX = boss.x + Math.cos(angle) * distance;
-    const newY = boss.y + Math.sin(angle) * distance;
-
-    const startX = boss.x;
-    const startY = boss.y;
-    const startTime = performance.now();
-    const retreatDuration = 400; // 0.4s retreat
-
-    function retreatAnimation(now) {
-      const progress = Math.min((now - startTime) / retreatDuration, 1);
-      boss.x = startX + (newX - startX) * progress;
-      boss.y = startY + (newY - startY) * progress;
-
-      if (progress < 1) {
-        requestAnimationFrame(retreatAnimation);
-      } else {
-        boss.retreating = false;
-        boss.invulnerable = false;
-      }
+if (rectsOverlap(swordBox, boss) && !boss.hitCooldown && !boss.retreating) {
+  // Calculate pet damage multiplier
+  let petDamageMultiplier = 1;
+  equippedPets.forEach(pet => {
+    if (pet.ability === "double_damage") {
+      petDamageMultiplier *= pet.abilityValue;
     }
-    requestAnimationFrame(retreatAnimation);
+  });
 
-    setTimeout(() => (boss.flash = false), 150);
-    boss.hitCooldown = true;
-    setTimeout(() => (boss.hitCooldown = false), 300);
+  // Apply sword special multiplier + pet damage
+  const dmg = Math.max(1, Math.floor(equippedSwordSpecial * petDamageMultiplier));
+  boss.hitsRemaining -= dmg;
 
+  boss.flash = true;
+  spawnSlash(boss.x + boss.w / 2, boss.y + boss.h / 2, Math.random() * Math.PI * 2);
+
+  // Rest of your existing boss retreat code...
+  boss.retreating = true;
+  boss.invulnerable = true;
+
+  const angle = Math.random() * 2 * Math.PI;
+  const distance = 30 + Math.random() * 20;
+  const newX = boss.x + Math.cos(angle) * distance;
+  const newY = boss.y + Math.sin(angle) * distance;
+
+  const startX = boss.x;
+  const startY = boss.y;
+  const startTime = performance.now();
+  const retreatDuration = 400;
+
+  function retreatAnimation(now) {
+    const progress = Math.min((now - startTime) / retreatDuration, 1);
+    boss.x = startX + (newX - startX) * progress;
+    boss.y = startY + (newY - startY) * progress;
+
+    if (progress < 1) {
+      requestAnimationFrame(retreatAnimation);
+    } else {
+      boss.retreating = false;
+      boss.invulnerable = false;
+    }
+  }
+  requestAnimationFrame(retreatAnimation);
+
+  setTimeout(() => (boss.flash = false), 150);
+  boss.hitCooldown = true;
+  setTimeout(() => (boss.hitCooldown = false), 300);
+
+  // Check if boss is defeated
   if (boss.hitsRemaining <= 0) {
     boss.visible = false;
     boss.hitsRemaining = boss.hitsToDie;
     boss.playerHits = 0;
     nextBossSpawn = Date.now() + bossSpawnInterval;
 
-    // 🧩 Loot drop logic
     const drops = [];
-
-    // Each roll uses Math.random()
-    // 100% drop
     if (Math.random() <= 1.0) drops.push("🦴 Skeleton Bones");
-    // 30% drop
     if (Math.random() <= 0.30) drops.push("📿 Crossbones Relic");
-    // 5% drop
     if (Math.random() <= 0.05) drops.push("⬜💀 Skeleton Skin");
-    // 1% drop
     if (Math.random() <= 0.01) drops.push("⬜☠️ Crossbones Cube");
 
-    // Store drops to display them visually
     bossDrops.push({
       x: boss.x + boss.w / 2,
       y: boss.y,
       items: drops,
-      timer: 3000, // display for 3 seconds
+      timer: 3000,
       opacity: 1
     });
 
-  // 🧾 Update inventory + drop counters
-  drops.forEach(item => {
-    if (inventory[item] !== undefined) {
-      inventory[item]++;
-      dropCounters[item]++; // track total count per item type
-    }
-  });
-  updateInventoryDisplay();
-
-} 
+    drops.forEach(item => {
+      if (inventory[item] !== undefined) {
+        inventory[item]++;
+        dropCounters[item]++;
+      }
+    });
+    updateInventoryDisplay();
+  }
 }
 }
 
@@ -2532,7 +2833,11 @@ function render() {
   ctx.fillStyle = 'rgba(255,255,255,0.02)';
   ctx.fillRect(12, 8, W - 24, 110);
 
+// ... existing rendering code for cubes, house, character ...
 
+renderPets(ctx); // ← ADD THIS LINE
+
+// ... boss rendering and rest of code ...
 // 🕒 Boss Timer Display
 const now = Date.now();
 ctx.fillStyle = 'white';
@@ -2633,7 +2938,7 @@ cubes.forEach(c => {
   ctx.textBaseline = 'middle';
   ctx.fillText(character.assignedValue ? shortLabel(character.assignedValue) : '—', character.x + character.w / 2, character.y + character.h / 2);
 
-
+renderPets(ctx); // ← ADD THIS LINE HERE
   // ⚡ Draw slash effects
 slashes.forEach(s => {
   const alpha = 1 - s.life / s.maxLife;
@@ -2748,6 +3053,225 @@ function initializeGame() {
 // Call it once after defining everything
 initializeGame();
 
+
+// Update pet positions and trigger abilities
+function updatePets(dt) {
+  const radius = 60; // distance from character
+  const rotationSpeed = 1; // rotation speed
+  
+  equippedPets.forEach((pet, index) => {
+    // Orbit around character
+    pet.offsetAngle += rotationSpeed * dt;
+    pet.x = character.x + character.w/2 + Math.cos(pet.offsetAngle) * radius - 24;
+    pet.y = character.y + character.h/2 + Math.sin(pet.offsetAngle) * radius - 24;
+    
+    // Check ability cooldowns
+    if (!petTimers[pet.id]) {
+      petTimers[pet.id] = { lastTrigger: Date.now(), cooldown: getPetCooldown(pet.ability) };
+    }
+    
+    const timer = petTimers[pet.id];
+    const now = Date.now();
+    
+    if (now - timer.lastTrigger >= timer.cooldown) {
+      triggerPetAbility(pet);
+      timer.lastTrigger = now;
+    }
+  });
+}
+
+// Trigger a pet's special ability
+function triggerPetAbility(pet) {
+  const roll = Math.random();
+  
+  switch(pet.ability) {
+case "purple_spawn":
+  if (roll < 0.20) { // 20% chance
+    console.log(`${pet.name} spawned a purple cube!`);
+    
+    // Spawn a temporary purple cube
+    const purpleCube = {
+      x: Math.random() * (W - CUBE_SIZE),
+      y: Math.random() * (H - CUBE_SIZE),
+      w: CUBE_SIZE,
+      h: CUBE_SIZE,
+      color: "#8b3bff",
+      value: money * 20n / 100n, // 20% of current money
+      visible: true,
+      isPurpleSpawn: true
+    };
+    
+    specials.push(purpleCube);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+      const index = specials.indexOf(purpleCube);
+      if (index > -1) specials.splice(index, 1);
+    }, 3000);
+  }
+  break;
+      
+    case "cube_grabber":
+      const randomCube = cubes[Math.floor(Math.random() * cubes.length)];
+      legendCounts[randomCube.name] = (legendCounts[randomCube.name] || 0n) + 1n;
+      houseValue += randomCube.value;
+      console.log(`${pet.name} grabbed a ${randomCube.name}!`);
+      recomputeIncome();
+      updateDisplays();
+      break;
+      
+    case "day_trigger":
+      if (roll < pet.abilityValue) {
+        changeDayNightCycle("day", true);
+        console.log(`${pet.name} triggered day time!`);
+      }
+      break;
+      
+    case "ember_mutator":
+      if (roll < pet.abilityValue) {
+        const randomPet = playerPets[Math.floor(Math.random() * playerPets.length)];
+        if (randomPet && !randomPet.mutation) {
+          randomPet.mutation = "Ember";
+          console.log(`${pet.name} mutated ${randomPet.name} with Ember!`);
+          updateInventoryDisplay();
+        }
+      }
+      break;
+      
+    case "shooting_star":
+      if (roll < pet.abilityValue) {
+        const bonus = money * 40n / 100n;
+        money += bonus;
+        console.log(`${pet.name} spawned a shooting star! +${formatBigInt(bonus)}`);
+        updateDisplays();
+      }
+      break;
+      
+    case "boss_spawn":
+      if (roll < pet.abilityValue) {
+        spawnBoss();
+        console.log(`${pet.name} spawned the boss!`);
+      }
+      break;
+      
+    case "glitch_mutator":
+      if (roll < pet.abilityValue) {
+        const randomPet = playerPets[Math.floor(Math.random() * playerPets.length)];
+        if (randomPet && !randomPet.mutation) {
+          randomPet.mutation = "Glitched";
+          console.log(`${pet.name} mutated ${randomPet.name} with Glitched!`);
+          updateInventoryDisplay();
+        }
+      }
+      break;
+      
+    case "ability_copy":
+      const nearbyPet = equippedPets.find(p => p.id !== pet.id);
+      if (nearbyPet) {
+        console.log(`${pet.name} copied ${nearbyPet.name}'s ability!`);
+        triggerPetAbility(nearbyPet);
+      }
+      break;
+      
+    case "egg_giver":
+      if (roll < pet.abilityValue) {
+        const eggTypes = ["Basic Egg", "Rare Egg", "Dragon Egg", "Mythic Egg", "Celestial Egg"];
+        const randomEgg = eggTypes[Math.floor(Math.random() * eggTypes.length)];
+        console.log(`${pet.name} gave you a ${randomEgg}!`);
+        
+        const existing = playerInventory.Eggs.find(i => i.name === randomEgg);
+        if (existing) existing.count++;
+        else playerInventory.Eggs.push({ icon: "🥚", name: randomEgg, count: 1 });
+        
+        updateInventoryDisplay();
+      }
+      break;
+      
+    case "money_doubler":
+      if (roll < pet.abilityValue) {
+        money = money * 2n;
+        console.log(`${pet.name} doubled your money!`);
+        updateDisplays();
+      }
+      break;
+      
+    case "entity_spawner":
+      const randomSpecial = specials[Math.floor(Math.random() * specials.length)];
+      spawnSpecial(randomSpecial);
+      console.log(`${pet.name} spawned ${randomSpecial.name}!`);
+      break;
+      
+    case "glitch_event":
+      if (roll < pet.abilityValue) {
+        const glitchEvent = adminAbuseEvents.find(e => e.name === "Glitched");
+        if (glitchEvent) triggerAdminEvent(glitchEvent);
+        console.log(`${pet.name} started Glitch event!`);
+      }
+      break;
+      
+    case "weather_trigger":
+      if (roll < pet.abilityValue) {
+        triggerWeatherEvent();
+        console.log(`${pet.name} triggered weather!`);
+      }
+      break;
+      
+    case "bone_giver":
+      dropCounters["🦴 Skeleton Bones"]++;
+      console.log(`${pet.name} gave you a skeleton bone!`);
+      updateInventoryDisplay();
+      break;
+      
+    case "blackhole_event":
+      if (roll < pet.abilityValue) {
+        const blackholeEvent = adminAbuseEvents.find(e => e.name === "Blackhole");
+        if (blackholeEvent) triggerAdminEvent(blackholeEvent);
+        console.log(`${pet.name} started Blackhole event!`);
+      }
+      break;
+      
+    case "cycle_changer":
+      if (roll < pet.abilityValue) {
+        checkDayNightCycle(); // Force next cycle
+        console.log(`${pet.name} changed the day/night cycle!`);
+      }
+      break;
+      
+    case "rain_event":
+      const rainEvent = weatherEvents.find(e => e.name === "Rain");
+      if (rainEvent && !currentWeather) {
+        currentWeather = rainEvent.name;
+        weatherMultiplier = rainEvent.incomeBoost;
+        console.log(`${pet.name} started Rain!`);
+        setTimeout(endWeatherEvent, rainEvent.duration);
+      }
+      break;
+      
+    case "earthquake_event":
+      if (roll < pet.abilityValue) {
+        const earthquakeEvent = adminAbuseEvents.find(e => e.name === "Earthquake");
+        if (earthquakeEvent) triggerAdminEvent(earthquakeEvent);
+        console.log(`${pet.name} started Earthquake!`);
+      }
+      break;
+      
+    case "random_event":
+      const randomWeatherEvent = weatherEvents[Math.floor(Math.random() * weatherEvents.length)];
+      if (!currentWeather) {
+        currentWeather = randomWeatherEvent.name;
+        weatherMultiplier = randomWeatherEvent.incomeBoost;
+        console.log(`${pet.name} started ${randomWeatherEvent.name}!`);
+        setTimeout(endWeatherEvent, randomWeatherEvent.duration);
+      }
+      break;
+      
+    case "galactic_event":
+      const galacticEvent = adminAbuseEvents.find(e => e.name === "Galactic");
+      if (galacticEvent) triggerAdminEvent(galacticEvent);
+      console.log(`${pet.name} started Galactic event!`);
+      break;
+  }
+}
 /**
  * The main game loop. Called repeatedly by requestAnimationFrame.
  * Updates the game state (e.g. character movement, animations) and renders the game.
