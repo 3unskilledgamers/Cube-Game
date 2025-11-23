@@ -111,9 +111,10 @@
 <div class="controls">
   <div style="display:flex;gap:8px;align-items:center;">
     <button id="upgradeBtn" style="flex:1;">⬆️ Upgrade Cubes</button>
-       <div id="eventIndicator" style="font-size:24px;width:40px;text-align:center;flex-shrink:0;" title="No active event">—</div>
+    <div id="eventIndicator" style="font-size:24px;width:40px;text-align:center;flex-shrink:0;" title="No active event">—</div>
   </div>
   <button id="downgradeBtn">⬇️ Downgrade Cubes</button>
+  <button id="adventBtn">🎄 Advent Calendar</button>
   <button id="saveBtn">💾 Save</button>
   <button id="loadBtn">📂 Load</button>
   <button id="rebirthBtn">🔄 Rebirth</button>
@@ -207,6 +208,85 @@ const adminAbuseEvents = [
     animation: "galactic"
   }
 ];
+
+// === CHRISTMAS EVENT CONFIGURATION ===
+const christmasEvent = {
+  active: false,
+  lastTrigger: 0,
+  interval: 60 * 60 * 1000, // 1 hour in ms
+  duration: 10 * 60 * 1000, // 10 minutes active
+  incomeBoost: 1.20, // 20% boost
+  snowflakes: [],
+  snowCollected: 0
+};
+
+// === ADVENT CALENDAR CONFIGURATION ===
+const adventCalendar = {
+  currentDay: 1, // Tracks which day we're on (1-25)
+  year: new Date().getFullYear(),
+  claimedDays: [], // Array of claimed day numbers
+    debugOffset: 0, // NEW: For debug day skipping
+  rewards: {
+    1: { type: "pet", name: "Snowflake Cube", icon: "❄️", color: "#B0E0E6", ability: "passive_income", value: 1.10, description: "+10% income" },
+    2: { type: "sword", name: "Candy Cane Sword", icon: "🍭", special: 3, price: 0 },
+    3: { type: "pet", name: "Gingerbread Cube", icon: "🍪", color: "#8B4513", ability: "speed_boost", value: 1.15, description: "+15% speed" },
+    4: { type: "snow", amount: 50 },
+    5: { type: "pet", name: "Holly Cube", icon: "🎄", color: "#228B22", ability: "money_doubler", value: 0.20, description: "Double money (5min)" },
+    6: { type: "skin", name: "Santa Skin", icon: "🎅", special: 8, color: "#DC143C" },
+    7: { type: "money", amount: 1_000_000_000_000_000n }, // 1QA
+    8: { type: "pet", name: "Star Cube", icon: "⭐", color: "#FFD700", ability: "shooting_star", value: 0.50, description: "Shooting star (10min)" },
+    9: { type: "relic", name: "Christmas Relic", icon: "🎁", special: 1.45 },
+    10: { type: "snow", amount: 100 },
+    11: { type: "pet", name: "Bell Cube", icon: "🔔", color: "#C0C0C0", ability: "entity_spawner", value: 1, description: "Spawns entities (10min)" },
+    12: { type: "sword", name: "Frost Blade", icon: "❄️🗡️", special: 5, price: 0 },
+    13: { type: "pet", name: "Ornament Cube", icon: "🎀", color: "#FF69B4", ability: "passive_income", value: 1.15, description: "+15% income" },
+    14: { type: "money", amount: 10_000_000_000_000_000n }, // 10QA
+    15: { type: "skin", name: "Elf Skin", icon: "🧝", special: 9, color: "#32CD32" },
+    16: { type: "snow", amount: 150 },
+    17: { type: "pet", name: "Wreath Cube", icon: "🎊", color: "#006400", ability: "cycle_changer", value: 0.80, description: "Change day/night (2min)" },
+    18: { type: "money", amount: 100_000_000_000_000_000n }, // 100QA
+    19: { type: "snow", amount: 200 },
+    20: { type: "money", amount: 1_000_000_000_000_000_000n }, // 1QI
+    21: { type: "pet", name: "Reindeer Cube", icon: "🦌", color: "#8B4513", ability: "double_damage", value: 2, description: "2x sword damage" },
+    22: { type: "snow", amount: 250 },
+    23: { type: "money", amount: 10_000_000_000_000_000_000n }, // 10QI
+    24: { type: "money", amount: 100_000_000_000_000_000_000n }, // 100QI
+    25: { type: "money", amount: 1_000_000_000_000_000_000_000n } // 1SX - Christmas Day Grand Prize!
+  }
+};
+
+// Christmas pet database
+const christmasPets = {
+  "Snowflake Cube": { name: "Snowflake Cube", color: "#B0E0E6", icon: "❄️", ability: "passive_income", value: 1.10, description: "+10% income" },
+  "Gingerbread Cube": { name: "Gingerbread Cube", color: "#8B4513", icon: "🍪", ability: "speed_boost", value: 1.15, description: "+15% speed" },
+  "Holly Cube": { name: "Holly Cube", color: "#228B22", icon: "🎄", ability: "money_doubler", value: 0.20, description: "Double money (5min)" },
+  "Star Cube": { name: "Star Cube", color: "#FFD700", icon: "⭐", ability: "shooting_star", value: 0.50, description: "Shooting star (10min)" },
+  "Bell Cube": { name: "Bell Cube", color: "#C0C0C0", icon: "🔔", ability: "entity_spawner", value: 1, description: "Spawns entities (10min)" },
+  "Ornament Cube": { name: "Ornament Cube", color: "#FF69B4", icon: "🎀", ability: "passive_income", value: 1.15, description: "+15% income" },
+  "Wreath Cube": { name: "Wreath Cube", color: "#006400", icon: "🎊", ability: "cycle_changer", value: 0.80, description: "Change day/night (2min)" },
+  "Reindeer Cube": { name: "Reindeer Cube", color: "#8B4513", icon: "🦌", ability: "double_damage", value: 2, description: "2x sword damage" }
+};
+
+// Christmas Shop Items
+const christmasShopItems = {
+  Swords: [
+    { icon: "🍭", price: 1_000_000_000_000_000n, name: "Candy Cane Sword", limit: 1, special: 3 },
+    { icon: "❄️🗡️", price: 100_000_000_000_000_000n, name: "Frost Blade", limit: 1, special: 5 }
+  ],
+  Relics: [
+    { icon: "🎁", price: 10_000_000_000_000_000_000n, name: "Christmas Relic", limit: 1, special: 1.45 }
+  ],
+  Skins: [
+    { icon: "🎅", price: 1_000_000_000_000_000_000n, name: "Santa Skin", limit: 1, special: 8, color: "#DC143C" },
+    { icon: "🧝", price: 100_000_000_000_000_000_000n, name: "Elf Skin", limit: 1, special: 9, color: "#32CD32" }
+  ],
+  Decorations: [
+    { icon: "❄️", price: 1000n, name: "Snowflake (x10)", limit: 999, special: 10 }
+  ]
+};
+
+
+// === DAY/NIGHT CYCLE CONFIGURATION ===
 // === DAY/NIGHT CYCLE CONFIGURATION ===
 const dayNightCycle = {
   current: "day", // "day", "night", "sunrise", "sunset"
@@ -527,6 +607,11 @@ const skins = {
   5:  { color: "#e9ecef" }
 };
 
+// Add Christmas skins to main skins object 
+
+skins[8] = { color: "#DC143C" }; // Santa Red
+skins[9] = { color: "#32CD32" }; // Elf Green
+
 
 window.equipItem = function equipItem(category, itemName) {
   // Find item in player inventory
@@ -667,7 +752,7 @@ function updateInventoryDisplay() {
   if (!inv) return;
 
   
-  // --- Existing inventory (drops) ---
+// --- Boss Drops Section ---
 let html = `
    <div id="bossDropsContainer">
   <details id="detailsBossDrops" open style="margin-top:8px;">
@@ -677,6 +762,7 @@ let html = `
       📿 Crossbones Relic: ${nvl(dropCounters["📿 Crossbones Relic"],0)}/${dropLimits.relic}<br>
       ⬜💀 Skeleton Skin: ${nvl(dropCounters["⬜💀 Skeleton Skin"],0)}/${dropLimits.skin}<br>
       ⬜☠️ Crossbones Cube: ${nvl(dropCounters["⬜☠️ Crossbones Cube"],0)}/${dropLimits.cube}<br>
+      ❄️ Snowflakes: ${nvl(dropCounters["❄️ Snowflakes"],0)}/∞<br>
     </div>
   </details>
    </div>
@@ -1055,7 +1141,142 @@ items.forEach((item, index) => {
     }
   }
 }
+function updateShopDisplay() {
+  const shopContainer = document.getElementById('shopContainer');
+  if (!shopContainer) return;
+  shopContainer.innerHTML = "<div class='legend-label'>🏪 SHOP</div>";
 
+  const purchaseLimits = {
+    Swords: 1,
+    Relics: 1,
+    Eggs: 999,
+    Skins: 1,
+    Potions: 999
+  };
+
+  // Regular shop items
+  for (const [category, items] of Object.entries(shopItems)) {
+    const row = document.createElement('div');
+    row.style.display = "flex";
+    row.style.gap = "10px";
+    row.style.marginTop = "8px";
+    row.innerHTML = `<strong style='min-width:70px'>${category}:</strong>`;
+
+    items.forEach((item, index) => {
+      const btn = document.createElement('button');
+      btn.innerText = `${item.icon} ${item.name}\n💰${shortLabel(item.price)}`;
+      btn.style.display = "flex";
+      btn.style.flexDirection = "column";
+      btn.style.alignItems = "center";
+      btn.style.justifyContent = "center";
+      btn.style.fontSize = "10px";
+      btn.style.padding = "4px 6px";
+      btn.style.background = "#4a3000";
+      btn.style.border = "1px solid #FFD700";
+
+      btn.onclick = (e) => {
+        if (category === "Eggs" && e.shiftKey) {
+          buyItem(category, index, true);
+        } else {
+          buyItem(category, index, false);
+        }
+      };
+
+      row.appendChild(btn);
+    });
+    shopContainer.appendChild(row);
+  }
+
+  // === CHRISTMAS SHOP (only when event active) ===
+  if (christmasEvent.active) {
+    const separator = document.createElement('div');
+    separator.style.marginTop = "15px";
+    separator.style.borderTop = "2px solid #DC143C";
+    separator.style.paddingTop = "10px";
+    shopContainer.appendChild(separator);
+
+    const christmasTitle = document.createElement('div');
+    christmasTitle.className = 'legend-label';
+    christmasTitle.textContent = '🎄 Christmas Shop 🎄';
+    christmasTitle.style.color = "#DC143C";
+    shopContainer.appendChild(christmasTitle);
+
+    for (const [category, items] of Object.entries(christmasShopItems)) {
+      const row = document.createElement('div');
+      row.style.display = "flex";
+      row.style.gap = "10px";
+      row.style.marginTop = "8px";
+      row.innerHTML = `<strong style='min-width:70px;color:#DC143C'>${category}:</strong>`;
+
+      items.forEach((item) => {
+        const btn = document.createElement('button');
+        btn.innerText = `${item.icon} ${item.name}\n💰${shortLabel(item.price)}`;
+        btn.style.display = "flex";
+        btn.style.flexDirection = "column";
+        btn.style.alignItems = "center";
+        btn.style.justifyContent = "center";
+        btn.style.fontSize = "10px";
+        btn.style.padding = "4px 6px";
+        btn.style.background = "#8B0000";
+        btn.style.border = "1px solid #DC143C";
+
+        btn.onclick = () => buyChristmasItem(category, item);
+
+        row.appendChild(btn);
+      });
+
+      shopContainer.appendChild(row);
+    }
+  }
+
+  // === EVENT SHOPS (existing code) ===
+  // ... rest of your event shop code ...
+}
+
+// Buy Christmas shop items
+function buyChristmasItem(category, item) {
+  const limit = (category === "Decorations") ? 999n : 1n;
+  const inventoryKey = item.name;
+  const owned = BigInt(inventory[inventoryKey] || 0n);
+
+  if (owned >= limit) {
+    alert(`You already own the maximum number of ${item.name}s!`);
+    return;
+  }
+
+  if (money < item.price) {
+    alert(`Not enough money to buy ${item.name}!`);
+    return;
+  }
+
+  money -= item.price;
+  inventory[inventoryKey] = owned + 1n;
+
+  const existing = playerInventory[category].find(i => i.name === item.name);
+  if (existing) {
+    existing.count++;
+  } else {
+    playerInventory[category].push({
+      icon: item.icon,
+      name: item.name,
+      count: 1,
+      special: item.special
+    });
+  }
+
+  // Special handling for snowflakes
+  if (category === "Decorations") {
+    christmasEvent.snowCollected += item.special;
+    dropCounters["❄️ Snowflakes"] += item.special;
+    inventory["❄️ Snowflakes"] += item.special;
+  }
+
+  updateDisplays();
+  updateInventoryDisplay();
+  updateShopDisplay();
+}
+
+window.buyChristmasItem = buyChristmasItem;
 function buyEventItem(eventKey, category, item) {
   const limit = (category === "Eggs" || category === "Potions") ? 999n : 1n;
   const inventoryKey = item.name;
@@ -1294,20 +1515,16 @@ const inventory = {
   "🦴 Skeleton Bones": 0,
   "📿 Crossbones Relic": 0,
   "⬜💀 Skeleton Skin": 0,
-  "⬜☠️ Crossbones Cube": 0
+  "⬜☠️ Crossbones Cube": 0,
+  "❄️ Snowflakes": 0 // NEW
 };
 
-// 💰 Track how many total drops of each type (separate counters)
 const dropCounters = {
   "🦴 Skeleton Bones": 0,
   "📿 Crossbones Relic": 0,
   "⬜💀 Skeleton Skin": 0,
-  "⬜☠️ Crossbones Cube": 0
-  //,
-  //"bones": 0,
-  //"relic": 0,
-  //"skin": 0,
-  //"cube": 0
+  "⬜☠️ Crossbones Cube": 0,
+  "❄️ Snowflakes": 0 // NEW
 };
 
 
@@ -1636,6 +1853,21 @@ function filterPets(searchQuery) {
   }
   
   let foundCount = 0;
+
+// Clear pet search
+function clearPetSearch() {
+  const searchInput = document.getElementById('petSearchInput');
+  if (searchInput) {
+    searchInput.value = '';
+    filterPets(''); // Show all pets
+  }
+}
+
+// Make functions globally accessible
+window.filterPets = filterPets;
+window.clearPetSearch = clearPetSearch;
+
+
   
   // Check for special filter commands
   const isEquippedFilter = query === 'equipped' || query === 'equip';
@@ -1988,7 +2220,11 @@ function recomputeIncome() {
 
   if (potionActive) {
     const timeLeft = Math.ceil((potionEndTime - Date.now()) / 1000);
-    incomeDisplay.textContent += ` 🧪(${timeLeft}s)`;
+    incomeDisplay.textContent += ` 🧪(${timeLeft}s)`;  
+  }
+
+    if (christmasEvent.active) {
+    incomeDisplay.textContent += ` 🎄`;
   }
 }
 
@@ -2034,13 +2270,369 @@ function endWeatherEvent() {
   stopWeatherAnimation();
   updateEventIndicator(); // ← ADD THIS
 }
+// === CHRISTMAS EVENT FUNCTIONS ===
+function startChristmasEvent() {
+  if (christmasEvent.active) return;
+  
+  christmasEvent.active = true;
+  christmasEvent.lastTrigger = Date.now();
+  
+  console.log("🎄 Christmas Event Started! +20% income for 10 minutes");
+  
+  // Generate snowflakes
+  generateSnowflakes();
+  
+  // Show shop
+  updateShopDisplay();
+  
+  recomputeIncome();
+  updateEventIndicator();
+  
+  // End after duration
+  setTimeout(() => {
+    endChristmasEvent();
+  }, christmasEvent.duration);
+}
 
+function endChristmasEvent() {
+  christmasEvent.active = false;
+  christmasEvent.snowflakes = [];
+  
+  console.log("🎄 Christmas Event Ended");
+  
+  updateShopDisplay();
+  recomputeIncome();
+  updateEventIndicator();
+}
 
+function generateSnowflakes() {
+  christmasEvent.snowflakes = [];
+  for (let i = 0; i < 50; i++) {
+    christmasEvent.snowflakes.push({
+      x: Math.random() * W,
+      y: Math.random() * H - H, // Start above screen
+      size: 2 + Math.random() * 4,
+      speed: 30 + Math.random() * 50,
+      sway: Math.random() * 2 - 1,
+      swaySpeed: 1 + Math.random() * 2
+    });
+  }
+}
+
+function updateSnowflakes(dt) {
+  if (!christmasEvent.active) return;
+  
+  christmasEvent.snowflakes.forEach(flake => {
+    flake.y += flake.speed * dt;
+    flake.x += Math.sin(flake.y * 0.01 * flake.swaySpeed) * flake.sway;
+    
+    // Wrap around screen
+    if (flake.y > H) {
+      flake.y = -10;
+      flake.x = Math.random() * W;
+    }
+    
+    if (flake.x < 0) flake.x = W;
+    if (flake.x > W) flake.x = 0;
+    
+    // Check collision with character
+    if (rectsOverlap(
+      { x: flake.x - flake.size, y: flake.y - flake.size, w: flake.size * 2, h: flake.size * 2 },
+      character
+    )) {
+      christmasEvent.snowCollected++;
+      dropCounters["❄️ Snowflakes"]++;
+      inventory["❄️ Snowflakes"]++;
+      
+      // Respawn snowflake
+      flake.y = -10;
+      flake.x = Math.random() * W;
+      
+      updateInventoryDisplay();
+    }
+  });
+}
+
+function drawSnowflakes(ctx) {
+  if (!christmasEvent.active) return;
+  
+  ctx.save();
+  ctx.fillStyle = "white";
+  christmasEvent.snowflakes.forEach(flake => {
+    ctx.globalAlpha = 0.8;
+    ctx.beginPath();
+    ctx.arc(flake.x, flake.y, flake.size, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+// Auto-trigger Christmas event every hour
+setInterval(() => {
+  if (!christmasEvent.active && Date.now() - christmasEvent.lastTrigger >= christmasEvent.interval) {
+    startChristmasEvent();
+  }
+}, 60000); // Check every minute
+// === ADVENT CALENDAR FUNCTIONS ===
+function updateAdventDay() {
+  const now = new Date();
+  const currentMonth = now.getMonth(); // 0-11 (December = 11)
+  let currentDate = now.getDate(); // 1-31
+  
+  // Apply debug offset if set
+  if (adventCalendar.debugOffset) {
+    currentDate = adventCalendar.debugOffset + 1;
+    console.log(`📅 DEBUG MODE: Using day ${currentDate} (offset: ${adventCalendar.debugOffset})`);
+  }
+  
+  // Only active in December (or debug mode)
+  if (currentMonth === 11 || adventCalendar.debugOffset > 0) {
+    adventCalendar.currentDay = Math.min(currentDate, 25);
+  } else {
+    adventCalendar.currentDay = 0; // Not December or past Christmas
+  }
+}
+
+function canClaimAdventDay(day) {
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  let currentDate = now.getDate();
+  
+  // Apply debug offset if set
+  if (adventCalendar.debugOffset) {
+    currentDate = adventCalendar.debugOffset + 1;
+  }
+  
+  // Not December (unless in debug mode)
+  if (currentMonth !== 11 && adventCalendar.debugOffset === 0) return false;
+  
+  // Future day
+  if (day > currentDate) return false;
+  
+  // Already claimed
+  if (adventCalendar.claimedDays.includes(day)) return false;
+  
+  // Day must be 1-25
+  if (day < 1 || day > 25) return false;
+  
+  return true;
+}
+
+function claimAdventReward(day) {
+  if (!canClaimAdventDay(day)) {
+    if (adventCalendar.claimedDays.includes(day)) {
+      alert(`❌ Day ${day} already claimed!`);
+    } else if (day > new Date().getDate() && new Date().getMonth() === 11) {
+      alert(`❌ Day ${day} not available yet! Come back later.`);
+    } else {
+      alert(`❌ Cannot claim day ${day}!`);
+    }
+    return;
+  }
+  
+  const reward = adventCalendar.rewards[day];
+  if (!reward) {
+    alert(`❌ No reward for day ${day}!`);
+    return;
+  }
+  
+  // Mark as claimed
+  adventCalendar.claimedDays.push(day);
+  
+  // Give reward
+  let rewardMsg = `🎄 Day ${day} Claimed!\n\n`;
+  
+  switch (reward.type) {
+    case "pet":
+      const petData = christmasPets[reward.name];
+      const newPet = {
+        id: Date.now() + Math.random(),
+        name: petData.name,
+        color: petData.color,
+        icon: petData.icon,
+        ability: petData.ability,
+        abilityValue: petData.value,
+        description: petData.description,
+        eggType: "Advent Calendar",
+        mutation: null,
+        equipped: false,
+        offsetAngle: 0,
+        x: character.x,
+        y: character.y
+      };
+      playerPets.push(newPet);
+      rewardMsg += `🎁 Received: ${petData.icon} ${petData.name}\n${petData.description}`;
+      break;
+      
+    case "sword":
+      playerInventory.Swords.push({
+        icon: reward.icon,
+        name: reward.name,
+        count: 1,
+        special: reward.special
+      });
+      rewardMsg += `🎁 Received: ${reward.icon} ${reward.name} (${reward.special} damage)`;
+      break;
+      
+    case "relic":
+      playerInventory.Relics.push({
+        icon: reward.icon,
+        name: reward.name,
+        count: 1,
+        special: reward.special
+      });
+      rewardMsg += `🎁 Received: ${reward.icon} ${reward.name} (${reward.special}x money)`;
+      break;
+      
+    case "skin":
+      playerInventory.Skins.push({
+        icon: reward.icon,
+        name: reward.name,
+        count: 1,
+        special: reward.special
+      });
+      skins[reward.special] = { color: reward.color };
+      rewardMsg += `🎁 Received: ${reward.icon} ${reward.name}`;
+      break;
+      
+    case "snow":
+      christmasEvent.snowCollected += reward.amount;
+      dropCounters["❄️ Snowflakes"] += reward.amount;
+      inventory["❄️ Snowflakes"] += reward.amount;
+      rewardMsg += `🎁 Received: ❄️ ${reward.amount} Snowflakes`;
+      break;
+      
+    case "money":
+      money += reward.amount;
+      rewardMsg += `🎁 Received: 💰 ${formatBigInt(reward.amount)} Money`;
+      break;
+  }
+  
+  alert(rewardMsg);
+  updateInventoryDisplay();
+  updateDisplays();
+  showAdventCalendar(); // Refresh calendar
+}
+
+function showAdventCalendar() {
+  updateAdventDay();
+  
+  let html = `
+    <div style="background:#1a0a00;padding:20px;border-radius:15px;max-width:600px;margin:20px auto;color:white;">
+      <h2 style="text-align:center;color:#FFD700;">🎄 Advent Calendar 🎄</h2>
+      <p style="text-align:center;color:#aaa;">Claim daily rewards throughout December!</p>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:20px;">
+  `;
+  
+  for (let day = 1; day <= 25; day++) {
+    const isClaimed = adventCalendar.claimedDays.includes(day);
+    const canClaim = canClaimAdventDay(day);
+    const isToday = day === adventCalendar.currentDay;
+    const reward = adventCalendar.rewards[day];
+    
+    let bgColor = "#333";
+    let textColor = "#888";
+    let cursor = "not-allowed";
+    
+    if (isClaimed) {
+      bgColor = "#2d5016"; // Green - claimed
+      textColor = "#90EE90";
+    } else if (canClaim) {
+      bgColor = "#8B0000"; // Red - available
+      textColor = "#FFD700";
+      cursor = "pointer";
+    } else if (isToday) {
+      bgColor = "#4a3000"; // Gold - today but not yet claimable
+      textColor = "#FFD700";
+    }
+    
+    const rewardIcon = reward ? getRewardIcon(reward) : "🎁";
+    
+    html += `
+      <div 
+        onclick="${canClaim ? `claimAdventReward(${day})` : ''}"
+        style="
+          background:${bgColor};
+          padding:15px;
+          border-radius:10px;
+          text-align:center;
+          cursor:${cursor};
+          border:${isToday ? '2px solid gold' : '1px solid #555'};
+          transition:transform 0.2s;
+        "
+        ${canClaim ? 'onmouseover="this.style.transform=\'scale(1.05)\'" onmouseout="this.style.transform=\'scale(1)\'"' : ''}
+      >
+        <div style="font-size:24px;">${rewardIcon}</div>
+        <div style="color:${textColor};font-weight:bold;margin-top:5px;">${day}</div>
+        ${isClaimed ? '<div style="font-size:12px;color:#90EE90;">✓</div>' : ''}
+      </div>
+    `;
+  }
+  
+  html += `
+      </div>
+      <div style="margin-top:20px;text-align:center;">
+        <button onclick="closeAdventCalendar()" style="padding:10px 20px;background:#8B0000;color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px;">
+          Close
+        </button>
+      </div>
+      <p style="text-align:center;color:#888;font-size:12px;margin-top:10px;">
+        Claimed: ${adventCalendar.claimedDays.length}/25
+      </p>
+    </div>
+  `;
+  
+  // Create overlay
+  const overlay = document.createElement('div');
+  overlay.id = 'adventCalendarOverlay';
+  overlay.style.cssText = `
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.8);
+    z-index:10000;
+    overflow-y:auto;
+  `;
+  overlay.innerHTML = html;
+  document.body.appendChild(overlay);
+}
+
+function getRewardIcon(reward) {
+  switch (reward.type) {
+    case "pet": return reward.icon;
+    case "sword": return reward.icon;
+    case "relic": return reward.icon;
+    case "skin": return reward.icon;
+    case "snow": return "❄️";
+    case "money": return "💰";
+    default: return "🎁";
+  }
+}
+
+function closeAdventCalendar() {
+  const overlay = document.getElementById('adventCalendarOverlay');
+  if (overlay) overlay.remove();
+}
+
+// Make functions globally accessible
+window.claimAdventReward = claimAdventReward;
+window.closeAdventCalendar = closeAdventCalendar;
+window.showAdventCalendar = showAdventCalendar;
 function updateEventIndicator() {
   const indicator = document.getElementById('eventIndicator');
   if (!indicator) return;
   
-  // Check for admin event first (higher priority)
+  // Check for Christmas event first (highest priority for seasonal)
+  if (christmasEvent.active) {
+    indicator.textContent = "🎄";
+    indicator.title = `Active: Christmas Event (+20% income, Shop open!)`;
+    return;
+  }
+  
+  // Check for admin event
   if (currentAdminEvent) {
     const emoji = eventEmojis[currentAdminEvent.name] || "🎮";
     indicator.textContent = emoji;
@@ -2519,12 +3111,15 @@ function checkScheduledAdminEvents() {
   const now = new Date();
   
   adminAbuseEvents.forEach(event => {
-    event.triggers.forEach(trigger => {
-      if (!trigger.triggered && trigger.date <= now) {
-        trigger.triggered = true;
-        triggerAdminEvent(event);
-      }
-    });
+    // Only process if event has triggers array
+    if (event.triggers && Array.isArray(event.triggers)) {
+      event.triggers.forEach(trigger => {
+        if (!trigger.triggered && trigger.date <= now) {
+          trigger.triggered = true;
+          triggerAdminEvent(event);
+        }
+      });
+    }
   });
 }
 
@@ -2660,7 +3255,6 @@ function handleSlash() {
 
 /// WINDOW EVENT LISTENERS
 const keys = {};
-//window.addEventListener("keydown", e => { if ("wasd".includes(e.key.toLowerCase())) keys[e.key.toLowerCase()] = true; });
 window.addEventListener("keydown", e => {
   const key = e.key.toLowerCase();
   if (["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"].includes(key)) {
@@ -2682,9 +3276,54 @@ window.addEventListener("keydown", e => {
   
   // DEBUG: Money cheat (backtick key)
   if (e.key === "`") {
-    money += 100_000_000_000_000_000_000_000_000_000_000n; // 100DC
+    money += 100_000_000_000_000_000_000_000_000_000_000n;
     updateDisplays();
     console.log("💰 DEBUG: Added 100DC money!");
+  }
+// === RESET ADVENT DEBUG (Shift+_) ===
+if (e.shiftKey && e.key === "_") {
+  adventCalendar.debugOffset = 0;
+  console.log(`📅 DEBUG: Reset advent calendar to current date`);
+  
+  // Refresh the calendar if it's open
+  const calendarOverlay = document.getElementById('adventCalendarOverlay');
+  if (calendarOverlay) {
+    closeAdventCalendar();
+    setTimeout(() => showAdventCalendar(), 100);
+  }
+}
+  // === CHRISTMAS EVENT DEBUG (=) ===
+  if (e.key === "=") {
+    startChristmasEvent();
+  }
+  
+  // === ADVENT CALENDAR DEBUG (_) - FIXED VERSION ===
+  if (e.key === "_") {
+    // Set the system date forward for debugging
+    if (!adventCalendar.debugOffset) {
+      adventCalendar.debugOffset = 0;
+    }
+    adventCalendar.debugOffset++;
+    
+    const newDay = adventCalendar.debugOffset + 1;
+    if (newDay > 25) {
+      adventCalendar.debugOffset = 0;
+      console.log(`📅 DEBUG: Reset to advent day 1`);
+    } else {
+      console.log(`📅 DEBUG: Skipped to advent day ${newDay}`);
+    }
+    
+    // Refresh the calendar if it's open
+    const calendarOverlay = document.getElementById('adventCalendarOverlay');
+    if (calendarOverlay) {
+      closeAdventCalendar();
+      setTimeout(() => showAdventCalendar(), 100);
+    }
+  }
+  
+  // === OPEN ADVENT CALENDAR (Shift+C) ===
+  if (e.shiftKey && key === "c") {
+    showAdventCalendar();
   }
 
   // === ADMIN ABUSE EVENT TRIGGERS ===
@@ -2851,6 +3490,7 @@ function initializeGame() {
   updateRebirthUI();
   updateEventIndicator(); // ← ADD THIS
   initPetTimers(); // ← ADD THIS LINE
+  updateAdventDay(); // NEW: Initialize advent calendar
   setTimeout(spawnBoss, 600000);
   specials.forEach(s => setTimeout(() => spawnSpecial(s), randomSpawnInterval(s.respawn)));
 }
@@ -2876,6 +3516,14 @@ downgradeBtn.addEventListener("click", () => {
 rebirthBtn.addEventListener("click", () => {
   performRebirth();
 });
+
+const adventBtn = document.getElementById('adventBtn');
+if (adventBtn) {
+  adventBtn.addEventListener('click', () => {
+    showAdventCalendar();
+  });
+}
+
 // --- SAVE & LOAD PROGRESS ---
 const saveBtn = document.getElementById("saveBtn");
 const loadBtn = document.getElementById("loadBtn");
@@ -2894,8 +3542,20 @@ saveBtn.addEventListener("click", () => {
     bossDrops,
     rebirthCount,
     rebirthMultiplier,
-    maxPetSlots // NEW
+    maxPetSlots, // NEW
+        // Christmas data with debug offset
+    adventCalendar: {
+      currentDay: adventCalendar.currentDay,
+      claimedDays: adventCalendar.claimedDays,
+      year: adventCalendar.year,
+      debugOffset: adventCalendar.debugOffset || 0 // NEW
+    },
+    christmasEvent: {
+      snowCollected: christmasEvent.snowCollected,
+      lastTrigger: christmasEvent.lastTrigger
+    }
   };
+
 
   data.equipped = {
     swords: equippedSwordSpecial,
@@ -2939,6 +3599,20 @@ loadBtn.addEventListener("click", () => {
     rebirthCount = data.rebirthCount || 0;
     rebirthMultiplier = data.rebirthMultiplier || 1.0;
     maxPetSlots = data.maxPetSlots || 3; // NEW
+
+  if (data.adventCalendar) {
+      adventCalendar.currentDay = data.adventCalendar.currentDay || 1;
+      adventCalendar.claimedDays = data.adventCalendar.claimedDays || [];
+      adventCalendar.year = data.adventCalendar.year || new Date().getFullYear();
+        adventCalendar.debugOffset = data.adventCalendar.debugOffset || 0; // NEW
+    }
+    
+    if (data.christmasEvent) {
+      christmasEvent.snowCollected = data.christmasEvent.snowCollected || 0;
+      christmasEvent.lastTrigger = data.christmasEvent.lastTrigger || 0;
+      dropCounters["❄️ Snowflakes"] = christmasEvent.snowCollected;
+      inventory["❄️ Snowflakes"] = christmasEvent.snowCollected;
+    }
 
     if (data.dropCounters) Object.assign(dropCounters, data.dropCounters);
     if (data.playerInventory) {
@@ -3084,6 +3758,9 @@ if (keys.s || keys.arrowdown) my += 1;
 if (keys.a || keys.arrowleft) mx -= 1;
 if (keys.d || keys.arrowright) mx += 1;
  updatePets(dt); // ← ADD THIS LINE
+   updatePets(dt);
+  updateSnowflakes(dt); // NEW: Add snowflake updates
+
   if (mx || my) {
     const len = Math.hypot(mx, my);
     character.x += (mx / len) * character.speed * dt * speedMultiplier;
@@ -3576,7 +4253,8 @@ bossDrops.forEach(drop => {
   });  
   ctx.restore();
   });
-  
+    drawSnowflakes(ctx); // NEW: Draw Christmas snowflakes
+  drawWeatherAnimation(ctx);
   drawAdminAnimation(ctx);
 
   // Reset earthquake shake
@@ -3866,9 +4544,11 @@ function loop(t) {
   updateWeatherAnimation(dt);
   updateAdminAnimation(dt);
     updateDayNightAnimation(dt); // ← ADD THIS LINE
+      updateSnowflakes(dt); // NEW: Update snowflakes
   render();
   drawWeatherAnimation(ctx);
   drawAdminAnimation(ctx);  
+    drawSnowflakes(ctx); // NEW: Draw snowflakes
   requestAnimationFrame(loop);
 }
 
