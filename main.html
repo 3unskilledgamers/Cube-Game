@@ -89,10 +89,181 @@
   color: #ffe066;
 }
 
+/* Admin Panel Styles */
+#adminPanel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(20, 20, 30, 0.98);
+  border: 2px solid #FFD700;
+  border-radius: 15px;
+  padding: 20px;
+  z-index: 10000;
+  color: white;
+  min-width: 500px;
+  max-width: 80vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  display: none;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+}
 
+#adminPanel.active {
+  display: block;
+}
+
+#adminPanel h2 {
+  margin: 0 0 15px 0;
+  color: #FFD700;
+  text-align: center;
+  font-size: 24px;
+}
+
+.admin-section {
+  margin: 15px 0;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.admin-section h3 {
+  margin: 0 0 10px 0;
+  color: #00ffff;
+  font-size: 16px;
+}
+
+.admin-btn {
+  background: #1a4d7a;
+  color: white;
+  border: 1px solid #00ffff;
+  padding: 8px 15px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.admin-btn:hover {
+  background: #2a5d8a;
+  transform: translateY(-2px);
+}
+
+.admin-btn:active {
+  transform: translateY(0);
+}
+
+.admin-input {
+  background: #222;
+  color: white;
+  border: 1px solid #555;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin: 5px;
+  width: 100px;
+}
+
+.admin-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #8B0000;
+  border: none;
+  color: white;
+  font-size: 20px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+}
 </style>
 </head>
 <body>
+  <!-- Admin Panel -->
+<div id="adminPanel">
+  <button class="admin-close" onclick="toggleAdminPanel()">×</button>
+  <h2>🔧 Admin Panel 🔧</h2>
+  
+  <!-- Money Section -->
+  <div class="admin-section">
+    <h3>💰 Money Controls</h3>
+    <button class="admin-btn" onclick="adminAddMoney(1000000000000000000000000000000000n)">+100DC</button>
+    <button class="admin-btn" onclick="adminAddMoney(1000000000000000000000000n)">+1SP</button>
+    <button class="admin-btn" onclick="adminAddMoney(1000000000000000000n)">+1QI</button>
+    <button class="admin-btn" onclick="adminAddMoney(1000000000000n)">+1T</button>
+    <button class="admin-btn" onclick="adminSetMoney(0n)">Reset to 0</button>
+  </div>
+  
+  <!-- Day/Night Controls -->
+  <div class="admin-section">
+    <h3>🌍 Day/Night Cycle</h3>
+    <button class="admin-btn" onclick="changeDayNightCycle('day', true)">☀️ Set Day</button>
+    <button class="admin-btn" onclick="changeDayNightCycle('sunset', true)">🌅 Set Sunset</button>
+    <button class="admin-btn" onclick="changeDayNightCycle('night', true)">🌙 Set Night</button>
+    <button class="admin-btn" onclick="changeDayNightCycle('sunrise', true)">🌄 Set Sunrise</button>
+  </div>
+  
+  <!-- Event Controls -->
+  <div class="admin-section">
+    <h3>🎮 Events</h3>
+    <button class="admin-btn" onclick="adminTriggerEvent('Blackhole')">⚫ Blackhole</button>
+    <button class="admin-btn" onclick="adminTriggerEvent('Hurricane')">🌀 Hurricane</button>
+    <button class="admin-btn" onclick="adminTriggerEvent('Disco')">🪩 Disco</button>
+    <button class="admin-btn" onclick="adminTriggerEvent('Volcano')">🌋 Volcano</button>
+    <button class="admin-btn" onclick="adminTriggerEvent('Earthquake')">🫨 Earthquake</button>
+    <button class="admin-btn" onclick="adminTriggerEvent('Glitched')">⚜️ Glitched</button>
+    <button class="admin-btn" onclick="adminTriggerEvent('Galactic')">🚀 Galactic</button>
+    <button class="admin-btn" onclick="triggerWeatherEvent()">🌦️ Random Weather</button>
+    <button class="admin-btn" onclick="startChristmasEvent()">🎄 Christmas</button>
+  </div>
+  
+  <!-- Boss Controls -->
+  <div class="admin-section">
+    <h3>☠️ Boss Controls</h3>
+    <button class="admin-btn" onclick="spawnBoss()">Spawn Boss</button>
+    <button class="admin-btn" onclick="adminKillBoss()">Kill Boss</button>
+  </div>
+  
+  <!-- Advent Calendar Controls -->
+  <div class="admin-section">
+    <h3>📅 Advent Calendar</h3>
+    <button class="admin-btn" onclick="adminAdventSkipDay()">⏭️ Skip +1 Day</button>
+    <button class="admin-btn" onclick="adminAdventBackDay()">⏮️ Back -1 Day</button>
+    <button class="admin-btn" onclick="adminAdventReset()">🔄 Reset to Today</button>
+    <button class="admin-btn" onclick="showAdventCalendar()">📖 Open Calendar</button>
+    <span style="color:#aaa; font-size:12px; margin-left:10px;">Current: Day <span id="adminAdventDay">1</span></span>
+  </div>
+  
+  <!-- Pet Controls -->
+  <div class="admin-section">
+    <h3>🐾 Pet Controls</h3>
+    <button class="admin-btn" onclick="adminGiveRandomEgg()">🥚 Random Egg</button>
+    <button class="admin-btn" onclick="adminClearAllPets()">🗑️ Clear All Pets</button>
+    <button class="admin-btn" onclick="adminMaxPetSlots()">⬆️ Max Pet Slots (10)</button>
+  </div>
+  
+  <!-- Rebirth Controls -->
+  <div class="admin-section">
+    <h3>🔄 Rebirth</h3>
+    <button class="admin-btn" onclick="adminCompleteRebirth()">Complete Next Rebirth</button>
+    <button class="admin-btn" onclick="adminResetRebirths()">Reset All Rebirths</button>
+    <span style="color:#aaa; font-size:12px; margin-left:10px;">Current: <span id="adminRebirthCount">0</span></span>
+  </div>
+  
+  <!-- Cube Controls -->
+  <div class="admin-section">
+    <h3>🎲 Cube Controls</h3>
+    <button class="admin-btn" onclick="adminMaxAllCubes()">Max All Cubes (999)</button>
+    <button class="admin-btn" onclick="adminClearAllCubes()">Clear All Cubes</button>
+  </div>
+  
+  <!-- Shop Controls -->
+  <div class="admin-section">
+    <h3>🛒 Shop</h3>
+    <button class="admin-btn" onclick="adminUnlockAllShop()">Unlock All Items</button>
+  </div>
+</div>
 <div class="wrap">
   <div class="hud topline">
     <div class="stat" id="moneyDisplay">Money: 0</div>
@@ -270,18 +441,19 @@ const christmasPets = {
 // Christmas Shop Items
 const christmasShopItems = {
   Swords: [
-    { icon: "🍭", price: 1_000_000_000_000_000n, name: "Candy Cane Sword", limit: 1, special: 3 },
-    { icon: "❄️🗡️", price: 100_000_000_000_000_000n, name: "Frost Blade", limit: 1, special: 5 }
+    { icon: "🎅🗡️", price: 1_000_000_000_000_000_000n, name: "Santa's Blade", limit: 1, special: 4 }
   ],
   Relics: [
-    { icon: "🎁", price: 10_000_000_000_000_000_000n, name: "Christmas Relic", limit: 1, special: 1.45 }
+    { icon: "🔔", price: 100_000_000_000_000_000_000_000n, name: "Jingle Bell Relic", limit: 1, special: 1.52 }
+  ],
+  Eggs: [
+    { icon: "🎁", price: 100_000_000_000_000_000_000_000_000_000n, name: "Gift Egg", limit: 999, special: 1 }
   ],
   Skins: [
-    { icon: "🎅", price: 1_000_000_000_000_000_000n, name: "Santa Skin", limit: 1, special: 8, color: "#DC143C" },
-    { icon: "🧝", price: 100_000_000_000_000_000_000n, name: "Elf Skin", limit: 1, special: 9, color: "#32CD32" }
+    { icon: "🎄", price: 10_000_000_000_000_000_000_000n, name: "Christmas Tree Skin", limit: 1, special: 10, color: "#228B22" }
   ],
-  Decorations: [
-    { icon: "❄️", price: 1000n, name: "Snowflake (x10)", limit: 999, special: 10 }
+  Potions: [
+    { icon: "🎅🧪", price: 100_000_000_000_000_000_000n, name: "Santa's Potion", limit: 999, special: 5.2 }
   ]
 };
 
@@ -604,14 +776,18 @@ const skins = {
   2:  { color: "#4d7cff" },
   3: { color: "#a45ee5" },
   4:  { color: "#ffd700" },
-  5:  { color: "#e9ecef" }
+  5:  { color: "#e9ecef" },
+  6: { color: "#FFF917" }, // Sunny
+  7: { color: "#312F36" }, // Night
+  8: { color: "#DC143C" }, // Santa Red
+  9: { color: "#32CD32" }, // Elf Green
+  10: { color: "#228B22" } // Christmas Tree Green - NEW
 };
-
-// Add Christmas skins to main skins object 
-
-skins[8] = { color: "#DC143C" }; // Santa Red
-skins[9] = { color: "#32CD32" }; // Elf Green
-
+// Global pet ability flags
+window.giftDropMultiplier = 1.0;
+window.healingShieldActive = false;
+window.luckyStarActive = false;
+window.luckyStarMultiplier = 1.0;
 
 window.equipItem = function equipItem(category, itemName) {
   // Find item in player inventory
@@ -900,30 +1076,39 @@ html += `
   // Pet list container
   html += '<div id="petListContainer">';
   
-  playerPets.forEach(pet => {
-    const mutationText = pet.mutation ? ` [${petMutations[pet.mutation].emoji} ${pet.mutation}]` : '';
-    const equippedBtn = pet.equipped 
-      ? '<button onclick="togglePetEquip(' + pet.id + ')" style="margin-left:5px;padding:2px 6px;border-radius:5px;background:#28a745;color:white;border:none;cursor:pointer;">✓ Equipped</button>'
-      : '<button onclick="togglePetEquip(' + pet.id + ')" style="margin-left:5px;padding:2px 6px;border-radius:5px;background:#333;color:white;border:none;cursor:pointer;">Equip</button>';
-    
-    const deleteBtn = '<button onclick="deletePet(' + pet.id + ')" style="margin-left:5px;padding:2px 6px;border-radius:5px;background:#dc3545;color:white;border:none;cursor:pointer;">🗑️</button>';
-    
-    html += `<div class="pet-item" data-pet-name="${pet.name.toLowerCase()}" data-pet-ability="${pet.ability.toLowerCase()}" data-pet-mutation="${(pet.mutation || '').toLowerCase()}">`;
-    html += `${pet.icon} ${pet.name}${mutationText} ${equippedBtn} ${deleteBtn}<br>`;
-    html += `<span style="font-size:11px;color:#888;margin-left:20px;">${pet.description}</span><br>`;
-    html += `</div>`;
-  });
+playerPets.forEach(pet => {
+  const mutationText = pet.mutation ? ` [${petMutations[pet.mutation].emoji} ${pet.mutation}]` : '';
+  const equippedBtn = pet.equipped 
+    ? '<button onclick="togglePetEquip(' + pet.id + ')" style="margin-left:5px;padding:2px 6px;border-radius:5px;background:#28a745;color:white;border:none;cursor:pointer;">✓ Equipped</button>'
+    : '<button onclick="togglePetEquip(' + pet.id + ')" style="margin-left:5px;padding:2px 6px;border-radius:5px;background:#333;color:white;border:none;cursor:pointer;">Equip</button>';
+  
+  const deleteBtn = '<button onclick="deletePet(' + pet.id + ')" style="margin-left:5px;padding:2px 6px;border-radius:5px;background:#dc3545;color:white;border:none;cursor:pointer;">🗑️</button>';
+  
+  // Add egg type to data attributes
+  html += `<div class="pet-item" data-pet-name="${pet.name.toLowerCase()}" data-pet-ability="${pet.ability.toLowerCase()}" data-pet-mutation="${(pet.mutation || '').toLowerCase()}" data-pet-egg="${(pet.eggType || '').toLowerCase()}">`;
+  html += `${pet.icon} ${pet.name}${mutationText} ${equippedBtn} ${deleteBtn}<br>`;
+  html += `<span style="font-size:11px;color:#888;margin-left:20px;">${pet.description}</span><br>`;
+  html += `</div>`;
+});
   
   html += '</div>'; // Close petListContainer
 }
 
 html += '</div>';
   html += '</div></details>';
+  // Save current search value before updating
+const searchInput = document.getElementById('petSearchInput');
+const currentSearchValue = searchInput ? searchInput.value : '';
   inv.innerHTML = html;
   document.getElementById("detailsBossDrops").open = bossOpen;
   document.getElementById("detailsShopPurchases").open = shopOpen;
 
-
+// Restore search value after updating
+const newSearchInput = document.getElementById('petSearchInput');
+if (newSearchInput && currentSearchValue) {
+  newSearchInput.value = currentSearchValue;
+  filterPets(currentSearchValue);
+}
 }
 
 // --- Equip logic ---
@@ -999,15 +1184,13 @@ function buyItem(category, index, skipOdds = false) {
     return;
   }
 
-  // === EGGS: Show odds before purchase (unless shift is held) ===
-  if (category === "Eggs" && !skipOdds) {
-    const oddsInfo = showEggOdds(item.name);
-    const confirmPurchase = confirm(`${oddsInfo}\nPurchase ${item.name} for ${formatBigInt(item.price)}?`);
-    
-    if (!confirmPurchase) {
-      return; // User cancelled
-    }
-  }
+// ❌ REMOVE THIS ENTIRE BLOCK:
+// if (category === "Eggs") {
+//   const pet = openEgg(item.name);
+//   if (pet) {
+//     alert(`🎉 Hatched ${pet.icon} ${pet.name}!\n${pet.description}`);
+//   }
+// }
 
   money -= item.price;
   inventory[inventoryKey] = owned + 1n;
@@ -1063,7 +1246,7 @@ function updateShopDisplay() {
     Potions: 999
   };
 
-  // Regular shop items
+  // ========== REGULAR SHOP ITEMS ==========
   for (const [category, items] of Object.entries(shopItems)) {
     const row = document.createElement('div');
     row.style.display = "flex";
@@ -1071,33 +1254,32 @@ function updateShopDisplay() {
     row.style.marginTop = "8px";
     row.innerHTML = `<strong style='min-width:70px'>${category}:</strong>`;
 
-items.forEach((item, index) => {
-  const btn = document.createElement('button');
-  btn.innerText = `${item.icon} ${item.name}\n💰${shortLabel(item.price)}`;
-  btn.style.display = "flex";
-  btn.style.flexDirection = "column";
-  btn.style.alignItems = "center";
-  btn.style.justifyContent = "center";
-  btn.style.fontSize = "10px";
-  btn.style.padding = "4px 6px";
-  btn.style.background = "#4a3000";
-  btn.style.border = "1px solid #FFD700";
+    items.forEach((item, index) => {
+      const btn = document.createElement('button');
+      btn.innerText = `${item.icon} ${item.name}\n💰${shortLabel(item.price)}`;
+      btn.style.display = "flex";
+      btn.style.flexDirection = "column";
+      btn.style.alignItems = "center";
+      btn.style.justifyContent = "center";
+      btn.style.fontSize = "10px";
+      btn.style.padding = "4px 6px";
+      btn.style.background = "#4a3000";
+      btn.style.border = "1px solid #FFD700";
 
-  // FIX: Use buyItem for regular shop, not buyEventItem
-  btn.onclick = (e) => {
-    if (category === "Eggs" && e.shiftKey) {
-      buyItem(category, index, true); // Skip odds with shift
-    } else {
-      buyItem(category, index, false); // Show odds normally
-    }
-  };
+      btn.onclick = (e) => {
+        if (category === "Eggs" && e.shiftKey) {
+          buyItem(category, index, true);
+        } else {
+          buyItem(category, index, false);
+        }
+      };
 
-  row.appendChild(btn);
-});
+      row.appendChild(btn);
+    });
     shopContainer.appendChild(row);
   }
 
-  // === EVENT SHOPS ===
+  // ========== DAY/NIGHT EVENT SHOPS ==========
   for (const [eventKey, eventShop] of Object.entries(eventShops)) {
     if (eventShop.activeWhen()) {
       const separator = document.createElement('div');
@@ -1131,7 +1313,13 @@ items.forEach((item, index) => {
           btn.style.background = "#4a3000";
           btn.style.border = "1px solid #FFD700";
 
-          btn.onclick = () => buyEventItem(eventKey, category, item);
+          btn.onclick = (e) => {
+            if (category === "Eggs" && e.shiftKey) {
+              buyEventItem(eventKey, category, item, true); // Skip odds
+            } else {
+              buyEventItem(eventKey, category, item, false); // Show odds
+            }
+          };
 
           row.appendChild(btn);
         });
@@ -1140,54 +1328,8 @@ items.forEach((item, index) => {
       }
     }
   }
-}
-function updateShopDisplay() {
-  const shopContainer = document.getElementById('shopContainer');
-  if (!shopContainer) return;
-  shopContainer.innerHTML = "<div class='legend-label'>🏪 SHOP</div>";
 
-  const purchaseLimits = {
-    Swords: 1,
-    Relics: 1,
-    Eggs: 999,
-    Skins: 1,
-    Potions: 999
-  };
-
-  // Regular shop items
-  for (const [category, items] of Object.entries(shopItems)) {
-    const row = document.createElement('div');
-    row.style.display = "flex";
-    row.style.gap = "10px";
-    row.style.marginTop = "8px";
-    row.innerHTML = `<strong style='min-width:70px'>${category}:</strong>`;
-
-    items.forEach((item, index) => {
-      const btn = document.createElement('button');
-      btn.innerText = `${item.icon} ${item.name}\n💰${shortLabel(item.price)}`;
-      btn.style.display = "flex";
-      btn.style.flexDirection = "column";
-      btn.style.alignItems = "center";
-      btn.style.justifyContent = "center";
-      btn.style.fontSize = "10px";
-      btn.style.padding = "4px 6px";
-      btn.style.background = "#4a3000";
-      btn.style.border = "1px solid #FFD700";
-
-      btn.onclick = (e) => {
-        if (category === "Eggs" && e.shiftKey) {
-          buyItem(category, index, true);
-        } else {
-          buyItem(category, index, false);
-        }
-      };
-
-      row.appendChild(btn);
-    });
-    shopContainer.appendChild(row);
-  }
-
-  // === CHRISTMAS SHOP (only when event active) ===
+  // ========== CHRISTMAS SHOP (only when event active) ==========
   if (christmasEvent.active) {
     const separator = document.createElement('div');
     separator.style.marginTop = "15px";
@@ -1220,7 +1362,13 @@ function updateShopDisplay() {
         btn.style.background = "#8B0000";
         btn.style.border = "1px solid #DC143C";
 
-        btn.onclick = () => buyChristmasItem(category, item);
+        btn.onclick = (e) => {
+          if (category === "Eggs" && e.shiftKey) {
+            buyChristmasItem(category, item, true); // Skip odds
+          } else {
+            buyChristmasItem(category, item, false); // Show odds
+          }
+        };
 
         row.appendChild(btn);
       });
@@ -1228,31 +1376,50 @@ function updateShopDisplay() {
       shopContainer.appendChild(row);
     }
   }
-
-  // === EVENT SHOPS (existing code) ===
-  // ... rest of your event shop code ...
 }
-
 // Buy Christmas shop items
-function buyChristmasItem(category, item) {
-  const limit = (category === "Decorations") ? 999n : 1n;
+// Buy Christmas shop items
+function buyChristmasItem(category, item, skipOdds = false) {
+  const limit = (category === "Eggs" || category === "Potions") ? 999n : 1n;
   const inventoryKey = item.name;
-  const owned = BigInt(inventory[inventoryKey] || 0n);
+  
+  // Count current inventory amount properly
+  let owned = 0n;
+  const existing = playerInventory[category]?.find(i => i.name === item.name);
+  if (existing) {
+    owned = BigInt(existing.count);
+  }
 
   if (owned >= limit) {
     alert(`You already own the maximum number of ${item.name}s!`);
     return;
   }
-
+// === EGGS: Show odds before purchase (unless shift is held) ===
+if (category === "Eggs" && !skipOdds) {
+  const oddsInfo = showEggOdds(item.name);
+  const confirmPurchase = confirm(`${oddsInfo}\nPurchase ${item.name} for ${formatBigInt(item.price)}?`);
+  
+  if (!confirmPurchase) {
+    return; // User cancelled
+  }
+}
   if (money < item.price) {
     alert(`Not enough money to buy ${item.name}!`);
     return;
   }
 
-  money -= item.price;
-  inventory[inventoryKey] = owned + 1n;
+  // === EGGS: Show odds before purchase (unless shift is held) ===
+  if (category === "Eggs" && !skipOdds) {
+    const oddsInfo = showEggOdds(item.name);
+    const confirmPurchase = confirm(`${oddsInfo}\nPurchase ${item.name} for ${formatBigInt(item.price)}?`);
+    
+    if (!confirmPurchase) {
+      return; // User cancelled
+    }
+  }
 
-  const existing = playerInventory[category].find(i => i.name === item.name);
+  money -= item.price;
+
   if (existing) {
     existing.count++;
   } else {
@@ -1277,7 +1444,9 @@ function buyChristmasItem(category, item) {
 }
 
 window.buyChristmasItem = buyChristmasItem;
-function buyEventItem(eventKey, category, item) {
+
+window.buyChristmasItem = buyChristmasItem;
+function buyEventItem(eventKey, category, item, skipOdds = false) {
   const limit = (category === "Eggs" || category === "Potions") ? 999n : 1n;
   const inventoryKey = item.name;
   const owned = BigInt(inventory[inventoryKey] || 0n);
@@ -1292,8 +1461,8 @@ function buyEventItem(eventKey, category, item) {
     return;
   }
 
-  // === EGGS: Show odds before purchase ===
-  if (category === "Eggs") {
+  // === EGGS: Show odds before purchase (unless shift is held) ===
+  if (category === "Eggs" && !skipOdds) {
     const oddsInfo = showEggOdds(item.name);
     const confirmPurchase = confirm(`${oddsInfo}\nPurchase ${item.name} for ${formatBigInt(item.price)}?`);
     
@@ -1354,6 +1523,12 @@ function formatBigInt(b) {
   b = isNegative ? -b : b;
 
   const UNITS = [
+    { value: 1_000_000_000_000_000_000_000_000_000_000_000n, symbol: "QIDCT" }, // decilion (10^24)
+    { value: 1_000_000_000_000_000_000_000_000_000_000_000n, symbol: "QADCT" }, // decilion (10^24)
+  { value: 1_000_000_000_000_000_000_000_000_000_000_000n, symbol: "TDCT" }, // decilion (10^24)
+  { value: 1_000_000_000_000_000_000_000_000_000_000_000n, symbol: "DDCT" }, // decilion (10^24)
+  { value: 1_000_000_000_000_000_000_000_000_000_000_000_000n, symbol: "UDCT" }, // decilion (10^24)
+   { value: 1_000_000_000_000_000_000_000_000_000_000_000n, symbol: "DC" }, // decilion (10^24)
   { value: 1_000_000_000_000_000_000_000_000_000_000_000n, symbol: "DC" }, // decilion (10^24)
   { value: 1_000_000_000_000_000_000_000_000_000_000n, symbol: "NO" }, // nonnilion (10^24) 
   { value: 1_000_000_000_000_000_000_000_000_000n, symbol: "OC" }, // octilion (10^24)  
@@ -1619,7 +1794,55 @@ const petDatabase = {
     { name: "Celestial Blue Cube", color: "#4169E1", icon: "🌌", ability: "galactic_event", value: 1, chance: 0.001, description: "Starts Galactic event (5min)" }
   ]
 };
+// Add this AFTER the existing petDatabase entries
 
+petDatabase["Gift Egg"] = [
+  { 
+    name: "Snowman Cube", 
+    color: "#FFFFFF", 
+    icon: "⛄", 
+    ability: "gift_multiplier", 
+    value: 1.25, 
+    chance: 0.50, 
+    description: "All gift drops give 25% more" 
+  },
+  { 
+    name: "Candy Cane Cube", 
+    color: "#FF0000", 
+    icon: "🍬", 
+    ability: "double_income_temp", 
+    value: 0.30, 
+    chance: 0.30, 
+    description: "2x income burst (20s, 3min cooldown)" 
+  },
+  { 
+    name: "Present Cube", 
+    color: "#FFD700", 
+    icon: "🎁", 
+    ability: "random_cube_spawn", 
+    value: 0.25, 
+    chance: 0.10, 
+    description: "Spawns random tier cube (5min)" 
+  },
+  { 
+    name: "Mistletoe Cube", 
+    color: "#90EE90", 
+    icon: "☘️", 
+    ability: "heal_boss_damage", 
+    value: 1, 
+    chance: 0.09, 
+    description: "Negates next boss hit (10min)" 
+  },
+  { 
+    name: "North Star Cube", 
+    color: "#FFFACD", 
+    icon: "⭐", 
+    ability: "lucky_star", 
+    value: 2.0, 
+    chance: 0.01, 
+    description: "2x all drop rates for 30s (15min)" 
+  }
+];
 const petMutations = {
   "Wet": { color: "#4da6ff", emoji: "💧", incomeBoost: 1.05, event: "Rain" },
   "Shocked": { color: "#ffff00", emoji: "⚡", incomeBoost: 1.10, event: "Thunder" },
@@ -1840,6 +2063,7 @@ function initPetTimers() {
 }
 // Filter pets by search query
 // Advanced filter pets with multiple criteria
+// Advanced filter pets with multiple criteria
 function filterPets(searchQuery) {
   const query = searchQuery.toLowerCase().trim();
   const petItems = document.querySelectorAll('.pet-item');
@@ -1853,31 +2077,18 @@ function filterPets(searchQuery) {
   }
   
   let foundCount = 0;
-
-// Clear pet search
-function clearPetSearch() {
-  const searchInput = document.getElementById('petSearchInput');
-  if (searchInput) {
-    searchInput.value = '';
-    filterPets(''); // Show all pets
-  }
-}
-
-// Make functions globally accessible
-window.filterPets = filterPets;
-window.clearPetSearch = clearPetSearch;
-
-
   
   // Check for special filter commands
   const isEquippedFilter = query === 'equipped' || query === 'equip';
   const isUnequippedFilter = query === 'unequipped' || query === 'unequip';
   const isMutatedFilter = query === 'mutated' || query === 'mutation';
+  const isChristmasFilter = query === 'christmas' || query === 'xmas'; // NEW
   
   petItems.forEach(item => {
     const petName = item.getAttribute('data-pet-name');
     const petAbility = item.getAttribute('data-pet-ability');
     const petMutation = item.getAttribute('data-pet-mutation');
+    const petEggType = item.getAttribute('data-pet-egg') || ''; // NEW
     const isEquipped = item.innerHTML.includes('✓ Equipped');
     const hasMutation = petMutation !== '';
     
@@ -1890,11 +2101,21 @@ window.clearPetSearch = clearPetSearch;
       matches = !isEquipped;
     } else if (isMutatedFilter) {
       matches = hasMutation;
+    } else if (isChristmasFilter) {
+      // NEW: Match Christmas pets
+      matches = petEggType.includes('gift') || 
+                petEggType.includes('christmas') ||
+                petName.includes('snowman') ||
+                petName.includes('candy cane') ||
+                petName.includes('present') ||
+                petName.includes('mistletoe') ||
+                petName.includes('north star');
     } else {
       // Normal search: name, ability, or mutation
       matches = petName.includes(query) || 
                 petAbility.includes(query) || 
-                petMutation.includes(query);
+                petMutation.includes(query) ||
+                petEggType.includes(query);
     }
     
     if (matches) {
@@ -1939,7 +2160,13 @@ function getPetCooldown(ability) {
     "night_income_boost": 999 * 60 * 1000,  // Passive
     "night_speed_boost": 999 * 60 * 1000,   // Passive
     "cooldown_reducer": 999 * 60 * 1000,    // Passive
-    "mutation_giver": 5 * 60 * 1000         // 5 min
+    "mutation_giver": 5 * 60 * 1000,       // 5 min
+      // NEW CHRISTMAS PET ABILITIES
+    "gift_multiplier": 999 * 60 * 1000,      // Passive
+    "double_income_temp": 3 * 60 * 1000,     // 3 min cooldown
+    "random_cube_spawn": 5 * 60 * 1000,      // 5 min
+    "heal_boss_damage": 10 * 60 * 1000,      // 10 min
+    "lucky_star": 15 * 60 * 1000             // 15 min
   };
   
   return cooldowns[ability] || 60000;
@@ -2029,7 +2256,7 @@ const dropLimits = {
 
 
 // Buy items from event shops
-function buyEventItem(eventKey, category, item) {
+function buyEventItem(eventKey, category, item, skipOdds = false) {
   const limit = (category === "Eggs" || category === "Potions") ? 999n : 1n;
   const inventoryKey = item.name;
   const owned = BigInt(inventory[inventoryKey] || 0n);
@@ -2042,6 +2269,16 @@ function buyEventItem(eventKey, category, item) {
   if (money < item.price) {
     alert(`Not enough money to buy ${item.name}!`);
     return;
+  }
+
+  // ✅ NEW: Show odds before purchase (unless shift is held)
+  if (category === "Eggs" && !skipOdds) {
+    const oddsInfo = showEggOdds(item.name);
+    const confirmPurchase = confirm(`${oddsInfo}\nPurchase ${item.name} for ${formatBigInt(item.price)}?`);
+    
+    if (!confirmPurchase) {
+      return; // User cancelled
+    }
   }
 
   money -= item.price;
@@ -2057,14 +2294,6 @@ function buyEventItem(eventKey, category, item) {
       count: 1,
       special: item.special
     });
-  }
-
-  // Eggs: Open immediately and hatch a pet
-  if (category === "Eggs") {
-    const pet = openEgg(item.name);
-    if (pet) {
-      alert(`🎉 Hatched ${pet.icon} ${pet.name}!\n${pet.description}`);
-    }
   }
 
   updateDisplays();
@@ -2153,6 +2382,7 @@ function recomputeIncome() {
   let petIncomeMultiplier = 1.0;
   let petSpeedMultiplier = 1.0;
   let petCooldownReduction = 0;
+  let giftMultiplier = 1.0; // NEW: For gift_multiplier ability
   
   equippedPets.forEach(pet => {
     // Passive income pets
@@ -2160,53 +2390,31 @@ function recomputeIncome() {
       petIncomeMultiplier *= pet.abilityValue;
     }
     
+    // NEW: Gift multiplier (passive)
+    if (pet.ability === "gift_multiplier") {
+      giftMultiplier *= pet.abilityValue;
+    }
+    
     // Night bonus pet (only active during night)
     if (pet.ability === "night_bonus" && dayNightCycle.current === "night") {
       petIncomeMultiplier *= pet.abilityValue;
     }
     
-    // Day income boost (only during day)
-    if (pet.ability === "day_income_boost" && dayNightCycle.current === "day") {
-      petIncomeMultiplier *= pet.abilityValue;
-    }
-    
-    // Night income boost (only during night)
-    if (pet.ability === "night_income_boost" && dayNightCycle.current === "night") {
-      petIncomeMultiplier *= pet.abilityValue;
-    }
-    
-    // Speed boost pet
-    if (pet.ability === "speed_boost") {
-      petSpeedMultiplier *= pet.abilityValue;
-    }
-    
-    // Day speed boost (only during day)
-    if (pet.ability === "day_speed_boost" && dayNightCycle.current === "day") {
-      petSpeedMultiplier *= pet.abilityValue;
-    }
-    
-    // Night speed boost (only during night)
-    if (pet.ability === "night_speed_boost" && dayNightCycle.current === "night") {
-      petSpeedMultiplier *= pet.abilityValue;
-    }
-    
-    // Cooldown reducer
-    if (pet.ability === "cooldown_reducer") {
-      petCooldownReduction += pet.abilityValue; // 10% reduction
-    }
-    
-    // Apply mutation bonuses
-    if (pet.mutation) {
-      const mut = petMutations[pet.mutation];
-      petIncomeMultiplier *= mut.incomeBoost;
-    }
+    // ... rest of existing pet bonuses ...
   });
+  
+  // Store gift multiplier globally for drop calculations
+  window.giftDropMultiplier = giftMultiplier;
   
   // Update character speed with pet bonuses
   character.speed = 250 * petSpeedMultiplier;
 
   const adminMultiplier = currentAdminEvent ? currentAdminEvent.incomeBoost : 1;
-  const totalMultiplier = weatherMultiplier * equippedRelicSpecial * petIncomeMultiplier * (potionActive ? potionMultiplier : 1) * adminMultiplier * rebirthMultiplier;
+  const christmasMultiplier = christmasEvent.active ? christmasEvent.incomeBoost : 1;
+  
+  const totalMultiplier = weatherMultiplier * equippedRelicSpecial * petIncomeMultiplier * 
+                          (potionActive ? potionMultiplier : 1) * adminMultiplier * 
+                          rebirthMultiplier * christmasMultiplier;
 
   const adjustedIncome = BigInt(Math.floor(Number(incomePerSec) * totalMultiplier));
   
@@ -2220,10 +2428,10 @@ function recomputeIncome() {
 
   if (potionActive) {
     const timeLeft = Math.ceil((potionEndTime - Date.now()) / 1000);
-    incomeDisplay.textContent += ` 🧪(${timeLeft}s)`;  
+    incomeDisplay.textContent += ` 🧪(${timeLeft}s)`;
   }
-
-    if (christmasEvent.active) {
+  
+  if (christmasEvent.active) {
     incomeDisplay.textContent += ` 🎄`;
   }
 }
@@ -3261,82 +3469,33 @@ window.addEventListener("keydown", e => {
     keys[key] = true;
   }
 
-  // Existing code
+  // Sword toggle
   if (key === "q") character.hasSword = !character.hasSword;
   if (key === "z" && character.hasSword && !character.slashing) {
     character.slashing = true;
     setTimeout(() => { character.slashing = false; }, character.slashDuration);
   }
 
-  if (e.key === "'") spawnBoss();
-  
-  // Day/Night cycle controls
-  if (e.key === "(") changeDayNightCycle("day", true);
-  if (e.key === ")") changeDayNightCycle("night", true);
-  
-  // DEBUG: Money cheat (backtick key)
-  if (e.key === "`") {
-    money += 100_000_000_000_000_000_000_000_000_000_000n;
-    updateDisplays();
-    console.log("💰 DEBUG: Added 100DC money!");
-  }
-// === RESET ADVENT DEBUG (Shift+_) ===
-if (e.shiftKey && e.key === "_") {
-  adventCalendar.debugOffset = 0;
-  console.log(`📅 DEBUG: Reset advent calendar to current date`);
-  
-  // Refresh the calendar if it's open
-  const calendarOverlay = document.getElementById('adventCalendarOverlay');
-  if (calendarOverlay) {
-    closeAdventCalendar();
-    setTimeout(() => showAdventCalendar(), 100);
-  }
-}
-  // === CHRISTMAS EVENT DEBUG (=) ===
-  if (e.key === "=") {
-    startChristmasEvent();
+  // === ADMIN PANEL (: key) ===
+  if (e.key === ":") {
+    toggleAdminPanel();
+    return; // Stop processing other keys
   }
   
-  // === ADVENT CALENDAR DEBUG (_) - FIXED VERSION ===
-  if (e.key === "_") {
-    // Set the system date forward for debugging
-    if (!adventCalendar.debugOffset) {
-      adventCalendar.debugOffset = 0;
+  // Focus search with Ctrl/Cmd+F
+  if ((e.ctrlKey || e.metaKey) && e.key === 'f' && !insideHouse) {
+    e.preventDefault();
+    const searchInput = document.getElementById('petSearchInput');
+    if (searchInput) searchInput.focus();
+  }
+  
+  // Clear search with ESC
+  if (e.key === 'Escape') {
+    const searchInput = document.getElementById('petSearchInput');
+    if (searchInput && document.activeElement === searchInput) {
+      clearPetSearch();
+      searchInput.blur();
     }
-    adventCalendar.debugOffset++;
-    
-    const newDay = adventCalendar.debugOffset + 1;
-    if (newDay > 25) {
-      adventCalendar.debugOffset = 0;
-      console.log(`📅 DEBUG: Reset to advent day 1`);
-    } else {
-      console.log(`📅 DEBUG: Skipped to advent day ${newDay}`);
-    }
-    
-    // Refresh the calendar if it's open
-    const calendarOverlay = document.getElementById('adventCalendarOverlay');
-    if (calendarOverlay) {
-      closeAdventCalendar();
-      setTimeout(() => showAdventCalendar(), 100);
-    }
-  }
-  
-  // === OPEN ADVENT CALENDAR (Shift+C) ===
-  if (e.shiftKey && key === "c") {
-    showAdventCalendar();
-  }
-
-  // === ADMIN ABUSE EVENT TRIGGERS ===
-  const adminEvent = adminAbuseEvents.find(evt => evt.key === e.key);
-  if (adminEvent) {
-    triggerAdminEvent(adminEvent);
-  }
-});
-
-window.addEventListener("keyup", e => {
-  const key = e.key.toLowerCase();
-  if (["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"].includes(key)) {
-    keys[key] = false;
   }
 });
 
@@ -3818,53 +3977,89 @@ if (boss.visible) {
     }
 
     // Attack range check
-    if (distance < boss.w * 1.2 && !boss.attackCooldown) {
-      boss.attackCooldown = true;
-      boss.playerHits++;
+if (distance < boss.w * 1.2 && !boss.attackCooldown) {
+  boss.attackCooldown = true;
+  
+  // Check for healing shield
+  if (window.healingShieldActive) {
+    window.healingShieldActive = false;
+    const shield = document.getElementById('healingShield');
+    if (shield) shield.remove();
+    
+    console.log("☘️ Healing shield blocked boss attack!");
+    
+    // Show blocked message
+    const blocked = document.createElement('div');
+    blocked.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(144, 238, 144, 0.95);
+      color: white;
+      padding: 20px 40px;
+      border-radius: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      z-index: 10002;
+    `;
+    blocked.textContent = '☘️ ATTACK BLOCKED! ☘️';
+    document.body.appendChild(blocked);
+    
+    setTimeout(() => blocked.remove(), 2000);
+  } else {
+    // Normal boss attack
+    boss.playerHits++;
 
-      if (boss.playerHits < 3) {
-        // First two hits — retreat
-        boss.retreating = true;
-      } else {
-        // 3rd hit — money penalty and reset
-        money = money / 2n;
-        boss.visible = false;
-        boss.playerHits = 0;
-        nextBossSpawn = Date.now() + bossSpawnInterval; // reset timer
-      }
-
-      // small cooldown between attacks
-      setTimeout(() => (boss.attackCooldown = false), 2000);
+    if (boss.playerHits < 3) {
+      boss.retreating = true;
+    } else {
+      money = money / 2n;
+      boss.visible = false;
+      boss.playerHits = 0;
+      nextBossSpawn = Date.now() + bossSpawnInterval;
     }
+  }
+
+  setTimeout(() => (boss.attackCooldown = false), 2000);
+}
   }
 }
 // 🗡️ Sword vs Boss collision check
 if (boss.visible && character.slashing && !boss.retreating) {
+// Check if boss is defeated
 if (boss.hitsRemaining <= 0) {
   boss.visible = false;
   boss.hitsRemaining = boss.hitsToDie;
   boss.playerHits = 0;
   nextBossSpawn = Date.now() + bossSpawnInterval;
 
+  // Apply lucky star multiplier to drop chances
+  const dropMultiplier = window.luckyStarActive ? window.luckyStarMultiplier : 1.0;
+  const giftMult = window.giftDropMultiplier || 1.0;
+  
   const drops = [];
-  if (Math.random() <= 1.0) drops.push("🦴 Skeleton Bones");
-  if (Math.random() <= 0.30) drops.push("📿 Crossbones Relic");
-  if (Math.random() <= 0.05) drops.push("⬜💀 Skeleton Skin");
-  if (Math.random() <= 0.01) drops.push("⬜☠️ Crossbones Cube");
+  if (Math.random() <= 1.0 * dropMultiplier) drops.push("🦴 Skeleton Bones");
+  if (Math.random() <= 0.30 * dropMultiplier) drops.push("📿 Crossbones Relic");
+  if (Math.random() <= 0.05 * dropMultiplier) drops.push("⬜💀 Skeleton Skin");
+  if (Math.random() <= 0.01 * dropMultiplier) drops.push("⬜☠️ Crossbones Cube");
 
-  // Store drops visually
-  bossDrops.push({ x: boss.x + boss.w/2, y: boss.y, items: drops, timer: 3000, opacity: 1 });
-
-  // Update inventory and drop counters
-  drops.forEach(item => {
-    if (inventory[item] !== undefined) inventory[item]++;
-    if (dropCounters[item] !== undefined) dropCounters[item]++;
-    if (!playerInventory["Drops"]) playerInventory["Drops"] = [];
-    const existing = playerInventory["Drops"].find(i => i.name === item);
-    if (existing) existing.count++;
-    else playerInventory["Drops"].push({ icon: "📦", name: item, count: 1 });
+  bossDrops.push({
+    x: boss.x + boss.w / 2,
+    y: boss.y,
+    items: drops,
+    timer: 3000,
+    opacity: 1
   });
 
+  drops.forEach(item => {
+    if (inventory[item] !== undefined) {
+      // Apply gift multiplier to quantities
+      const amount = Math.floor(1 * giftMult);
+      inventory[item] += amount;
+      dropCounters[item] += amount;
+    }
+  });
   updateInventoryDisplay();
 }
 
@@ -4225,20 +4420,21 @@ if (boss.visible) {
   ctx.fillText(`Player HP: ${3 - boss.playerHits}/3`, W/2, H - 35);
 }
 
-
-
-  specials.forEach(s => {
-    if (!s.visible) return;
-    ctx.fillStyle = s.color;
-    ctx.fillRect(s.x, s.y, CUBE_SIZE, CUBE_SIZE);
-    ctx.strokeStyle = 'rgba(0,0,0,0.6)';
-    ctx.strokeRect(s.x + 0.5, s.y + 0.5, CUBE_SIZE - 1, CUBE_SIZE - 1);
-    ctx.fillStyle = '#fff';
-    ctx.font = '20px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(s.emoji, s.x + CUBE_SIZE / 2, s.y + CUBE_SIZE / 2);
-  });
+specials.forEach(s => {
+  if (!s.visible) return;
+  ctx.fillStyle = s.color;
+  ctx.fillRect(s.x, s.y, CUBE_SIZE, CUBE_SIZE);
+  ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+  ctx.strokeRect(s.x + 0.5, s.y + 0.5, CUBE_SIZE - 1, CUBE_SIZE - 1);
+  ctx.fillStyle = '#fff';
+  ctx.font = '20px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  
+  // Use gift emoji if it's a gift spawn, otherwise use normal emoji
+  const displayEmoji = s.isGiftSpawn ? s.emoji : s.emoji;
+  ctx.fillText(displayEmoji, s.x + CUBE_SIZE / 2, s.y + CUBE_SIZE / 2);
+});
   
   // 💰 Draw Boss Loot Drops
 bossDrops.forEach(drop => {
@@ -4530,6 +4726,165 @@ case "purple_spawn":
       });
       updateInventoryDisplay();
       break;
+       
+    // === NEW CHRISTMAS PET ABILITIES ===
+    
+      case "gift_multiplier":
+      // Passive ability - already handled in recomputeIncome()
+      break;
+      
+    case "double_income_temp":
+      if (roll < pet.abilityValue) {
+        console.log(`${pet.name} activated 2x income burst for 20 seconds!`);
+        
+        // Store original income
+        const originalIncome = incomePerSec;
+        
+        // Double income temporarily
+        incomePerSec = incomePerSec * 2n;
+        updateDisplays();
+        
+        // Create visual indicator
+        const indicator = document.createElement('div');
+        indicator.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(255, 0, 0, 0.9);
+          color: white;
+          padding: 20px 40px;
+          border-radius: 15px;
+          font-size: 24px;
+          font-weight: bold;
+          z-index: 10001;
+          box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        `;
+        indicator.textContent = '🍬 2X INCOME! 🍬';
+        document.body.appendChild(indicator);
+        
+        // Remove after 20 seconds
+        setTimeout(() => {
+          recomputeIncome(); // Restore normal income
+          indicator.remove();
+          console.log(`${pet.name}'s income burst ended`);
+        }, 20000);
+      }
+      break;
+      
+    case "random_cube_spawn":
+      if (roll < pet.abilityValue) {
+        // Pick a random cube from current tier
+        const currentTierCubes = currentCubes();
+        const randomCube = currentTierCubes[Math.floor(Math.random() * currentTierCubes.length)];
+        
+        console.log(`${pet.name} spawned a ${randomCube.name} cube!`);
+        
+        // Spawn it as a collectible special cube
+        const giftCube = {
+          x: Math.random() * (W - CUBE_SIZE),
+          y: Math.random() * (H - CUBE_SIZE),
+          w: CUBE_SIZE,
+          h: CUBE_SIZE,
+          color: randomCube.color,
+          value: randomCube.value,
+          visible: true,
+          isGiftSpawn: true,
+          emoji: "🎁"
+        };
+        
+        specials.push(giftCube);
+        
+        // Automatically collect after 5 seconds if not collected
+        setTimeout(() => {
+          const index = specials.indexOf(giftCube);
+          if (index > -1) {
+            specials.splice(index, 1);
+            money += randomCube.value;
+            console.log(`Auto-collected ${randomCube.name} cube`);
+            updateDisplays();
+          }
+        }, 5000);
+      }
+      break;
+      
+    case "heal_boss_damage":
+      if (roll < pet.abilityValue) {
+        console.log(`${pet.name} prepared healing shield!`);
+        
+        // Set a flag that negates next boss hit
+        window.healingShieldActive = true;
+        
+        // Visual indicator
+        const shield = document.createElement('div');
+        shield.id = 'healingShield';
+        shield.style.cssText = `
+          position: fixed;
+          top: 10px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(144, 238, 144, 0.9);
+          color: white;
+          padding: 10px 20px;
+          border-radius: 10px;
+          font-size: 16px;
+          font-weight: bold;
+          z-index: 10001;
+          box-shadow: 0 0 15px rgba(144, 238, 144, 0.7);
+        `;
+        shield.textContent = '☘️ HEALING SHIELD ACTIVE ☘️';
+        document.body.appendChild(shield);
+      }
+      break;
+      
+    case "lucky_star":
+      if (roll < pet.abilityValue) {
+        console.log(`${pet.name} activated Lucky Star! 2x drop rates for 30s!`);
+        
+        // Set global drop rate multiplier
+        window.luckyStarActive = true;
+        window.luckyStarMultiplier = pet.abilityValue; // 2.0
+        
+        // Visual indicator
+        const star = document.createElement('div');
+        star.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(255, 250, 205, 0.95);
+          color: #FF8C00;
+          padding: 30px 50px;
+          border-radius: 20px;
+          font-size: 28px;
+          font-weight: bold;
+          z-index: 10001;
+          box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+          animation: pulse 1s infinite;
+        `;
+        star.innerHTML = '⭐ LUCKY STAR! ⭐<br><span style="font-size:18px;">2X DROP RATES!</span>';
+        document.body.appendChild(star);
+        
+        // Add pulse animation
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+          }
+        `;
+        document.head.appendChild(style);
+        
+        // Remove after 30 seconds
+        setTimeout(() => {
+          window.luckyStarActive = false;
+          window.luckyStarMultiplier = 1.0;
+          star.remove();
+          style.remove();
+          console.log(`${pet.name}'s Lucky Star ended`);
+        }, 30000);
+      }
+      break;
   }
 }
 /**
@@ -4562,6 +4917,246 @@ function init() {
 
   requestAnimationFrame(loop);
 }
+// ========================================
+// ADMIN PANEL FUNCTIONS
+// ========================================
+
+function toggleAdminPanel() {
+  const panel = document.getElementById('adminPanel');
+  panel.classList.toggle('active');
+  updateAdminPanelStats();
+}
+
+function updateAdminPanelStats() {
+  const adventDay = document.getElementById('adminAdventDay');
+  const rebirthCount = document.getElementById('adminRebirthCount');
+  
+  if (adventDay) adventDay.textContent = adventCalendar.currentDay;
+  if (rebirthCount) rebirthCount.textContent = window.rebirthCount || 0;
+}
+
+// Money Controls
+function adminAddMoney(amount) {
+  money += amount;
+  updateDisplays();
+  console.log(`💰 Added ${formatBigInt(amount)} money`);
+}
+
+function adminSetMoney(amount) {
+  money = amount;
+  updateDisplays();
+  console.log(`💰 Set money to ${formatBigInt(amount)}`);
+}
+
+// Event Controls
+function adminTriggerEvent(eventName) {
+  const event = adminAbuseEvents.find(e => e.name === eventName);
+  if (event) {
+    triggerAdminEvent(event);
+    console.log(`🎮 Triggered ${eventName} event`);
+  }
+}
+
+// Boss Controls
+function adminKillBoss() {
+  if (boss.visible) {
+    boss.hitsRemaining = 0;
+    boss.visible = false;
+    console.log('☠️ Boss defeated');
+  } else {
+    console.log('⚠️ No boss active');
+  }
+}
+
+// Advent Calendar Controls
+function adminAdventSkipDay() {
+  if (!adventCalendar.debugOffset) adventCalendar.debugOffset = 0;
+  adventCalendar.debugOffset++;
+  if (adventCalendar.debugOffset > 24) adventCalendar.debugOffset = 24;
+  updateAdventDay();
+  updateAdminPanelStats();
+  console.log(`📅 Skipped to advent day ${adventCalendar.debugOffset + 1}`);
+}
+
+function adminAdventBackDay() {
+  if (!adventCalendar.debugOffset) adventCalendar.debugOffset = 0;
+  adventCalendar.debugOffset--;
+  if (adventCalendar.debugOffset < 0) adventCalendar.debugOffset = 0;
+  updateAdventDay();
+  updateAdminPanelStats();
+  console.log(`📅 Went back to advent day ${adventCalendar.debugOffset + 1}`);
+}
+
+function adminAdventReset() {
+  adventCalendar.debugOffset = 0;
+  updateAdventDay();
+  updateAdminPanelStats();
+  console.log('📅 Reset advent calendar to current date');
+}
+
+// Pet Controls
+function adminGiveRandomEgg() {
+  const eggTypes = ["Basic Egg", "Rare Egg", "Dragon Egg", "Mythic Egg", "Celestial Egg", "Sunny Egg", "Night Egg", "Gift Egg"];
+  const randomEgg = eggTypes[Math.floor(Math.random() * eggTypes.length)];
+  
+  const existing = playerInventory.Eggs.find(i => i.name === randomEgg);
+  if (existing) existing.count++;
+  else playerInventory.Eggs.push({ icon: "🥚", name: randomEgg, count: 1 });
+  
+  updateInventoryDisplay();
+  console.log(`🥚 Gave ${randomEgg}`);
+}
+
+function adminClearAllPets() {
+  if (confirm('⚠️ Delete ALL pets? This cannot be undone!')) {
+    playerPets = [];
+    equippedPets = [];
+    petTimers = {};
+    updateInventoryDisplay();
+    recomputeIncome();
+    console.log('🗑️ Cleared all pets');
+  }
+}
+
+function adminMaxPetSlots() {
+  maxPetSlots = 10;
+  updateRebirthUI();
+  console.log('⬆️ Set pet slots to 10');
+}
+
+// Rebirth Controls
+function adminCompleteRebirth() {
+  if (rebirthCount >= rebirthLevels.length) {
+    alert('Already at max rebirth level');
+    return;
+  }
+  
+  const nextRebirth = rebirthLevels[rebirthCount];
+  
+  // Give rewards without reset
+  rebirthCount++;
+  rebirthMultiplier += nextRebirth.incomeMultiplier;
+  
+  if (nextRebirth.petSlotReward) {
+    maxPetSlots += nextRebirth.petSlotReward;
+  }
+  
+  if (nextRebirth.goldenSwordReward) {
+    const existing = playerInventory.Swords.find(i => i.name === "Golden Sword");
+    if (!existing) {
+      playerInventory.Swords.push({
+        icon: "🏆",
+        name: "Golden Sword",
+        count: 1,
+        special: 6
+      });
+    }
+  }
+  
+  recomputeIncome();
+  updateDisplays();
+  updateInventoryDisplay();
+  updateRebirthUI();
+  updateAdminPanelStats();
+  
+  console.log(`🔄 Completed rebirth ${rebirthCount}`);
+}
+
+function adminResetRebirths() {
+  if (confirm('⚠️ Reset all rebirths? This will keep your items.')) {
+    rebirthCount = 0;
+    rebirthMultiplier = 1.0;
+    maxPetSlots = 3;
+    updateRebirthUI();
+    recomputeIncome();
+    updateAdminPanelStats();
+    console.log('🔄 Reset all rebirths');
+  }
+}
+
+// Cube Controls
+function adminMaxAllCubes() {
+  for (let key in legendCounts) {
+    legendCounts[key] = 999n;
+  }
+  recomputeIncome();
+  updateDisplays();
+  console.log('🎲 Maxed all cubes to 999');
+}
+
+function adminClearAllCubes() {
+  if (confirm('⚠️ Clear all cubes?')) {
+    for (let key in legendCounts) {
+      legendCounts[key] = 0n;
+    }
+    houseValue = 0n;
+    recomputeIncome();
+    updateDisplays();
+    console.log('🎲 Cleared all cubes');
+  }
+}
+
+// Shop Controls
+function adminUnlockAllShop() {
+  // Give one of each sword
+  const allSwords = [
+    ...shopItems.Swords,
+    ...(eventShops.day?.items?.Swords || []),
+    ...(eventShops.night?.items?.Swords || []),
+    ...(christmasShopItems?.Swords || [])
+  ];
+  
+  allSwords.forEach(item => {
+    const existing = playerInventory.Swords.find(i => i.name === item.name);
+    if (!existing) {
+      playerInventory.Swords.push({
+        icon: item.icon,
+        name: item.name,
+        count: 1,
+        special: item.special
+      });
+    }
+  });
+  
+  // Similar for relics, skins
+  const allRelics = [...shopItems.Relics, ...(christmasShopItems?.Relics || [])];
+  allRelics.forEach(item => {
+    const existing = playerInventory.Relics.find(i => i.name === item.name);
+    if (!existing) {
+      playerInventory.Relics.push({
+        icon: item.icon,
+        name: item.name,
+        count: 1,
+        special: item.special
+      });
+    }
+  });
+  
+  const allSkins = [
+    ...shopItems.Skins,
+    ...(eventShops.day?.items?.Skins || []),
+    ...(eventShops.night?.items?.Skins || []),
+    ...(christmasShopItems?.Skins || [])
+  ];
+  
+  allSkins.forEach(item => {
+    const existing = playerInventory.Skins.find(i => i.name === item.name);
+    if (!existing) {
+      playerInventory.Skins.push({
+        icon: item.icon,
+        name: item.name,
+        count: 1,
+        special: item.special
+      });
+    }
+  });
+  
+  updateInventoryDisplay();
+  console.log('🛒 Unlocked all shop items');
+}
+
+// Make function globally accessible
+window.toggleAdminPanel = toggleAdminPanel;
 init();
 </script>
 
