@@ -5,6 +5,24 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Cubes Game — Specials</title>
 <style>
+  @keyframes fadeOut {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -80%) scale(1.2); }
+}
+@keyframes fadeOut {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -80%) scale(1.2); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(400px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(400px); opacity: 0; }
+}
   :root{
     --bg:#111;
     --panel:#0f1720;
@@ -216,6 +234,9 @@
     <button class="admin-btn" onclick="adminTriggerEvent('Galactic')">🚀 Galactic</button>
     <button class="admin-btn" onclick="triggerWeatherEvent()">🌦️ Random Weather</button>
     <button class="admin-btn" onclick="startChristmasEvent()">🎄 Christmas</button>
+    <button class="admin-btn" onclick="adminTriggerEvent('Phoenix Nest')">🔥 Phoenix Nest</button>
+    <button class="admin-btn" onclick="adminTriggerEvent('Bloodmoon')">🌕 Bloodmoon</button>
+    <button class="admin-btn" onclick="adminTriggerEvent('Tornado')">🌪️ Tornado</button>
   </div>
   
   <!-- Boss Controls -->
@@ -242,7 +263,80 @@
     <button class="admin-btn" onclick="adminClearAllPets()">🗑️ Clear All Pets</button>
     <button class="admin-btn" onclick="adminMaxPetSlots()">⬆️ Max Pet Slots (10)</button>
   </div>
+  <!-- NEW: Enchantment Controls -->
+<div class="admin-section">
+  <h3>🔮 Enchantment Controls</h3>
+  <button class="admin-btn" onclick="adminUnlockEnchanting()">🔓 Unlock Enchanting</button>
+  <button class="admin-btn" onclick="adminAddEnchants(100)">+100 Enchants</button>
+  <button class="admin-btn" onclick="adminGiveEnchantEgg()">🔮 Give Enchant Egg</button>
+  <button class="admin-btn" onclick="adminGiveEnchantRelic()">🍀 Give Enchant Relic</button>
+  <button class="admin-btn" onclick="adminClearEnchants()">🗑️ Clear All Enchantments</button>
+  <span style="color:#aaa; font-size:12px; margin-left:10px;">Total: <span id="adminEnchantCount">0</span></span>
+</div>
+<!-- NEW: Crafting Material Controls -->
+<div class="admin-section">
+  <h3>🔨 Crafting Materials</h3>
+  <div style="margin-bottom: 15px; padding: 10px; background: rgba(255, 215, 0, 0.1); border-radius: 5px;">
+  <button class="admin-btn" onclick="adminUnlockCrafting()" style="background:#FFD700; color:#000; font-weight:bold;">🔓 Unlock Crafting System</button>
+  <button class="admin-btn" onclick="adminUnlockAllRecipes()" style="background:#FF8C00; color:#fff; font-weight:bold;">📜 Unlock ALL Recipes</button>
+  <button class="admin-btn" onclick="adminTestMaterials()" style="background:#00CED1; color:#fff;">🧪 Test Materials</button>
+</div>
+  <div style="margin-bottom: 10px;">
+    <strong style="color: #FFD700;">Boss Materials:</strong><br>
+    <button class="admin-btn" onclick="adminGiveMaterial('Phoenix Feather', 10)">+10 Phoenix Feathers</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Phoenix Ember', 5)">+5 Phoenix Embers</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Leviathan Scale', 10)">+10 Leviathan Scales</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Leviathan Heart', 5)">+5 Leviathan Hearts</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Leviathan Fang', 1)">+1 Leviathan Fang</button>
+  </div>
   
+  <div style="margin-bottom: 10px;">
+    <strong style="color: #FFD700;">Enchanted Materials:</strong><br>
+    <button class="admin-btn" onclick="adminGiveMaterial('Enchanted Leviathan Scale', 10)">+10 Enchanted Scales</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Enchanted Leviathan Heart', 5)">+5 Enchanted Hearts</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Enchanted Leviathan Fang', 1)">+1 Enchanted Fang</button>
+  </div>
+  
+  <div style="margin-bottom: 10px;">
+    <strong style="color: #FFD700;">Totems & Tools:</strong><br>
+    <button class="admin-btn" onclick="adminGiveMaterial('Leviathan Totem', 1)">+1 Leviathan Totem</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Harpoon', 1)">+1 Harpoon</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Leviathan Armor', 1)">+1 Leviathan Armor</button>
+  </div>
+  
+  <div style="margin-bottom: 10px;">
+    <strong style="color: #FFD700;">Essences & Shards:</strong><br>
+    <button class="admin-btn" onclick="adminGiveMaterial('Essence of Fire', 10)">+10 Fire Essence</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Essence of Ice', 10)">+10 Ice Essence</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Essence of Lightning', 10)">+10 Lightning</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Essence of Wind', 10)">+10 Wind</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Shard of Fire', 5)">+5 Fire Shards</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Shard of Ice', 5)">+5 Ice Shards</button>
+  </div>
+  
+  <div style="margin-bottom: 10px;">
+    <strong style="color: #FFD700;">Scrolls:</strong><br>
+    <button class="admin-btn" onclick="adminGiveMaterial('Scroll of Fire', 5)">+5 Fire Scrolls</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Scroll of the Egg', 1)">+1 Egg Scroll</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Scroll of Terror', 1)">+1 Terror Scroll</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Scroll of the Enchanted', 1)">+1 Enchanted Scroll</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Freezing Scroll', 1)">+1 Freezing Scroll</button>
+  </div>
+  
+  <div style="margin-bottom: 10px;">
+    <strong style="color: #FFD700;">Special Items:</strong><br>
+    <button class="admin-btn" onclick="adminGiveMaterial('Elemental Stone', 10)">+10 Elemental Stones</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Elemental Capsule', 5)">+5 Elemental Capsules</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Chaotic Orb', 5)">+5 Chaotic Orbs</button>
+    <button class="admin-btn" onclick="adminGiveMaterial('Phoenix Tear', 1)">+1 Phoenix Tear</button>
+  </div>
+  
+  <div>
+    <button class="admin-btn" onclick="adminMaxAllMaterials()" style="background:#8B0000;">🔥 Max ALL Materials (999)</button>
+    <button class="admin-btn" onclick="adminClearAllMaterials()" style="background:#555;">🗑️ Clear All Materials</button>
+  </div>
+</div>
+
   <!-- Rebirth Controls -->
   <div class="admin-section">
     <h3>🔄 Rebirth</h3>
@@ -286,11 +380,14 @@
   </div>
   <button id="downgradeBtn">⬇️ Downgrade Cubes</button>
   <button id="adventBtn">🎄 Advent Calendar</button>
+  <button id="craftingBtn">🔨 Crafting</button>
   <button id="saveBtn">💾 Save</button>
   <button id="loadBtn">📂 Load</button>
   <button id="rebirthBtn">🔄 Rebirth</button>
   <div class="hint" id="tierHint">Current Tier: 1</div>
   <div class="hint" id="rebirthHint">Rebirths: 0 (1x)</div>
+    <div class="hint" id="enchantHint" style="display:none;">🔮 Enchants: 0</div>
+</div>
 </div>
 
       <!-- 🧭 Inventory / Drop Counter -->
@@ -310,6 +407,21 @@
 </div>
 
 <script>
+  // Global error handler to prevent crashes
+window.addEventListener('error', (event) => {
+  console.error('Game Error:', event.error);
+  event.preventDefault(); // Prevent the error from crashing the game
+  return true;
+});
+
+// Catch unhandled promise rejections
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('Unhandled Promise Rejection:', event.reason);
+  event.preventDefault();
+});
+  const MAX_PARTICLES = 200;
+const MAX_BOSS_DROPS = 50;
+const MAX_SPECIALS = 20;
 const canvas = document.getElementById('gameCanvas');
 
 
@@ -377,6 +489,33 @@ const adminAbuseEvents = [
     bg: "radial-gradient(circle at 20% 30%, #4a0080 0%, #000033 40%, #000000 100%)",
     overlay: "rgba(80,60,150,0.2)",
     animation: "galactic"
+  },
+ {
+    name: "Phoenix Nest",
+    key: "*",
+    duration: 60000, // 1 minute
+    incomeBoost: 1.0, // No income boost
+    bg: "radial-gradient(circle at center, #FF4500 0%, #FF8C00 30%, #FFD700 60%, #FF4500 100%)",
+    overlay: "rgba(255, 69, 0, 0.3)",
+    animation: "phoenix"
+  },
+  {
+    name: "Bloodmoon",
+    key: "(",
+    duration: 120000, // 2 minutes
+    incomeBoost: 1.30, // 30% boost
+    bg: "radial-gradient(circle at 50% 20%, #8B0000 0%, #4B0000 40%, #2B0000 70%, #000000 100%)",
+    overlay: "rgba(139, 0, 0, 0.4)",
+    animation: "bloodmoon"
+  },
+  {
+    name: "Tornado",
+    key: ")",
+    duration: 999999999, // Lasts until hit
+    incomeBoost: 1.60, // 60% boost
+    bg: "linear-gradient(180deg, #4a5568 0%, #2d3748 50%, #1a202c 100%)",
+    overlay: "rgba(100, 100, 100, 0.3)",
+    animation: "tornado"
   }
 ];
 
@@ -425,7 +564,12 @@ const adventCalendar = {
     25: { type: "money", amount: 1_000_000_000_000_000_000_000n } // 1SX - Christmas Day Grand Prize!
   }
 };
-
+const craftingBtn = document.getElementById('craftingBtn');
+if (craftingBtn) {
+  craftingBtn.addEventListener('click', () => {
+    showCraftingMenu();
+  });
+}
 // Christmas pet database
 const christmasPets = {
   "Snowflake Cube": { name: "Snowflake Cube", color: "#B0E0E6", icon: "❄️", ability: "passive_income", value: 1.10, description: "+10% income" },
@@ -709,7 +853,821 @@ let maxPetSlots = 3; // NEW: Track max pet slots
 
 const rebirthBtn = document.getElementById('rebirthBtn');
 const rebirthHint = document.getElementById('rebirthHint');
+// === ASCENSION SYSTEM ===
+const ascensionLevels = [
+  {
+    level: 1,
+    cost: 100_000_000_000_000_000_000_000_000_000_000n, // 100DC
+    rewards: {
+      eggs: 5,
+      totem: 1
+    },
+    description: "Ascension 1: 5 Ascension Eggs + Heavenly Totem"
+  },
+  {
+    level: 2,
+    cost: 1_000_000_000_000_000_000_000_000_000_000_000n, // 1UD
+    rewards: {
+      eggs: 10,
+      totem: 1
+    },
+    description: "Ascension 2: 10 Ascension Eggs + Heavenly Totem"
+  },
+  {
+    level: 3,
+    cost: 10_000_000_000_000_000_000_000_000_000_000_000n, // 10UD
+    rewards: {
+      eggs: 20,
+      totem: 1,
+      skin: true
+    },
+    description: "Ascension 3: 20 Ascension Eggs + Heavenly Totem + Heavenly Skin"
+  }
+];
 
+let ascensionCount = 0;
+
+// Heavenly Event Configuration
+const heavenlyEvent = {
+  active: false,
+  duration: 15 * 60 * 1000, // 15 minutes
+  incomeBoost: 1.35, // 35% boost
+  lastTrigger: 0
+};
+// === ENCHANTMENT SYSTEM ===
+const enchantmentSystem = {
+  unlocked: false,
+  totalEnchants: 0,
+  enchantCost: 1_000_000_000_000_000_000n, // 1QI
+  hasEnchantRelic: false, // Temporary luck boost
+  
+  // Milestone rewards
+  milestones: {
+    50: { claimed: false, reward: "egg" },
+    100: { claimed: false, reward: "relic" },
+    100: { claimed: false, reward: "sword" }, // Enchanted Sword
+    200: { claimed: false, reward: "relic_item" }, // Enchanted Relic
+    400: { claimed: false, reward: "skin" },
+    500: { claimed: false, reward: "potion" },
+    1000: { claimed: false, reward: "rare_sword" }
+  }
+};
+
+// Enchantment types and tiers
+const enchantmentTypes = {
+  "Money Income": {
+    icon: "💰",
+    tiers: {
+      I: { boost: 1.05, chance: 0.40, description: "+5% money" },
+      II: { boost: 1.10, chance: 0.30, description: "+10% money" },
+      III: { boost: 1.15, chance: 0.20, description: "+15% money" },
+      IV: { boost: 1.20, chance: 0.05, description: "+20% money" },
+      V: { boost: 1.25, chance: 0.049, description: "+25% money" }
+    }
+  },
+  "Luck": {
+    icon: "🍀",
+    tiers: {
+      I: { boost: 1.05, chance: 0.40, description: "+5% pet luck" },
+      II: { boost: 1.10, chance: 0.30, description: "+10% pet luck" },
+      III: { boost: 1.15, chance: 0.20, description: "+15% pet luck" },
+      IV: { boost: 1.20, chance: 0.091, description: "+20% pet luck" },
+      V: { boost: 1.25, chance: 0.009, description: "+25% pet luck" }
+    }
+  },
+  "Speed": {
+    icon: "⚡",
+    tiers: {
+      I: { boost: 1.05, chance: 0.40, description: "+5% speed" },
+      II: { boost: 1.10, chance: 0.30, description: "+10% speed" },
+      III: { boost: 1.15, chance: 0.20, description: "+15% speed" },
+      IV: { boost: 1.20, chance: 0.091, description: "+20% speed" },
+      V: { boost: 1.25, chance: 0.009, description: "+25% speed" }
+    }
+  },
+  "Sword Damage": {
+    icon: "⚔️",
+    tiers: {
+      I: { boost: 2.0, chance: 0.40, description: "2x sword damage" },
+      II: { boost: 3.0, chance: 0.30, description: "3x sword damage" },
+      III: { boost: 4.0, chance: 0.20, description: "4x sword damage" },
+      IV: { boost: 5.0, chance: 0.091, description: "5x sword damage" },
+      V: { boost: 6.0, chance: 0.009, description: "6x sword damage" }
+    }
+  },
+  "Ultimate": {
+    icon: "✨",
+    tiers: {
+      V: { boost: 2.0, chance: 0.001, description: "2x ALL stats" }
+    }
+  }
+};
+// === CRAFTING SYSTEM ===
+const craftingSystem = {
+  unlocked: false,
+  unlockedRecipes: [],
+  materials: {}, // Tracks material counts
+  
+  // Crafting recipes
+  recipes: {
+    // === SWORDS ===
+    "Phoenix Sword": {
+      type: "Swords",
+      icon: "🔥⚔️",
+      special: 6,
+      unlockItem: "Phoenix Tear",
+      materials: {
+        "Phoenix Feather": 5,
+        "Phoenix Ember": 1,
+        "Scroll of Fire": 1
+      },
+      moneyCost: 100_000_000_000_000_000_000_000_000n // 100SP
+    },
+    "Elemental Sword": {
+      type: "Swords",
+      icon: "🌟⚔️",
+      special: 8,
+      unlockItem: "Elemental Stone",
+      materials: {
+        "Elemental Stone": 10,
+        "Elemental Capsule": 1,
+        "Scroll of Elements": 1
+      },
+      moneyCost: 10_000_000_000_000_000_000_000_000_000_000n // 10DC
+    },
+    "Leviathan Sword": {
+      type: "Swords",
+      icon: "🌊⚔️",
+      special: 8,
+      unlockItem: "Enchanted Leviathan Skin",
+      materials: {
+        "Leviathan Heart": 1,
+        "Enchanted Leviathan Heart": 1,
+        "Leviathan Fang": 1,
+        "Enchanted Leviathan Fang": 1,
+        "King Leviathan": 1 // Pet
+      },
+      moneyCost: 0n
+    },
+  // === ULTIMATE SWORDS (Step 4.3 REVISED) ===
+"Void Blade": {
+  type: "Swords",
+  icon: "🌌⚔️",
+  special: 10,
+  unlockItem: "Void Essence",
+  materials: {
+    "Void Essence": 5,
+    "Void Shard": 3,
+    "Obsidian Shard": 10,
+    "Mythril Ingot": 2
+  },
+  moneyCost: 100_000_000_000_000_000_000_000_000n // 100SP
+},
+
+"Dragon Slayer": {
+  type: "Swords",
+  icon: "🐉⚔️",
+  special: 12,
+  unlockItem: "Dragon Essence",
+  materials: {
+    "Dragon Essence": 5,
+    "Dragon Scale": 10,
+    "Mythril Ingot": 5,
+    "Celestial Core": 2
+  },
+  moneyCost: 1_000_000_000_000_000_000_000_000_000n // 1OC
+},
+
+"Celestial Blade": {
+  type: "Swords",
+  icon: "✨⚔️",
+  special: 15,
+  unlockItem: "Celestial Core",
+  materials: {
+    "Celestial Core": 3,
+    "Celestial Dust": 20,
+    "Ancient Tablet": 5,
+    "Dragon Essence": 3,
+    "Void Essence": 3
+  },
+  moneyCost: 10_000_000_000_000_000_000_000_000_000n // 10OC
+},
+
+"Mythril Greatsword": {
+  type: "Swords",
+  icon: "⛏️⚔️",
+  special: 18,
+  unlockItem: "Mythril Ingot",
+  materials: {
+    "Mythril Ingot": 10,
+    "Dragon Scale": 20,
+    "Void Shard": 5,
+    "Celestial Core": 5,
+    "Ancient Tablet": 3
+  },
+  moneyCost: 100_000_000_000_000_000_000_000_000_000n // 100OC
+},
+
+"Infinity Blade": {
+  type: "Swords",
+  icon: "♾️⚔️",
+  special: 20,
+  unlockItem: "Ancient Tablet",
+  materials: {
+    "Ancient Tablet": 10,
+    "Celestial Core": 10,
+    "Mythril Ingot": 10,
+    "Dragon Essence": 10,
+    "Void Essence": 10
+  },
+  moneyCost: 1_000_000_000_000_000_000_000_000_000_000n // 1NO
+},
+
+"Enchanted Leviathan Blade": {
+  type: "Swords",
+  icon: "✨🌊⚔️",
+  special: 30,
+  unlockItem: "Enchanted Leviathan King", // Changed from "Infinity Blade"
+  materials: {
+    "Infinity Blade": 1,
+    "Enchanted Leviathan Heart": 5,
+    "Enchanted Leviathan Fang": 3,
+    "Enchanted Leviathan Scale": 10,
+    "Celestial Core": 10,
+    "Mythril Ingot": 10,
+    "Ancient Tablet": 5,
+    "Enchanted Leviathan King": 1 // Consumes the pet
+  },
+  moneyCost: 10_000_000_000_000_000_000_000_000_000_000n // 10NO
+},
+    // === RELICS ===
+    "Relic of Chaos": {
+      type: "Relics",
+      icon: "🌀",
+      special: 1.8,
+      unlockItem: "Bloodmoon Egg",
+      materials: {
+        "Chaotic Orb": 1,
+        "Chaos Scroll": 1
+      },
+      moneyCost: 1_000_000_000_000_000_000_000n // 1SX
+    },
+    // === LEGENDARY RELICS (Step 4.4) ===
+"Void Relic": {
+  type: "Relics",
+  icon: "🌌📿",
+  special: 2.0,
+  unlockItem: "Void Essence",
+  materials: {
+    "Void Essence": 5,
+    "Void Shard": 3,
+    "Obsidian Shard": 10,
+    "Ancient Rune": 5
+  },
+  moneyCost: 100_000_000_000_000_000_000_000_000n // 100SP
+},
+
+"Dragon Relic": {
+  type: "Relics",
+  icon: "🐉📿",
+  special: 2.2,
+  unlockItem: "Dragon Essence",
+  materials: {
+    "Dragon Essence": 5,
+    "Dragon Scale": 10,
+    "Mythril Ingot": 5,
+    "Celestial Dust": 10
+  },
+  moneyCost: 1_000_000_000_000_000_000_000_000_000n // 1OC
+},
+
+"Celestial Relic": {
+  type: "Relics",
+  icon: "✨📿",
+  special: 2.5,
+  unlockItem: "Celestial Core",
+  materials: {
+    "Celestial Core": 3,
+    "Celestial Dust": 20,
+    "Ancient Tablet": 5,
+    "Dragon Essence": 3,
+    "Void Essence": 3
+  },
+  moneyCost: 10_000_000_000_000_000_000_000_000_000n // 10OC
+},
+
+"Mythril Relic": {
+  type: "Relics",
+  icon: "⛏️📿",
+  special: 2.8,
+  unlockItem: "Mythril Ingot",
+  materials: {
+    "Mythril Ingot": 10,
+    "Dragon Scale": 20,
+    "Void Shard": 5,
+    "Celestial Core": 5,
+    "Ancient Tablet": 3
+  },
+  moneyCost: 100_000_000_000_000_000_000_000_000_000n // 100OC
+},
+
+"Infinity Relic": {
+  type: "Relics",
+  icon: "♾️📿",
+  special: 3.0,
+  unlockItem: "Ancient Tablet",
+  materials: {
+    "Ancient Tablet": 10,
+    "Celestial Core": 10,
+    "Mythril Ingot": 10,
+    "Dragon Essence": 10,
+    "Void Essence": 10
+  },
+  moneyCost: 1_000_000_000_000_000_000_000_000_000_000n // 1NO
+},
+
+"Enchanted Leviathan Relic": {
+  type: "Relics",
+  icon: "✨🌊📿",
+  special: 4.0, // BEST RELIC (4x money multiplier!)
+  unlockItem: "Infinity Relic",
+  materials: {
+    "Infinity Relic": 1,
+    "Enchanted Leviathan Heart": 5,
+    "Enchanted Leviathan Fang": 3,
+    "Enchanted Leviathan Scale": 10,
+    "Celestial Core": 10,
+    "Mythril Ingot": 10,
+    "Ancient Tablet": 5
+  },
+  moneyCost: 10_000_000_000_000_000_000_000_000_000_000n // 10NO
+},
+    
+    // === EGGS ===
+    "Crafters Egg": {
+      type: "Eggs",
+      icon: "🔨🥚",
+      special: 1,
+      unlockItem: "Enchant Relic",
+      materials: {
+        "Celestial Egg": 1,
+        "Night Egg": 1,
+        "Scroll of the Egg": 1
+      },
+      moneyCost: 1_000_000_000_000_000_000_000_000_000n // 1NO
+    },
+    "Leviathan Egg": {
+      type: "Eggs",
+      icon: "🌊🥚",
+      special: 1,
+      unlockItem: "Leviathan Scale",
+      materials: {
+        "Essence of Ice": 1,
+        "Leviathan Scale": 1,
+        "Scroll of Terror": 1
+      },
+      moneyCost: 1_000_000_000_000_000_000_000_000_000_000n // 1DC
+    },
+    // === MYTHIC EGGS (Step 4.5) ===
+"Void Egg": {
+  type: "Eggs",
+  icon: "🌌🥚",
+  special: 1,
+  unlockItem: "Void Essence",
+  materials: {
+    "Void Essence": 3,
+    "Obsidian Shard": 5
+  },
+  moneyCost: 10_000_000_000_000_000_000_000_000n // 10SP
+},
+
+"Dragon Egg": {
+  type: "Eggs",
+  icon: "🐉🥚",
+  special: 1,
+  unlockItem: "Dragon Essence",
+  materials: {
+    "Dragon Essence": 3,
+    "Dragon Scale": 5
+  },
+  moneyCost: 100_000_000_000_000_000_000_000_000n // 100SP
+},
+
+"Celestial Egg": {
+  type: "Eggs",
+  icon: "✨🥚",
+  special: 1,
+  unlockItem: "Celestial Core",
+  materials: {
+    "Celestial Core": 2,
+    "Celestial Dust": 10
+  },
+  moneyCost: 1_000_000_000_000_000_000_000_000_000n // 1OC
+},
+
+"Mythril Egg": {
+  type: "Eggs",
+  icon: "⛏️🥚",
+  special: 1,
+  unlockItem: "Mythril Ingot",
+  materials: {
+    "Mythril Ingot": 5,
+    "Dragon Scale": 10
+  },
+  moneyCost: 10_000_000_000_000_000_000_000_000_000n // 10OC
+},
+
+"Infinity Egg": {
+  type: "Eggs",
+  icon: "♾️🥚",
+  special: 1,
+  unlockItem: "Ancient Tablet",
+  materials: {
+    "Ancient Tablet": 5,
+    "Celestial Core": 5,
+    "Mythril Ingot": 5
+  },
+  moneyCost: 100_000_000_000_000_000_000_000_000_000n // 100OC
+},
+
+"Enchanted Leviathan Egg": {
+  type: "Eggs",
+  icon: "✨🌊🥚",
+  special: 1,
+  unlockItem: "Infinity Egg",
+  materials: {
+    "Infinity Egg": 1,
+    "Enchanted Leviathan Heart": 3,
+    "Enchanted Leviathan Scale": 5
+  },
+  moneyCost: 1_000_000_000_000_000_000_000_000_000_000n // 1NO
+},
+    // === SKINS ===
+    "Leviathan Skin": {
+      type: "Skins",
+      icon: "🌊💎",
+      special: 17,
+      unlockItem: "Leviathan Pet",
+      materials: {
+        "Leviathan Egg": 1,
+        "Scroll of Terror": 1,
+        "Leviathan Scale": 3
+      },
+      moneyCost: 10_000_000_000_000_000_000_000_000_000_000n // 10DC
+    },
+    "Enchanted Leviathan Skin": {
+      type: "Skins",
+      icon: "✨🌊💎",
+      special: 18,
+      unlockItem: "Leviathan Skin",
+      materials: {
+        "Leviathan Skin": 1,
+        "Leviathan Armor": 1,
+        "Enchanted Leviathan Heart": 1,
+        "Scroll of the Enchanted": 1
+      },
+      moneyCost: 100_000_000_000_000_000_000_000_000_000_000n // 100DC
+    },
+    
+    // === POTIONS ===
+    "Crafters Potion": {
+      type: "Potions",
+      icon: "🔨🧪",
+      special: 8,
+      unlockItem: "Crafters Egg",
+      materials: {
+        "Crafters Egg": 1,
+        "Divine Potion": 1
+      },
+      moneyCost: 1_000_000_000_000_000_000_000_000_000n // 1NO
+    },
+    
+    // === TOTEMS ===
+    "Leviathan Totem": {
+      type: "Totems",
+      icon: "🌊✨",
+      special: 1,
+      unlockItem: "Essence of Ice",
+      materials: {
+        "Essence of Ice": 1,
+        "Shard of Ice": 1,
+        "Freezing Scroll": 1
+      },
+      moneyCost: 1_000_000_000_000_000_000_000_000_000_000n // 1DC
+    },
+    
+    // === CRAFTED ITEMS (Auto-unlocked) ===
+    "Elemental Stone": {
+      type: "Materials",
+      icon: "💎",
+      autoUnlock: true,
+      materials: {
+        "Stone": 10,
+        "Elemental Essence": 1
+      },
+      moneyCost: 1_000_000_000_000_000_000_000_000n // 1OC
+    },
+    "Elemental Capsule": {
+      type: "Materials",
+      icon: "⚗️",
+      autoUnlock: true,
+      materials: {
+        "Empty Capsule": 1,
+        "Fire Capsule": 1,
+        "Ice Capsule": 1,
+        "Lightning Capsule": 1,
+        "Wind Capsule": 1,
+        "Elemental Essence": 1
+      },
+      moneyCost: 100_000_000_000_000_000_000n // 100QI
+    },
+    "Scroll of Elements": {
+      type: "Materials",
+      icon: "📜✨",
+      autoUnlock: true,
+      materials: {
+        "Empty Scroll": 1,
+        "Fire Scroll": 1,
+        "Ice Scroll": 1,
+        "Lightning Scroll": 1,
+        "Wind Scroll": 1
+      },
+      moneyCost: 1_000_000_000_000_000_000_000n // 1SX
+    },
+    "Fire Capsule": {
+      type: "Materials",
+      icon: "🔥⚗️",
+      autoUnlock: true,
+      materials: {
+        "Empty Capsule": 1,
+        "Essence of Fire": 10,
+        "Shard of Fire": 1
+      },
+      moneyCost: 0n
+    },
+    "Ice Capsule": {
+      type: "Materials",
+      icon: "❄️⚗️",
+      autoUnlock: true,
+      materials: {
+        "Empty Capsule": 1,
+        "Essence of Ice": 10,
+        "Shard of Ice": 1
+      },
+      moneyCost: 0n
+    },
+    "Lightning Capsule": {
+      type: "Materials",
+      icon: "⚡⚗️",
+      autoUnlock: true,
+      materials: {
+        "Empty Capsule": 1,
+        "Essence of Lightning": 10,
+        "Shard of Lightning": 1
+      },
+      moneyCost: 0n
+    },
+    "Wind Capsule": {
+      type: "Materials",
+      icon: "💨⚗️",
+      autoUnlock: true,
+      materials: {
+        "Empty Capsule": 1,
+        "Essence of Wind": 10,
+        "Shard of Wind": 1
+      },
+      moneyCost: 0n
+    },
+    "Essence of Fire": {
+      type: "Materials",
+      icon: "🔥",
+      autoUnlock: true,
+      materials: {
+        "Empty Essence": 1,
+        "Fire Scroll": 10
+      },
+      moneyCost: 0n
+    },
+    "Essence of Ice": {
+      type: "Materials",
+      icon: "❄️",
+      autoUnlock: true,
+      materials: {
+        "Empty Essence": 1,
+        "Ice Scroll": 10
+      },
+      moneyCost: 0n
+    },
+    "Essence of Lightning": {
+      type: "Materials",
+      icon: "⚡",
+      autoUnlock: true,
+      materials: {
+        "Empty Essence": 1,
+        "Lightning Scroll": 10
+      },
+      moneyCost: 0n
+    },
+    "Essence of Wind": {
+      type: "Materials",
+      icon: "💨",
+      autoUnlock: true,
+      materials: {
+        "Empty Essence": 1,
+        "Wind Scroll": 10
+      },
+      moneyCost: 0n
+    },
+    "Chaotic Orb": {
+      type: "Materials",
+      icon: "🌀",
+      autoUnlock: true,
+      materials: {
+        "Enchant Orb": 1,
+        "Chaotic Scroll": 1
+      },
+      moneyCost: 100_000_000_000_000_000_000_000_000_000n // 100OC
+    },
+    "Chaos Scroll": {
+      type: "Materials",
+      icon: "📜🌀",
+      autoUnlock: true,
+      materials: {
+        "Chaotic Orb": 1,
+        "Chaotic Scroll": 3
+      },
+      moneyCost: 0n
+    },
+    "Shard of Fire": {
+      type: "Materials",
+      icon: "🔥💎",
+      autoUnlock: true,
+      materials: {
+        "Shard": 10,
+        "Essence of Fire": 10
+      },
+      moneyCost: 10_000_000_000_000_000_000_000_000n // 10SP
+    },
+    "Shard of Ice": {
+      type: "Materials",
+      icon: "❄️💎",
+      autoUnlock: true,
+      materials: {
+        "Shard": 10,
+        "Essence of Ice": 10
+      },
+      moneyCost: 10_000_000_000_000_000_000_000_000n // 10SP
+    },
+    "Shard of Lightning": {
+      type: "Materials",
+      icon: "⚡💎",
+      autoUnlock: true,
+      materials: {
+        "Shard": 10,
+        "Essence of Lightning": 10
+      },
+      moneyCost: 10_000_000_000_000_000_000_000_000n // 10SP
+    },
+    "Shard of Wind": {
+      type: "Materials",
+      icon: "💨💎",
+      autoUnlock: true,
+      materials: {
+        "Shard": 10,
+        "Essence of Wind": 10
+      },
+      moneyCost: 10_000_000_000_000_000_000_000_000n // 10SP
+    },
+    // === ADVANCED CRAFTED MATERIALS (Step 4.2) ===
+"Void Essence": {
+  type: "Materials",
+  icon: "🌌✨",
+  autoUnlock: true,
+  materials: {
+    "Empty Essence": 1,
+    "Void Crystal": 5,
+    "Obsidian Shard": 3
+  },
+  moneyCost: 10_000_000_000_000_000_000_000_000n // 10SP
+},
+
+"Dragon Essence": {
+  type: "Materials",
+  icon: "🐉✨",
+  autoUnlock: true,
+  materials: {
+    "Empty Essence": 1,
+    "Dragon Scale": 5,
+    "Mythril Ore": 2
+  },
+  moneyCost: 100_000_000_000_000_000_000_000_000_000n // 100OC
+},
+
+"Celestial Core": {
+  type: "Materials",
+  icon: "💫🔮",
+  autoUnlock: true,
+  materials: {
+    "Celestial Dust": 10,
+    "Ancient Rune": 5,
+    "Void Essence": 3
+  },
+  moneyCost: 1_000_000_000_000_000_000_000_000_000n // 1OC
+},
+
+"Mythril Ingot": {
+  type: "Materials",
+  icon: "⛏️💎",
+  autoUnlock: true,
+  materials: {
+    "Mythril Ore": 10,
+    "Dragon Scale": 5,
+    "Obsidian Shard": 10
+  },
+  moneyCost: 10_000_000_000_000_000_000_000_000_000n // 10OC
+},
+
+"Ancient Tablet": {
+  type: "Materials",
+  icon: "📿✨",
+  autoUnlock: true,
+  materials: {
+    "Ancient Rune": 10,
+    "Celestial Dust": 5,
+    "Empty Scroll": 5
+  },
+  moneyCost: 100_000_000_000_000_000_000_000_000n // 100SP
+},
+
+"Void Shard": {
+  type: "Materials",
+  icon: "🌌💎",
+  autoUnlock: true,
+  materials: {
+    "Void Crystal": 10,
+    "Obsidian Shard": 20,
+    "Shard": 15
+  },
+  moneyCost: 50_000_000_000_000_000_000_000_000n // 50SP
+},
+    // === MISCELLANEOUS (Auto-unlocked) ===
+    "Harpoon": {
+      type: "Miscellaneous",
+      icon: "🔱",
+      autoUnlock: true,
+      materials: {
+        "Stick": 10,
+        "Anchor": 1,
+        "Arrow": 1,
+        "Essence of Ice": 1
+      },
+      moneyCost: 0n
+    },
+    "Leviathan Armor": {
+      type: "Miscellaneous",
+      icon: "🛡️",
+      autoUnlock: true,
+      materials: {
+        "Leviathan Heart": 1,
+        "Leviathan Scale": 10,
+        "Enchanted Leviathan Scale": 1
+      },
+      moneyCost: 0n
+    }
+  }
+};
+
+const merchantShop = {
+  "Stick": { icon: "🪵", price: 1_000_000n },
+  "Stone": { icon: "🪨", price: 10_000_000n },
+  "Anchor": { icon: "⚓", price: 100_000_000_000n },
+  "Arrow": { icon: "➤", price: 1_000_000_000n },
+  "Empty Scroll": { icon: "📜", price: 1_000_000_000_000n },
+  "Empty Capsule": { icon: "⚗️", price: 10_000_000_000_000n },
+  "Empty Essence": { icon: "✨", price: 100_000_000_000_000n },
+  "Fire Scroll": { icon: "🔥📜", price: 1_000_000_000_000_000n },
+  "Ice Scroll": { icon: "❄️📜", price: 1_000_000_000_000_000n },
+  "Lightning Scroll": { icon: "⚡📜", price: 1_000_000_000_000_000n },
+  "Wind Scroll": { icon: "💨📜", price: 1_000_000_000_000_000n },
+  "Scroll of Fire": { icon: "🔥📜✨", price: 10_000_000_000_000_000_000n },
+  "Scroll of the Egg": { icon: "🥚📜", price: 100_000_000_000_000_000_000_000_000_000n },
+  "Scroll of Terror": { icon: "😱📜", price: 100_000_000_000_000_000_000_000_000_000n },
+  "Scroll of the Enchanted": { icon: "✨📜", price: 10_000_000_000_000_000_000_000_000_000_000n },
+  "Freezing Scroll": { icon: "❄️📜✨", price: 100_000_000_000_000_000_000_000_000_000n },
+  "Enchant Orb": { icon: "🔮", price: 10_000_000_000_000_000_000_000_000_000n },
+  "Chaotic Scroll": { icon: "🌀📜", price: 10_000_000_000_000_000_000_000_000_000n },
+  "Shard": { icon: "💎", price: 1_000_000_000_000_000_000_000n },
+  "Phoenix Tear": { icon: "💧", price: 100_000_000_000_000_000_000_000_000n },
+  "Divine Potion": { icon: "✨🧪", price: 100_000_000_000_000_000_000_000_000n },
+  
+  // NEW STEP 4 MATERIALS
+  "Obsidian Shard": { icon: "🖤💎", price: 1_000_000_000_000_000_000_000_000n }, // 1SP
+  "Void Crystal": { icon: "🌌💎", price: 10_000_000_000_000_000_000_000_000n }, // 10SP
+  "Ancient Rune": { icon: "📿", price: 100_000_000_000_000_000_000_000_000n }, // 100SP
+  "Celestial Dust": { icon: "✨💫", price: 1_000_000_000_000_000_000_000_000_000n }, // 1OC
+  "Dragon Scale": { icon: "🐉", price: 10_000_000_000_000_000_000_000_000_000n }, // 10OC
+  "Mythril Ore": { icon: "⛏️", price: 100_000_000_000_000_000_000_000_000_000n } // 100OC
+};
 // Admin Abuse event state
 let currentAdminEvent = null;
 let adminEventTimer = null;
@@ -721,6 +1679,104 @@ let adminEventShakeY = 0;
 const ctx = canvas.getContext('2d');
 
 const W = canvas.width, H = canvas.height;
+// === BOSS ENTITIES (MUST BE DECLARED EARLY) ===
+const boss = {
+  x: 0, y: 0, w: 96, h: 96, // placeholder, will use character.w later
+  color: "#3b1f00",
+  emoji: "☠️",
+  visible: false,
+  hitsToDie: 10,
+  hitsRemaining: 10,
+  playerHits: 0,
+  speed: 325, // placeholder, will use character.speed later
+  aoeRadius: 80,
+  spawnX: 0,
+  spawnY: 0,
+};
+
+const phoenixBoss = {
+  x: 0, y: 0, w: 96, h: 96, // placeholder
+  color: "#FF4500",
+  emoji: "🔥",
+  visible: false,
+  hitsToDie: 25,
+  hitsRemaining: 25,
+  playerHits: 0,
+  speed: 275, // placeholder
+  longRangeRadius: 150,
+  spawnX: 0,
+  spawnY: 0,
+  nestX: 0,
+  nestY: 0,
+  ignoreMistletoe: true
+};
+
+const tornado = {
+  x: 0,
+  y: 0,
+  w: 80,
+  h: 80,
+  speed: 325, // placeholder
+  visible: false,
+  angle: 0
+};
+
+// === LEVIATHAN BOSS CONFIGURATION ===
+const leviathanBoss = {
+  x: 0,
+  y: 0,
+  w: 120,
+  h: 120,
+  color: "#1E90FF",
+  emoji: "🌊",
+  visible: false,
+  hitsToDie: 50,
+  hitsRemaining: 50,
+  playerHits: 0,
+  playerMaxHP: 5,
+  playerCurrentHP: 5,
+  speed: 200,
+  longRangeRadius: 200,
+  attackCooldown: false,
+  flash: false,
+  enchanted: false,
+  canSummonEnchanted: false,
+  enchantedSummonTimer: 0
+};
+
+const enchantedLeviathanBoss = {
+  x: 0,
+  y: 0,
+  w: 140,
+  h: 140,
+  color: "#9370DB",
+  emoji: "✨🌊",
+  visible: false,
+  hitsToDie: 100,
+  hitsRemaining: 100,
+  playerHits: 0,
+  speed: 180,
+  longRangeRadius: 220,
+  attackCooldown: false,
+  flash: false
+};
+
+// Forgotten Altar event
+const forgottenAltar = {
+  active: false,
+  duration: 0,
+  incomeBoost: 1.0,
+  background: "radial-gradient(circle at center, #B0E0E6 0%, #4682B4 50%, #1E90FF 100%)",
+  overlay: "rgba(176, 224, 230, 0.3)"
+};
+
+// Player harpoon
+const harpoon = {
+  equipped: false,
+  damage: 3,
+  cooldown: 1000, // 1 second
+  lastUse: 0
+};
 const CUBE_SIZE = 48;
 const CUBE_SPACING = 18;
 const CUBE_COUNT = 8;
@@ -772,16 +1828,22 @@ let potionEndTime = 0;
 let swordicon ="";
 
 const skins = {
-  1:   { color: "#ff2b2b" },
-  2:  { color: "#4d7cff" },
+  1: { color: "#ff2b2b" },
+  2: { color: "#4d7cff" },
   3: { color: "#a45ee5" },
-  4:  { color: "#ffd700" },
-  5:  { color: "#e9ecef" },
+  4: { color: "#ffd700" },
+  5: { color: "#e9ecef" },
   6: { color: "#FFF917" }, // Sunny
   7: { color: "#312F36" }, // Night
   8: { color: "#DC143C" }, // Santa Red
   9: { color: "#32CD32" }, // Elf Green
-  10: { color: "#228B22" } // Christmas Tree Green - NEW
+  10: { color: "#228B22" }, // Christmas Tree Green
+  11: { color: "#1a0a33" }, // Galaxy
+  12: { color: "#00ff00" }, // Glitched
+  13: { color: "#ff00ff" }, // Disco
+  14: { color: "#8B0000" }, // Bloodmoon
+  15: { color: "#FFFACD" }, // Heavenly
+  16: { color: "#9370DB" }  // Enchant - NEW
 };
 // Global pet ability flags
 window.giftDropMultiplier = 1.0;
@@ -898,15 +1960,32 @@ const eventEmojis = {
   "Volcano": "🌋",
   "Earthquake": "🫨",
   "Glitched": "⚜️",
-  "Galactic": "🚀"
+  "Galactic": "🚀",
+  "Phoenix Nest": "🔥",
+  "Bloodmoon": "🌕",
+  "Tornado": "🌪️",
+  "Heavenly": "✨" // NEW
 };
 function nvl(value, defaultValue) {
 return value == null ? defaultValue : value;
 }
 
 
-
-
+function updateEnchantUI() {
+  const enchantHint = document.getElementById('enchantHint');
+  if (!enchantHint) return;
+  
+  if (enchantmentSystem.unlocked) {
+    enchantHint.style.display = 'block';
+    enchantHint.textContent = `🔮 Enchants: ${enchantmentSystem.totalEnchants}`;
+    
+    if (enchantmentSystem.hasEnchantRelic) {
+      enchantHint.textContent += ` | 🍀 Relic Active`;
+    }
+  } else {
+    enchantHint.style.display = 'none';
+  }
+}
 /**
 Purpose:
 Updates the HTML inventory UI (#inventoryList) to show:
@@ -921,7 +2000,7 @@ Pulls data from dropCounters, dropLimits, and playerInventory.
 function updateInventoryDisplay() {
   //const inv = document.getElementById('inventoryDisplay');
   const inv = document.getElementById("inventoryList");
-
+  let html = ""; // ← ADD THIS LINE
   const bossOpen = document.getElementById("detailsBossDrops")?.open ?? true;
   const shopOpen = document.getElementById("detailsShopPurchases")?.open ?? true;
 
@@ -929,7 +2008,7 @@ function updateInventoryDisplay() {
 
   
 // --- Boss Drops Section ---
-let html = `
+html += `
    <div id="bossDropsContainer">
   <details id="detailsBossDrops" open style="margin-top:8px;">
     <summary style="cursor:pointer; font-weight:bold; color:#00ccff;">📦 Boss Drops</summary>
@@ -947,99 +2026,183 @@ let html = `
 
   // --- Shop Inventory ---
   //html += `<b>Shop Purchases</b><br>`;
-  html += '<div id="shopPurchasesContainer"><details id="detailsShopPurchases" open style="margin-top:8px;"><summary style="cursor:pointer; font-weight:bold; color:#ffcc00;">🛒 Shop Purchases</summary><div style="margin-left:10px; margin-top:5px;"><div>';
-  
-  const categories = ["Swords", "Relics", "Eggs", "Skins", "Potions"];
+// --- Shop Inventory ---
+html += '<div id="shopPurchasesContainer"><details id="detailsShopPurchases" open style="margin-top:8px;"><summary style="cursor:pointer; font-weight:bold; color:#ffcc00;">🛒 Shop Purchases</summary><div style="margin-left:10px; margin-top:5px;"><div>';
 
-  categories.forEach(cat => {
-    const items = playerInventory[cat];
-    if (!items || items.length === 0) return;
+const categories = ["Swords", "Relics", "Eggs", "Skins", "Potions", "Totems", "Miscellaneous"];
 
-    html += `<u>${cat}</u><br>`;
+categories.forEach(cat => {
+  const items = playerInventory[cat];
+  if (!items || items.length === 0) return;
 
-playerInventory[cat].forEach(item => {
-  const limit = (cat === "Eggs" || cat === "Potions") ? 999 : 1;
-  const isEquipped = !!item.equipped;
+  html += `<u>${cat}</u><br>`;
 
-  // Get the correct special value for this category
-  let equippedSpecial = 0;
-  switch (cat) {
-    case "Swords":   equippedSpecial = equippedSwordSpecial; break;
-    case "Relics":   equippedSpecial = equippedRelicSpecial; break;
-    case "Eggs":     equippedSpecial = equippedEggSpecial; break;
-    case "Skins":    equippedSpecial = equippedSkinSpecial; break;
-    case "Potions":  equippedSpecial = equippedPotionSpecial; break;
-  }
+  // ONLY ONE forEach loop here
+  playerInventory[cat].forEach(item => {
+    const limit = (cat === "Eggs" || cat === "Potions") ? 999 : 1;
+    const isEquipped = !!item.equipped;
 
-  // Use item.special if it exists, otherwise show equipped value
-  const displaySpecial = item.special || equippedSpecial;
+    // Get the correct special value for this category
+    let equippedSpecial = 0;
+    switch (cat) {
+      case "Swords":   equippedSpecial = equippedSwordSpecial; break;
+      case "Relics":   equippedSpecial = equippedRelicSpecial; break;
+      case "Eggs":     equippedSpecial = equippedEggSpecial; break;
+      case "Skins":    equippedSpecial = equippedSkinSpecial; break;
+      case "Potions":  equippedSpecial = equippedPotionSpecial; break;
+    }
 
-  // Build the button label
-  const btnLabel = isEquipped ? `Equipped (⭐${displaySpecial})` : 'Equip';
+    // Use item.special if it exists, otherwise show equipped value
+    const displaySpecial = item.special || equippedSpecial;
 
-  // Append to HTML string
-  html += `${item.icon} ${item.name}: ${item.count}/${limit}`;
-  
-  // Add Equip button for non-eggs
-  if (cat !== "Eggs") {
-    html += `
-      <button
-        onclick="equipItem('${cat}', '${item.name}')"
-        style="
-          margin-left:5px; 
-          padding:2px 6px; 
-          border-radius:5px; 
-          background:${isEquipped ? '#28a745' : '#333'}; 
-          color:white; 
-          border:none; 
-          cursor:pointer;
-        ">
-        ${btnLabel}
-      </button>`;
-  }
-  
-  // Add Open buttons for eggs
-  if (cat === "Eggs" && item.count > 0) {
-    html += `
-      <button
-        onclick="openEggFromInventory('${item.name}', 1)"
-        style="
-          margin-left:5px; 
-          padding:2px 6px; 
-          border-radius:5px; 
-          background:#FFA500; 
-          color:white; 
-          border:none; 
-          cursor:pointer;
-        ">
-        Open 1
-      </button>`;
-    
-    if (item.count >= 10) {
+    // Build the button label
+    const btnLabel = isEquipped ? `Equipped (⭐${displaySpecial})` : 'Equip';
+
+    // Display the item
+    html += `${item.icon} ${item.name}: ${item.count}/${limit}`;
+
+    // Add Equip button for non-eggs
+    if (cat !== "Eggs") {
       html += `
         <button
-          onclick="openEggFromInventory('${item.name}', 10)"
+          onclick="equipItem('${cat}', '${item.name}')"
           style="
             margin-left:5px; 
             padding:2px 6px; 
             border-radius:5px; 
-            background:#FF8C00; 
+            background:${isEquipped ? '#28a745' : '#333'}; 
             color:white; 
             border:none; 
             cursor:pointer;
           ">
-          Open 10
+          ${btnLabel}
         </button>`;
     }
+
+// Add Use button for Heavenly Totem
+    if (item.name === "Heavenly Totem" && item.count > 0) {
+      html += `
+        <button
+          onclick="useHeavenlyTotem()"
+          style="
+            margin-left:5px; 
+            padding:2px 6px; 
+            border-radius:5px; 
+            background:#FFD700; 
+            color:white; 
+            border:none; 
+            cursor:pointer;
+          ">
+          Use ✨
+        </button>`;
+    }
+    
+    // NEW: Add Use button for Harpoon
+    if (item.name === "Harpoon") {
+      const harpoonCount = craftingSystem.materials["Harpoon"] || 0;
+      if (harpoonCount > 0) {
+        html += ` (${harpoonCount} in materials)`;
+      }
+    }
+    
+    // NEW: Add Use button for Leviathan Armor
+    if (item.name === "Leviathan Armor") {
+      const armorCount = craftingSystem.materials["Leviathan Armor"] || 0;
+      if (armorCount > 0) {
+        html += `
+          <button
+            onclick="equipLeviathanArmor()"
+            style="
+              margin-left:5px; 
+              padding:2px 6px; 
+              border-radius:5px; 
+              background:#4682B4; 
+              color:white; 
+              border:none; 
+              cursor:pointer;
+            ">
+            Equip 🛡️ (${armorCount})
+          </button>`;
+      }
+    }
+    // NEW: Add Use button for Leviathan Totem
+if (item.name === "Leviathan Totem") {
+  const totemCount = craftingSystem.materials["Leviathan Totem"] || 0;
+  if (totemCount > 0) {
+    html += `
+      <button
+        onclick="useLeviathanTotem()"
+        style="
+          margin-left:5px; 
+          padding:2px 6px; 
+          border-radius:5px; 
+          background:#1E90FF; 
+          color:white; 
+          border:none; 
+          cursor:pointer;
+        ">
+        Use 🌊 (${totemCount})
+      </button>`;
   }
-  
-  html += `<br>`;
-});
+}
+// NEW: Add Use button for Enchant Relic
+if (item.name === "Enchant Relic" && item.count > 0) {
+  html += `
+    <button
+      onclick="useEnchantRelic()"
+      style="
+        margin-left:5px; 
+        padding:2px 6px; 
+        border-radius:5px; 
+        background:#32CD32; 
+        color:white; 
+        border:none; 
+        cursor:pointer;
+      ">
+      Use 🍀
+    </button>`;
+}
 
+// Add Open buttons for eggs
+if (cat === "Eggs" && item.count > 0) {
+  html += `
+    <button
+      onclick="openEggFromInventory('${item.name}', 1)"
+      style="
+        margin-left:5px; 
+        padding:2px 6px; 
+        border-radius:5px; 
+        background:#FFA500; 
+        color:white; 
+        border:none; 
+        cursor:pointer;
+      ">
+      Open 1
+    </button>`;
 
+  if (item.count >= 10) {
+    html += `
+      <button
+        onclick="openEggFromInventory('${item.name}', 10)"
+        style="
+          margin-left:5px; 
+          padding:2px 6px; 
+          border-radius:5px; 
+          background:#FF8C00; 
+          color:white; 
+          border:none; 
+          cursor:pointer;
+        ">
+        Open 10
+      </button>`;
+  }
+}
 
     html += `<br>`;
-  });
+  }); // END of the ONE AND ONLY forEach loop
+
+  html += `<br>`;
+});
 // --- Pet Inventory (ONLY ONE SECTION) ---
 html += '<div style="margin-top:15px;"><u>🐾 Pets</u><br>';
 
@@ -1068,7 +2231,9 @@ html += `
     </button>
     <br>
     <span style="font-size:10px;color:#888;margin-left:2px;">
-      💡 Tips: Search by name, ability, mutation, or try: "equipped", "unequipped", "mutated"
+      💡 Search: name, ability, mutation, egg type<br>
+      Special: "equipped", "unequipped", "mutated", "enchanted", "christmas"<br>
+      Enchant types: "money", "luck", "speed", "damage", "ultimate"
     </span>
   </div>
 `;
@@ -1078,15 +2243,28 @@ html += `
   
 playerPets.forEach(pet => {
   const mutationText = pet.mutation ? ` [${petMutations[pet.mutation].emoji} ${pet.mutation}]` : '';
+  
+  // NEW: Add enchantment display
+  let enchantText = '';
+  if (pet.enchantment) {
+    const icon = enchantmentTypes[pet.enchantment.type].icon;
+    enchantText = ` ${icon}${pet.enchantment.tier}`;
+  }
+  
   const equippedBtn = pet.equipped 
     ? '<button onclick="togglePetEquip(' + pet.id + ')" style="margin-left:5px;padding:2px 6px;border-radius:5px;background:#28a745;color:white;border:none;cursor:pointer;">✓ Equipped</button>'
     : '<button onclick="togglePetEquip(' + pet.id + ')" style="margin-left:5px;padding:2px 6px;border-radius:5px;background:#333;color:white;border:none;cursor:pointer;">Equip</button>';
   
   const deleteBtn = '<button onclick="deletePet(' + pet.id + ')" style="margin-left:5px;padding:2px 6px;border-radius:5px;background:#dc3545;color:white;border:none;cursor:pointer;">🗑️</button>';
   
-  // Add egg type to data attributes
+  // NEW: Add Enchant button (only if unlocked)
+  console.log("Enchantment unlocked?", enchantmentSystem.unlocked); // DEBUG
+  const enchantBtn = enchantmentSystem.unlocked 
+    ? '<button onclick="enchantPet(' + pet.id + ')" style="margin-left:5px;padding:2px 6px;border-radius:5px;background:#9370DB;color:white;border:none;cursor:pointer;">🔮 Enchant</button>'
+    : '';
+  
   html += `<div class="pet-item" data-pet-name="${pet.name.toLowerCase()}" data-pet-ability="${pet.ability.toLowerCase()}" data-pet-mutation="${(pet.mutation || '').toLowerCase()}" data-pet-egg="${(pet.eggType || '').toLowerCase()}">`;
-  html += `${pet.icon} ${pet.name}${mutationText} ${equippedBtn} ${deleteBtn}<br>`;
+  html += `${pet.icon} ${pet.name}${mutationText}${enchantText} ${equippedBtn} ${enchantBtn} ${deleteBtn}<br>`;
   html += `<span style="font-size:11px;color:#888;margin-left:20px;">${pet.description}</span><br>`;
   html += `</div>`;
 });
@@ -1184,13 +2362,15 @@ function buyItem(category, index, skipOdds = false) {
     return;
   }
 
-// ❌ REMOVE THIS ENTIRE BLOCK:
-// if (category === "Eggs") {
-//   const pet = openEgg(item.name);
-//   if (pet) {
-//     alert(`🎉 Hatched ${pet.icon} ${pet.name}!\n${pet.description}`);
-//   }
-// }
+  // === Show egg odds before purchase (unless shift is held) ===
+  if (category === "Eggs" && !skipOdds) {
+    const oddsInfo = showEggOdds(item.name);
+    const confirmPurchase = confirm(`${oddsInfo}\nPurchase ${item.name} for ${formatBigInt(item.price)}?`);
+    
+    if (!confirmPurchase) {
+      return; // User cancelled
+    }
+  }
 
   money -= item.price;
   inventory[inventoryKey] = owned + 1n;
@@ -1206,6 +2386,9 @@ function buyItem(category, index, skipOdds = false) {
       special: item.special
     });
   }
+
+  // REMOVED: Eggs should NOT auto-open on purchase
+  // They should be opened from inventory instead
 
   updateDisplays();
   updateInventoryDisplay();
@@ -1255,6 +2438,11 @@ function updateShopDisplay() {
     row.innerHTML = `<strong style='min-width:70px'>${category}:</strong>`;
 
     items.forEach((item, index) => {
+      // Skip ascension-only, rebirth-locked, and enchant-only items
+      if (item.ascensionOnly || item.rebirthLocked || item.enchantOnly) {
+        return; // Don't show these items
+      }
+      
       const btn = document.createElement('button');
       btn.innerText = `${item.icon} ${item.name}\n💰${shortLabel(item.price)}`;
       btn.style.display = "flex";
@@ -1268,15 +2456,19 @@ function updateShopDisplay() {
 
       btn.onclick = (e) => {
         if (category === "Eggs" && e.shiftKey) {
-          buyItem(category, index, true);
+          buyItem(category, index, true); // Skip odds when shift is held
         } else {
-          buyItem(category, index, false);
+          buyItem(category, index, false); // Show odds normally
         }
       };
 
       row.appendChild(btn);
     });
-    shopContainer.appendChild(row);
+    
+    // Only append the row if it has items
+    if (row.children.length > 1) {
+      shopContainer.appendChild(row);
+    }
   }
 
   // ========== DAY/NIGHT EVENT SHOPS ==========
@@ -1676,31 +2868,39 @@ const character = {
   target: null,
   assignedName: null,
   assignedValue: 0n,
-  hasSword: false,       // Q toggles this
-  slashing: false,       // true when space pressed
-  slashDuration: 200     // ms duration of slash animation
+  hasSword: false,
+  slashing: false,
+  slashDuration: 200
 };
+
+// Update boss sizes and speeds based on character
+boss.w = character.w * 1.5;
+boss.h = character.h * 1.5;
+boss.speed = character.speed * 1.3;
+
+phoenixBoss.w = character.w * 2;
+phoenixBoss.h = character.h * 2;
+phoenixBoss.speed = character.speed * 1.1;
+
+tornado.speed = character.speed * 1.3;
 
 const house = { w: 140, h: 140, x: W - 160, y: H - 160, border: "#ff3b3b" };
 
 let bossDrops = [];
 
 const inventory = {
-  "🦴 Skeleton Bones": 0,
   "📿 Crossbones Relic": 0,
   "⬜💀 Skeleton Skin": 0,
   "⬜☠️ Crossbones Cube": 0,
-  "❄️ Snowflakes": 0 // NEW
+  "❄️ Snowflakes": 0,
 };
 
 const dropCounters = {
-  "🦴 Skeleton Bones": 0,
   "📿 Crossbones Relic": 0,
   "⬜💀 Skeleton Skin": 0,
   "⬜☠️ Crossbones Cube": 0,
-  "❄️ Snowflakes": 0 // NEW
+  "❄️ Snowflakes": 0,
 };
-
 
 
 let money = 1000n, incomePerSec = 0n, houseValue = 0n;
@@ -1720,15 +2920,18 @@ const shopItems = {
     { icon: "💎", price: 10_000_000_000_000n, name: "Crystal Sword", limit: 1, special: 4 },
     { icon: "🔥", price: 100_000_000_000_000_000n, name: "Flame Blade", limit: 1, special: 3 },
     { icon: "⚡", price: 100_000_000_000_000_000_000n, name: "Thunder Edge", limit: 1, special: 5 },
-    { icon: "🏆", price: 999_999_999_999_999_999_999_999_999_999_999n, name: "Golden Sword", limit: 1, special: 6, rebirthLocked: 9 }, // NEW
+    { icon: "🏆", price: 999_999_999_999_999_999_999_999_999_999_999n, name: "Golden Sword", limit: 1, special: 6, rebirthLocked: 9 },
+    { icon: "🔮", price: 0n, name: "Enchanted Sword", limit: 1, special: 4, enchantOnly: true },
+    { icon: "✨", price: 0n, name: "Rare Enchant Sword", limit: 1, special: 6, enchantOnly: true }
   ],
-  // ... rest of shop items
   Relics: [
     { icon: "📿", price: 100_000_000n, name: "Relic of Light", limit: 1, special: 1.1 },
     { icon: "🪶", price: 100_000_000_000n, name: "Relic of Wind", limit: 1, special: 1.15 },
     { icon: "💀", price: 100_000_000_000_000n, name: "Relic of Death", limit: 1, special: 1.20 },
     { icon: "🌙", price: 1_000_000_000_000_000_000n, name: "Relic of Night", limit: 1, special: 1.25 },
     { icon: "☀️", price: 100_000_000_000_000_000_000n, name: "Relic of Sun", limit: 1, special: 1.30 },
+    { icon: "✨", price: 0n, name: "Heavenly Totem", limit: 99, special: 1.35, ascensionOnly: true },
+    { icon: "🍀", price: 0n, name: "Enchant Relic", limit: 99, special: 1.0, enchantOnly: true }
   ],
   Eggs: [
     { icon: "🥚", price: 100_000_000n, name: "Basic Egg", limit: 999, special: 1 },
@@ -1736,6 +2939,8 @@ const shopItems = {
     { icon: "🐉", price: 100_000_000_000_000n, name: "Dragon Egg", limit: 999, special: 1 },
     { icon: "✨", price: 1_000_000_000_000_000_000n, name: "Mythic Egg", limit: 999, special: 1 },
     { icon: "🪺", price: 10_000_000_000_000_000_000_000n, name: "Celestial Egg", limit: 999, special: 1 },
+    { icon: "🔮", price: 0n, name: "Enchant Egg", limit: 999, special: 1, enchantOnly: true },
+    { icon: "✨", price: 0n, name: "Ascension Egg", limit: 999, special: 1, ascensionOnly: true }
   ],
   Skins: [
     { icon: "🟥", price: 1_000_000_000n, name: "Red Skin", limit: 1, special: 1 },
@@ -1743,6 +2948,8 @@ const shopItems = {
     { icon: "🟪", price: 1_000_000_000_000_000n, name: "Purple Skin", limit: 1, special: 3 },
     { icon: "🟨", price: 10_000_000_000_000_000_000n, name: "Gold Skin", limit: 1, special: 4 },
     { icon: "⬜", price: 1_000_000_000_000_000_000_000n, name: "Diamond Skin", limit: 1, special: 5 },
+    { icon: "✨", price: 0n, name: "Heavenly Skin", limit: 1, special: 15, ascensionOnly: true },
+    { icon: "🔮", price: 0n, name: "Enchant Skin", limit: 1, special: 16, enchantOnly: true }
   ],
   Potions: [
     { icon: "🧪", price: 1_000_000n, name: "Health Potion", limit: 999, special: 2 },
@@ -1750,6 +2957,7 @@ const shopItems = {
     { icon: "⚗️", price: 100_000_000_000_000n, name: "Alchemy Potion", limit: 999, special: 4 },
     { icon: "🧉", price: 1_000_000_000_000_000_000n, name: "Mystic Potion", limit: 999, special: 5 },
     { icon: "🥤", price: 10_000_000_000_000_000_000_000n, name: "Divine Potion", limit: 999, special: 6 },
+    { icon: "🔮", price: 0n, name: "Enchanted Potion", limit: 999, special: 7, enchantOnly: true }
   ]
 };
 // === PET SYSTEM CONFIGURATION ===
@@ -1789,7 +2997,7 @@ const petDatabase = {
     { name: "Aquamarine Cube", color: "#7fffd4", icon: "💠", ability: "earthquake_event", value: 0.30, chance: 0.20, description: "Starts Earthquake (10min)" },
     { name: "Bright Orange Cube", color: "#ff9500", icon: "🟠", ability: "random_event", value: 1, chance: 0.15, description: "Random event (5min)" },
     { name: "Sunny Orange Cube", color: "#ffcc33", icon: "☀️", ability: "passive_income", value: 1.30, chance: 0.10, description: "+30% income" },
-   { name: "Noir Cube", color: "#0a0a0a", icon: "⬛", ability: "night_bonus", value: 1.50, chance: 0.9, description: "+50% income at night" },
+   { name: "Noir Cube", color: "#0a0a0a", icon: "⬛", ability: "night_bonus", value: 1.50, chance: 0.09, description: "+50% income at night" },
     { name: "Celestial Blue Cube", color: "#4169E1", icon: "🌌", ability: "galactic_event", value: 1, chance: 0.001, description: "Starts Galactic event (5min)" }
   ]
 };
@@ -1842,13 +3050,295 @@ petDatabase["Gift Egg"] = [
     description: "2x all drop rates for 30s (15min)" 
   }
 ];
+petDatabase["Galactic Egg"] = [
+  { name: "Cosmic Cube", color: "#4a0080", icon: "🌌", ability: "galactic_income", value: 1.40, chance: 0.50, description: "+40% income during Galactic event" },
+  { name: "Nebula Cube", color: "#6a2a9a", icon: "☄️", ability: "meteor_shower", value: 0.30, chance: 0.30, description: "Spawns meteors for money (10min)" },
+  { name: "Starship Cube", color: "#8a4aba", icon: "🛸", ability: "warp_speed", value: 1.60, chance: 0.10, description: "+60% speed during Galactic" },
+  { name: "Supernova Cube", color: "#aa6ada", icon: "💫", ability: "explosive_income", value: 3.0, chance: 0.095, description: "3x income burst (15s, 5min cooldown)" },
+  { name: "Dark Matter Cube", color: "#000033", icon: "⚫", ability: "gravity_well", value: 1, chance: 0.005, description: "Pulls all cubes to you (20min)" }
+];
+
+petDatabase["Glitched Egg"] = [
+  { name: "Error Cube", color: "#00ff00", icon: "⚠️", ability: "glitch_income", value: 1.35, chance: 0.50, description: "+35% income during Glitched event" },
+  { name: "Bug Cube", color: "#33ff33", icon: "🐛", ability: "duplicate_cube", value: 0.25, chance: 0.30, description: "Duplicates a random cube (8min)" },
+  { name: "Corrupted Cube", color: "#66ff66", icon: "💚", ability: "corrupt_spawn", value: 0.20, chance: 0.10, description: "Spawns corrupted entities (12min)" },
+  { name: "Hack Cube", color: "#99ff99", icon: "🔓", ability: "unlock_tier", value: 1, chance: 0.095, description: "Temporarily unlock next tier (3min, 15min cooldown)" },
+  { name: "Matrix Cube", color: "#ccffcc", icon: "🔢", ability: "code_rain", value: 5.0, chance: 0.005, description: "5x income for 10s (10min cooldown)" }
+];
+
+petDatabase["Disco Egg"] = [
+  { name: "Groove Cube", color: "#ff00ff", icon: "🕺", ability: "disco_income", value: 1.25, chance: 0.50, description: "+25% income during Disco event" },
+  { name: "Beat Cube", color: "#ff33ff", icon: "🎵", ability: "rhythm_boost", value: 1.40, chance: 0.30, description: "+40% speed during Disco" },
+  { name: "Dance Cube", color: "#ff66ff", icon: "💃", ability: "party_mode", value: 0.15, chance: 0.10, description: "Double ALL multipliers (20s, 8min cooldown)" },
+  { name: "Spotlight Cube", color: "#ff99ff", icon: "🎭", ability: "disco_ball", value: 1, chance: 0.095, description: "Spawns special disco cubes (6min)" },
+  { name: "Rave Cube", color: "#ffccff", icon: "✨", ability: "strobe_effect", value: 1, chance: 0.005, description: "Random positive effects every 30s" }
+];
+
+petDatabase["Bloodmoon Egg"] = [
+  { name: "Crimson Cube", color: "#8B0000", icon: "🩸", ability: "bloodmoon_income", value: 1.30, chance: 0.50, description: "+30% income during Bloodmoon" },
+  { name: "Eclipse Cube", color: "#a50000", icon: "🌑", ability: "shadow_strike", value: 3.0, chance: 0.30, description: "3x sword damage during Bloodmoon" },
+  { name: "Lunar Cube", color: "#bf0000", icon: "🌙", ability: "blood_ritual", value: 0.20, chance: 0.10, description: "Convert HP to money (5min)" },
+  { name: "Vampire Cube", color: "#d90000", icon: "🧛", ability: "life_steal", value: 1, chance: 0.095, description: "Heal on boss hit (passive)" },
+  { name: "Crimson King Cube", color: "#ff0000", icon: "👑", ability: "blood_pact", value: 2.0, chance: 0.005, description: "2x ALL drops during Bloodmoon" }
+];
+petDatabase["Void Egg"] = [
+  { name: "Void Cube", color: "#1a0033", icon: "🌌", ability: "passive_income", value: 1.50, chance: 0.50, description: "+50% income" },
+  { name: "Shadow Cube", color: "#0a0a1a", icon: "👤", ability: "night_bonus", value: 2.0, chance: 0.30, description: "2x income at night" },
+  { name: "Dark Matter Cube", color: "#000000", icon: "⚫", ability: "money_doubler", value: 0.25, chance: 0.15, description: "Double money (3min)" },
+  { name: "Obsidian Cube", color: "#1a0a0a", icon: "🖤", ability: "double_damage", value: 3.0, chance: 0.049, description: "3x sword damage" },
+  { name: "Void King Cube", color: "#2a0044", icon: "👑🌌", ability: "heavenly_king", value: 6.0, chance: 0.001, description: "6x ALL multipliers" }
+];
+
+petDatabase["Dragon Egg"] = [
+  { name: "Drake Cube", color: "#8B0000", icon: "🐲", ability: "passive_income", value: 1.60, chance: 0.50, description: "+60% income" },
+  { name: "Wyvern Cube", color: "#FF4500", icon: "🦎", ability: "speed_boost", value: 1.80, chance: 0.30, description: "+80% speed" },
+  { name: "Dragon Knight Cube", color: "#DC143C", icon: "🛡️", ability: "double_damage", value: 4.0, chance: 0.15, description: "4x sword damage" },
+  { name: "Elder Dragon Cube", color: "#B22222", icon: "🐉💎", ability: "explosive_income", value: 5.0, chance: 0.049, description: "5x income burst (15s, 5min)" },
+  { name: "Dragon Emperor Cube", color: "#8B0000", icon: "👑🐉", ability: "heavenly_king", value: 7.0, chance: 0.001, description: "7x ALL multipliers" }
+];
+
+petDatabase["Celestial Egg"] = [
+  { name: "Star Cube", color: "#FFD700", icon: "⭐", ability: "passive_income", value: 1.70, chance: 0.50, description: "+70% income" },
+  { name: "Nebula Cube", color: "#9370DB", icon: "🌠", ability: "shooting_star", value: 0.60, chance: 0.30, description: "60% bonus (15min)" },
+  { name: "Cosmic Cube", color: "#4169E1", icon: "🌌", ability: "galactic_income", value: 2.0, chance: 0.15, description: "2x income during Galactic" },
+  { name: "Supernova Cube", color: "#FF6347", icon: "💥", ability: "explosive_income", value: 10.0, chance: 0.049, description: "10x income burst (15s, 3min)" },
+  { name: "Celestial King Cube", color: "#F0E68C", icon: "👑✨", ability: "heavenly_king", value: 8.0, chance: 0.001, description: "8x ALL multipliers" }
+];
+
+petDatabase["Mythril Egg"] = [
+  { name: "Iron Cube", color: "#708090", icon: "🔩", ability: "passive_income", value: 1.80, chance: 0.50, description: "+80% income" },
+  { name: "Steel Cube", color: "#A9A9A9", icon: "⚙️", ability: "speed_boost", value: 2.0, chance: 0.30, description: "+100% speed" },
+  { name: "Mythril Cube", color: "#C0C0C0", icon: "⛏️💎", ability: "double_damage", value: 5.0, chance: 0.15, description: "5x sword damage" },
+  { name: "Adamantite Cube", color: "#E5E4E2", icon: "💎", ability: "gravity_well", value: 1, chance: 0.049, description: "Pull all cubes (20min)" },
+  { name: "Mythril King Cube", color: "#F5F5F5", icon: "👑⛏️", ability: "heavenly_king", value: 9.0, chance: 0.001, description: "9x ALL multipliers" }
+];
+
+petDatabase["Infinity Egg"] = [
+  { name: "Alpha Cube", color: "#FF00FF", icon: "∞", ability: "passive_income", value: 2.0, chance: 0.50, description: "+100% income" },
+  { name: "Omega Cube", color: "#00FFFF", icon: "Ω", ability: "speed_boost", value: 2.5, chance: 0.30, description: "+150% speed" },
+  { name: "Eternal Cube", color: "#FFFF00", icon: "♾️", ability: "double_damage", value: 6.0, chance: 0.15, description: "6x sword damage" },
+  { name: "Infinite Cube", color: "#FF1493", icon: "✨♾️", ability: "party_mode", value: 0.30, chance: 0.049, description: "2x ALL (20s, 8min)" },
+  { name: "Infinity King Cube", color: "#FF69B4", icon: "👑♾️", ability: "heavenly_king", value: 10.0, chance: 0.001, description: "10x ALL multipliers" }
+];
+
+petDatabase["Enchanted Leviathan Egg"] = [
+  { name: "Tidal King Cube", color: "#00CED1", icon: "🌊👑", ability: "passive_income", value: 2.5, chance: 0.40, description: "+150% income" },
+  { name: "Ocean Emperor Cube", color: "#4682B4", icon: "🌊💎", ability: "speed_boost", value: 3.0, chance: 0.30, description: "+200% speed" },
+  { name: "Leviathan Lord Cube", color: "#1E90FF", icon: "🌊⚔️", ability: "double_damage", value: 8.0, chance: 0.20, description: "8x sword damage" },
+  { name: "Abyssal Cube", color: "#000080", icon: "🌊✨", ability: "angel_blessing", value: 0.50, chance: 0.09, description: "10x income burst (30s, 2min)" },
+  { name: "Enchanted Leviathan King", color: "#0000CD", icon: "👑✨🌊", ability: "heavenly_king", value: 15.0, chance: 0.01, description: "15x ALL multipliers (ULTIMATE)" }
+];
+// === ENCHANT EGG PETS (ADD AFTER ALL OTHER PET DATABASES) ===
+petDatabase["Enchant Egg"] = [
+  { 
+    name: "Enchanter Cube", 
+    color: "#9370DB", 
+    icon: "🔮", 
+    ability: "enchant_booster", 
+    value: 0.10, 
+    chance: 0.40, 
+    description: "10% chance free enchant (5min)" 
+  },
+  { 
+    name: "Mystic Cube", 
+    color: "#8A2BE2", 
+    icon: "🌟", 
+    ability: "enchant_saver", 
+    value: 0.50, 
+    chance: 0.30, 
+    description: "50% refund on enchant cost" 
+  },
+  { 
+    name: "Arcane Cube", 
+    color: "#9932CC", 
+    icon: "🔯", 
+    ability: "tier_upgrader", 
+    value: 0.20, 
+    chance: 0.20, 
+    description: "20% chance tier upgrade" 
+  },
+  { 
+    name: "Runic Cube", 
+    color: "#BA55D3", 
+    icon: "📜", 
+    ability: "double_enchant", 
+    value: 0.15, 
+    chance: 0.05, 
+    description: "15% chance 2x enchants (10min)" 
+  },
+  { 
+    name: "Ethereal Cube", 
+    color: "#DA70D6", 
+    icon: "💫", 
+    ability: "enchant_keeper", 
+    value: 1, 
+    chance: 0.049, 
+    description: "Keep enchant on rebirth" 
+  },
+  { 
+    name: "Legendary Enchanter", 
+    color: "#EE82EE", 
+    icon: "👑", 
+    ability: "ultimate_enchanter", 
+    value: 0.05, 
+    chance: 0.001, 
+    description: "5% chance Ultimate tier" 
+  }
+];
+// === ASCENSION EGG PETS (OP ABILITIES) ===
+petDatabase["Ascension Egg"] = [
+  { 
+    name: "Divine Cube", 
+    color: "#FFD700", 
+    icon: "✨", 
+    ability: "divine_income", 
+    value: 2.0, 
+    chance: 0.30, 
+    description: "+100% income (passive)" 
+  },
+  { 
+    name: "Celestial Cube", 
+    color: "#87CEEB", 
+    icon: "☁️", 
+    ability: "celestial_speed", 
+    value: 2.5, 
+    chance: 0.25, 
+    description: "+150% speed (passive)" 
+  },
+  { 
+    name: "Angelic Cube", 
+    color: "#FFFACD", 
+    icon: "👼", 
+    ability: "angel_blessing", 
+    value: 0.10, 
+    chance: 0.20, 
+    description: "10x money burst (30s, 2min cooldown)" 
+  },
+  { 
+    name: "Seraph Cube", 
+    color: "#F0E68C", 
+    icon: "🕊️", 
+    ability: "seraph_protection", 
+    value: 5, 
+    chance: 0.15, 
+    description: "Immune to 5 boss hits" 
+  },
+  { 
+    name: "Archangel Cube", 
+    color: "#FAFAD2", 
+    icon: "⚜️", 
+    ability: "archangel_power", 
+    value: 5.0, 
+    chance: 0.09, 
+    description: "5x sword damage (passive)" 
+  },
+  { 
+    name: "Heavenly King Cube", 
+    color: "#FFFFFF", 
+    icon: "👑", 
+    ability: "heavenly_king", 
+    value: 3.0, 
+    chance: 0.01, 
+    description: "3x ALL multipliers (passive)" 
+  }
+];
+petDatabase["Leviathan Egg"] = [
+  { 
+    name: "Leviathan Cub", 
+    color: "#4682B4", 
+    icon: "🌊", 
+    ability: "passive_income", 
+    value: 1.20, 
+    chance: 0.50, 
+    description: "+20% income" 
+  },
+  { 
+    name: "Frost Leviathan", 
+    color: "#87CEEB", 
+    icon: "❄️🌊", 
+    ability: "speed_boost", 
+    value: 1.30, 
+    chance: 0.30, 
+    description: "+30% speed" 
+  },
+  { 
+    name: "Tidal Leviathan", 
+    color: "#1E90FF", 
+    icon: "🌀", 
+    ability: "double_damage", 
+    value: 2.0, 
+    chance: 0.15, 
+    description: "2x sword damage" 
+  },
+  { 
+    name: "Deep Leviathan", 
+    color: "#000080", 
+    icon: "🌊💎", 
+    ability: "money_doubler", 
+    value: 0.15, 
+    chance: 0.0499, 
+    description: "Double money (5min)" 
+  },
+  { 
+    name: "King Leviathan", 
+    color: "#0000CD", 
+    icon: "👑🌊", 
+    ability: "heavenly_king", 
+    value: 5.0, 
+    chance: 0.0001, 
+    description: "5x ALL multipliers (LEGENDARY)" 
+  }
+];
+
+petDatabase["Crafters Egg"] = [
+  { 
+    name: "Apprentice Cube", 
+    color: "#8B4513", 
+    icon: "🔨", 
+    ability: "passive_income", 
+    value: 1.25, 
+    chance: 0.50, 
+    description: "+25% income" 
+  },
+  { 
+    name: "Blacksmith Cube", 
+    color: "#696969", 
+    icon: "⚒️", 
+    ability: "double_damage", 
+    value: 2.5, 
+    chance: 0.30, 
+    description: "2.5x sword damage" 
+  },
+  { 
+    name: "Master Crafter Cube", 
+    color: "#DAA520", 
+    icon: "🛠️", 
+    ability: "enchant_booster", 
+    value: 0.20, 
+    chance: 0.15, 
+    description: "20% free enchant (5min)" 
+  },
+  { 
+    name: "Legendary Smith Cube", 
+    color: "#FFD700", 
+    icon: "👑🔨", 
+    ability: "ultimate_enchanter", 
+    value: 0.10, 
+    chance: 0.05, 
+    description: "10% chance Ultimate tier" 
+  }
+];
 const petMutations = {
   "Wet": { color: "#4da6ff", emoji: "💧", incomeBoost: 1.05, event: "Rain" },
   "Shocked": { color: "#ffff00", emoji: "⚡", incomeBoost: 1.10, event: "Thunder" },
   "Disco": { color: "#ff00ff", emoji: "🪩", incomeBoost: 1.20, event: "Disco" },
   "Ember": { color: "#ff4400", emoji: "🔥", incomeBoost: 1.30, event: "Volcano" },
   "Glitched": { color: "#00ff00", emoji: "⚜️", incomeBoost: 1.35, event: "Glitched" },
-  "Galactic": { color: "#4a0080", emoji: "🚀", incomeBoost: 1.40, event: "Galactic" }
+  "Galactic": { color: "#4a0080", emoji: "🚀", incomeBoost: 1.40, event: "Galactic" },
+  "Phoenix": { color: "#FF4500", emoji: "🔥", incomeBoost: 1.45, event: "Phoenix Nest" },
+  "Bloodmoon": { color: "#8B0000", emoji: "🌕", incomeBoost: 1.50, event: "Bloodmoon" },
+  "Windswept": { color: "#4a5568", emoji: "🌪️", incomeBoost: 1.55, event: "Tornado" },
+  "Heavenly": { color: "#FFD700", emoji: "✨", incomeBoost: 1.60, event: "Heavenly" } // NEW
 };
 
 let playerPets = []; // Array of pet objects
@@ -1918,26 +3408,34 @@ function openEgg(eggType) {
 // Open multiple eggs from inventory
 function openEggFromInventory(eggName, count) {
   const eggItem = playerInventory.Eggs.find(i => i.name === eggName);
-  if (!eggItem || eggItem.count < count) {
-    alert(`Not enough ${eggName}s!`);
+  
+  if (!eggItem) {
+    alert(`❌ You don't have any ${eggName}s!`);
+    return;
+  }
+  
+  if (eggItem.count < count) {
+    alert(`❌ Not enough ${eggName}s! You have ${eggItem.count}, need ${count}.`);
     return;
   }
   
   let results = [];
+  const eggsToOpen = Math.min(count, eggItem.count); // Safety check
   
-  for (let i = 0; i < count; i++) {
-    if (eggItem.count > 0) {
-      eggItem.count--;
-      const pet = openEgg(eggName);
-      if (pet) {
-        const mutationText = pet.mutation ? ` [${petMutations[pet.mutation].emoji}]` : '';
-        results.push(`${pet.icon} ${pet.name}${mutationText}`);
-      }
+  console.log(`Opening ${eggsToOpen} ${eggName}(s)...`); // Debug log
+  
+  // Open exactly the number requested
+  for (let i = 0; i < eggsToOpen; i++) {
+    const pet = openEgg(eggName);
+    if (pet) {
+      const mutationText = pet.mutation ? ` [${petMutations[pet.mutation].emoji}]` : '';
+      results.push(`${pet.icon} ${pet.name}${mutationText}`);
     }
+    eggItem.count--; // Decrement after each successful hatch
   }
   
   // Remove egg from inventory if count reaches 0
-  if (eggItem.count === 0) {
+  if (eggItem.count <= 0) {
     const index = playerInventory.Eggs.indexOf(eggItem);
     if (index > -1) {
       playerInventory.Eggs.splice(index, 1);
@@ -1946,8 +3444,12 @@ function openEggFromInventory(eggName, count) {
   
   updateInventoryDisplay();
   
+  console.log(`Hatched ${results.length} pets from ${eggsToOpen} eggs`); // Debug log
+  
   if (results.length > 0) {
-    alert(`🎉 Hatched ${count} ${eggName}(s)!\n\n${results.join('\n')}`);
+    alert(`🎉 Hatched ${results.length} ${eggName}(s)!\n\n${results.join('\n')}`);
+  } else {
+    alert(`❌ Something went wrong! No pets hatched.`);
   }
 }
 
@@ -2081,15 +3583,41 @@ function filterPets(searchQuery) {
   const isEquippedFilter = query === 'equipped' || query === 'equip';
   const isUnequippedFilter = query === 'unequipped' || query === 'unequip';
   const isMutatedFilter = query === 'mutated' || query === 'mutation';
-  const isChristmasFilter = query === 'christmas' || query === 'xmas'; // NEW
+  const isChristmasFilter = query === 'christmas' || query === 'xmas';
+  const isEnchantedFilter = query === 'enchanted' || query === 'enchant';
+  
+  // Check for enchantment type filters
+  const enchantTypes = {
+    'money': 'Money Income',
+    'luck': 'Luck',
+    'speed': 'Speed',
+    'damage': 'Sword Damage',
+    'ultimate': 'Ultimate'
+  };
+  const matchedEnchantType = enchantTypes[query];
   
   petItems.forEach(item => {
     const petName = item.getAttribute('data-pet-name');
     const petAbility = item.getAttribute('data-pet-ability');
     const petMutation = item.getAttribute('data-pet-mutation');
-    const petEggType = item.getAttribute('data-pet-egg') || ''; // NEW
+    const petEggType = item.getAttribute('data-pet-egg') || '';
     const isEquipped = item.innerHTML.includes('✓ Equipped');
     const hasMutation = petMutation !== '';
+    const hasEnchantment = item.innerHTML.includes('💰') || item.innerHTML.includes('🍀') || 
+                          item.innerHTML.includes('⚡') || item.innerHTML.includes('⚔️') || 
+                          item.innerHTML.includes('✨');
+    
+    // Get pet's actual enchantment type from the HTML
+    let petEnchantType = '';
+    if (hasEnchantment) {
+      const petId = item.querySelector('button[onclick^="togglePetEquip"]')?.getAttribute('onclick')?.match(/\d+/)?.[0];
+      if (petId) {
+        const pet = playerPets.find(p => p.id == petId);
+        if (pet && pet.enchantment) {
+          petEnchantType = pet.enchantment.type.toLowerCase();
+        }
+      }
+    }
     
     let matches = false;
     
@@ -2101,7 +3629,6 @@ function filterPets(searchQuery) {
     } else if (isMutatedFilter) {
       matches = hasMutation;
     } else if (isChristmasFilter) {
-      // NEW: Match Christmas pets
       matches = petEggType.includes('gift') || 
                 petEggType.includes('christmas') ||
                 petName.includes('snowman') ||
@@ -2109,8 +3636,12 @@ function filterPets(searchQuery) {
                 petName.includes('present') ||
                 petName.includes('mistletoe') ||
                 petName.includes('north star');
+    } else if (isEnchantedFilter) {
+      matches = hasEnchantment;
+    } else if (matchedEnchantType) {
+      matches = petEnchantType.includes(matchedEnchantType.toLowerCase());
     } else {
-      // Normal search: name, ability, or mutation
+      // Normal search: name, ability, mutation, or egg type
       matches = petName.includes(query) || 
                 petAbility.includes(query) || 
                 petMutation.includes(query) ||
@@ -2128,6 +3659,19 @@ function filterPets(searchQuery) {
   // Show count in console for debugging
   console.log(`Found ${foundCount} pet(s) matching "${searchQuery}"`);
 }
+
+// Add clear search function
+function clearPetSearch() {
+  const searchInput = document.getElementById('petSearchInput');
+  if (searchInput) {
+    searchInput.value = '';
+    filterPets('');
+  }
+}
+
+// Make globally accessible
+window.filterPets = filterPets;
+window.clearPetSearch = clearPetSearch;
 // Get cooldown for pet ability (in milliseconds)
 function getPetCooldown(ability) {
   const cooldowns = {
@@ -2165,9 +3709,43 @@ function getPetCooldown(ability) {
     "double_income_temp": 3 * 60 * 1000,     // 3 min cooldown
     "random_cube_spawn": 5 * 60 * 1000,      // 5 min
     "heal_boss_damage": 10 * 60 * 1000,      // 10 min
-    "lucky_star": 15 * 60 * 1000             // 15 min
+    "lucky_star": 15 * 60 * 1000 ,
+    // NEW EVENT PET ABILITIES
+    "galactic_income": 999 * 60 * 1000,      // Passive
+    "meteor_shower": 10 * 60 * 1000,         // 10 min
+    "warp_speed": 999 * 60 * 1000,           // Passive
+    "explosive_income": 5 * 60 * 1000,       // 5 min
+    "gravity_well": 20 * 60 * 1000,          // 20 min
+    "glitch_income": 999 * 60 * 1000,        // Passive
+    "duplicate_cube": 8 * 60 * 1000,         // 8 min
+    "corrupt_spawn": 12 * 60 * 1000,         // 12 min
+    "unlock_tier": 15 * 60 * 1000,           // 15 min
+    "code_rain": 10 * 60 * 1000,             // 10 min
+    "disco_income": 999 * 60 * 1000,         // Passive
+    "rhythm_boost": 999 * 60 * 1000,         // Passive
+    "party_mode": 8 * 60 * 1000,             // 8 min
+    "disco_ball": 6 * 60 * 1000,             // 6 min
+    "strobe_effect": 30 * 1000,              // 30 sec
+    "bloodmoon_income": 999 * 60 * 1000,     // Passive
+    "shadow_strike": 999 * 60 * 1000,        // Passive
+    "blood_ritual": 5 * 60 * 1000,           // 5 min
+    "life_steal": 999 * 60 * 1000,           // Passive
+    "blood_pact": 999 * 60 * 1000,         // Passive
+    "divine_income": 999 * 60 * 1000,        // Passive
+    "celestial_speed": 999 * 60 * 1000,      // Passive
+    "angel_blessing": 2 * 60 * 1000,         // 2 min
+    "seraph_protection": 999 * 60 * 1000,    // Passive
+    "archangel_power": 999 * 60 * 1000,      // Passive
+    "heavenly_king": 999 * 60 * 1000,        // Passive
+        // NEW ENCHANT PET ABILITIES
+    "enchant_booster": 5 * 60 * 1000,      // 5 min
+    "enchant_saver": 999 * 60 * 1000,      // Passive
+    "tier_upgrader": 999 * 60 * 1000,      // Passive (triggers on enchant)
+    "double_enchant": 10 * 60 * 1000,      // 10 min
+    "enchant_keeper": 999 * 60 * 1000,     // Passive
+    "ultimate_enchanter": 999 * 60 * 1000  // Passive
   };
-  
+
   return cooldowns[ability] || 60000;
 }
 // === EVENT SHOP CONFIGURATION ===
@@ -2212,10 +3790,94 @@ const eventShops = {
       Potions: [
         { icon: "🌙🧪", price: 100_000_000_000_000_000_000_000n, name: "Night Potion", limit: 999, special: 7, description: "7x income" }
       ]
+}
+  },  // ← Added comma here!
+// === NEW EVENT SHOPS ===
+  "galactic": {
+    displayName: "🚀 Galactic Shop",
+    activeWhen: () => currentAdminEvent && currentAdminEvent.name === "Galactic",
+    items: {
+      Swords: [
+        { icon: "🚀🗡️", price: 1_000_000_000_000_000_000_000n, name: "Galactic Sword", limit: 1, special: 5, description: "5 damage" }
+      ],
+      Relics: [
+        { icon: "🚀📿", price: 10_000_000_000_000_000_000_000_000n, name: "Galactic Relic", limit: 1, special: 1.57, description: "1.57x money" }
+      ],
+      Eggs: [
+        { icon: "🚀🥚", price: 100_000_000_000_000_000_000_000_000_000n, name: "Galactic Egg", limit: 999, special: 1, description: "5 Galactic Pets" }
+      ],
+      Skins: [
+        { icon: "🚀💎", price: 100_000_000_000_000_000_000_000_000n, name: "Galaxy Skin", limit: 1, special: 11, description: "#1a0a33" }
+      ],
+      Potions: [
+        { icon: "🚀🧪", price: 10_000_000_000_000_000_000_000_000n, name: "Galaxy Potion", limit: 999, special: 8, description: "2x odds for Galactic trait" }
+      ]
+    }
+  },
+  "glitched": {
+    displayName: "⚜️ Glitched Shop",
+    activeWhen: () => currentAdminEvent && currentAdminEvent.name === "Glitched",
+    items: {
+      Swords: [
+        { icon: "⚜️🗡️", price: 10_000_000_000_000_000_000_000_000n, name: "Glitched Sword", limit: 1, special: 6, description: "6 damage" }
+      ],
+      Relics: [
+        { icon: "⚜️📿", price: 10_000_000_000_000_000_000n, name: "Glitched Relic", limit: 1, special: 1.35, description: "1.35x money" }
+      ],
+      Eggs: [
+        { icon: "⚜️🥚", price: 100_000_000_000_000_000_000_000_000n, name: "Glitched Egg", limit: 999, special: 1, description: "5 Glitched Pets" }
+      ],
+      Skins: [
+        { icon: "⚜️💎", price: 100_000_000_000_000_000_000n, name: "Glitched Skin", limit: 1, special: 12, description: "#00ff00" }
+      ],
+      Potions: [
+        { icon: "⚜️🧪", price: 1_000_000_000_000_000_000_000n, name: "Glitched Potion", limit: 999, special: 9, description: "2x odds for Glitched trait" }
+      ]
+    }
+  },
+  "disco": {
+    displayName: "🪩 Disco Shop",
+    activeWhen: () => currentAdminEvent && currentAdminEvent.name === "Disco",
+    items: {
+      Swords: [
+        { icon: "🪩🗡️", price: 1_000_000_000_000_000_000n, name: "Disco Sword", limit: 1, special: 4, description: "4 damage" }
+      ],
+      Relics: [
+        { icon: "🪩📿", price: 1_000_000_000_000_000_000_000_000_000_000n, name: "Disco Relic", limit: 1, special: 1.7, description: "1.7x money" }
+      ],
+      Eggs: [
+        { icon: "🪩🥚", price: 100_000_000_000_000_000_000_000_000_000n, name: "Disco Egg", limit: 999, special: 1, description: "5 Disco Pets" }
+      ],
+      Skins: [
+        { icon: "🪩💎", price: 1_000_000_000_000_000_000_000_000_000_000_000n, name: "Disco Skin", limit: 1, special: 13, description: "#ff00ff" }
+      ],
+      Potions: [
+        { icon: "🪩🧪", price: 1_000_000_000_000_000_000_000_000n, name: "Disco Potion", limit: 999, special: 10, description: "2x odds for Disco trait" }
+      ]
+    }
+  },
+  "bloodmoon": {
+    displayName: "🌕 Bloodmoon Shop",
+    activeWhen: () => currentAdminEvent && currentAdminEvent.name === "Bloodmoon",
+    items: {
+      Swords: [
+        { icon: "🌕🗡️", price: 100_000_000_000_000_000_000_000_000_000n, name: "Bloodmoon Sword", limit: 1, special: 6, description: "6 damage" }
+      ],
+      Relics: [
+        { icon: "🌕📿", price: 100_000_000_000_000_000_000_000_000n, name: "Bloodmoon Relic", limit: 1, special: 1.46, description: "1.46x money" }
+      ],
+      Eggs: [
+        { icon: "🌕🥚", price: 1_000_000_000_000_000_000_000_000_000_000n, name: "Bloodmoon Egg", limit: 999, special: 1, description: "5 Bloodmoon Pets" }
+      ],
+      Skins: [
+        { icon: "🌕💎", price: 1_000_000_000_000_000_000_000_000_000_000_000n, name: "Bloodmoon Skin", limit: 1, special: 14, description: "#8B0000" }
+      ],
+      Potions: [
+        { icon: "🌕🧪", price: 1_000_000_000_000_000_000_000_000n, name: "Bloodmoon Potion", limit: 999, special: 11, description: "2x odds for Bloodmoon trait" }
+      ]
     }
   }
 };
-
 // Add new pets to database
 petDatabase["Sunny Egg"] = [
   { name: "Sunny Yellow Cube", color: "#FFF917", icon: "☀️🟨", ability: "day_income_boost", value: 1.20, chance: 0.60, description: "+20% income during day" },
@@ -2398,8 +4060,94 @@ function recomputeIncome() {
     if (pet.ability === "night_bonus" && dayNightCycle.current === "night") {
       petIncomeMultiplier *= pet.abilityValue;
     }
+    // Galactic event income boost
+    if (pet.ability === "galactic_income" && currentAdminEvent && currentAdminEvent.name === "Galactic") {
+      petIncomeMultiplier *= pet.abilityValue;
+    }
     
-    // ... rest of existing pet bonuses ...
+    // Galactic warp speed
+    if (pet.ability === "warp_speed" && currentAdminEvent && currentAdminEvent.name === "Galactic") {
+      petSpeedMultiplier *= pet.abilityValue;
+    }
+    
+    // Glitched event income boost
+    if (pet.ability === "glitch_income" && currentAdminEvent && currentAdminEvent.name === "Glitched") {
+      petIncomeMultiplier *= pet.abilityValue;
+    }
+    
+    // Disco event income boost
+    if (pet.ability === "disco_income" && currentAdminEvent && currentAdminEvent.name === "Disco") {
+      petIncomeMultiplier *= pet.abilityValue;
+    }
+    
+    // Disco rhythm boost
+    if (pet.ability === "rhythm_boost" && currentAdminEvent && currentAdminEvent.name === "Disco") {
+      petSpeedMultiplier *= pet.abilityValue;
+    }
+    
+    // Bloodmoon event income boost
+    if (pet.ability === "bloodmoon_income" && currentAdminEvent && currentAdminEvent.name === "Bloodmoon") {
+      petIncomeMultiplier *= pet.abilityValue;
+    }
+    
+    // Bloodmoon shadow strike (damage boost)
+    if (pet.ability === "shadow_strike" && currentAdminEvent && currentAdminEvent.name === "Bloodmoon") {
+      // This will be used in combat calculations
+      window.bloodmoonDamageBoost = pet.abilityValue;
+    }
+    
+    // Blood pact (drop multiplier)
+    if (pet.ability === "blood_pact" && currentAdminEvent && currentAdminEvent.name === "Bloodmoon") {
+      window.bloodPactActive = true;
+      window.bloodPactMultiplier = pet.abilityValue;
+    }
+  if (pet.ability === "divine_income") {
+    petIncomeMultiplier *= pet.abilityValue; // 2.0x
+  }
+  
+  if (pet.ability === "celestial_speed") {
+    petSpeedMultiplier *= pet.abilityValue; // 2.5x
+  }
+  
+  if (pet.ability === "archangel_power") {
+    window.archangelDamageBoost = pet.abilityValue; // 5x
+  }
+  
+  if (pet.ability === "heavenly_king") {
+    petIncomeMultiplier *= pet.abilityValue; // 3x
+    petSpeedMultiplier *= pet.abilityValue; // 3x
+    window.heavenlyKingDamageBoost = pet.abilityValue; // 3x
+  }
+  // === ENCHANTMENT BONUSES ===
+equippedPets.forEach(pet => {
+  if (pet.enchantment) {
+    const ench = pet.enchantment;
+    const boost = ench.data.boost;
+    
+    switch (ench.type) {
+      case "Money Income":
+        petIncomeMultiplier *= boost;
+        break;
+      case "Speed":
+        petSpeedMultiplier *= boost;
+        break;
+      case "Sword Damage":
+        if (!window.enchantDamageBoost) window.enchantDamageBoost = 1;
+        window.enchantDamageBoost *= boost;
+        break;
+      case "Luck":
+        if (!window.enchantLuckBoost) window.enchantLuckBoost = 1;
+        window.enchantLuckBoost *= boost;
+        break;
+      case "Ultimate":
+        petIncomeMultiplier *= boost;
+        petSpeedMultiplier *= boost;
+        if (!window.enchantDamageBoost) window.enchantDamageBoost = 1;
+        window.enchantDamageBoost *= boost;
+        break;
+    }
+  }
+});
   });
   
   // Store gift multiplier globally for drop calculations
@@ -2408,12 +4156,13 @@ function recomputeIncome() {
   // Update character speed with pet bonuses
   character.speed = 250 * petSpeedMultiplier;
 
-  const adminMultiplier = currentAdminEvent ? currentAdminEvent.incomeBoost : 1;
-  const christmasMultiplier = christmasEvent.active ? christmasEvent.incomeBoost : 1;
+const adminMultiplier = currentAdminEvent ? currentAdminEvent.incomeBoost : 1;
+const christmasMultiplier = christmasEvent.active ? christmasEvent.incomeBoost : 1;
+const heavenlyMultiplier = heavenlyEvent.active ? heavenlyEvent.incomeBoost : 1;
   
-  const totalMultiplier = weatherMultiplier * equippedRelicSpecial * petIncomeMultiplier * 
-                          (potionActive ? potionMultiplier : 1) * adminMultiplier * 
-                          rebirthMultiplier * christmasMultiplier;
+const totalMultiplier = weatherMultiplier * equippedRelicSpecial * petIncomeMultiplier * 
+                        (potionActive ? potionMultiplier : 1) * adminMultiplier * 
+                        rebirthMultiplier * christmasMultiplier * heavenlyMultiplier;
 
   const adjustedIncome = BigInt(Math.floor(Number(incomePerSec) * totalMultiplier));
   
@@ -2579,8 +4328,1027 @@ function drawSnowflakes(ctx) {
 setInterval(() => {
   if (!christmasEvent.active && Date.now() - christmasEvent.lastTrigger >= christmasEvent.interval) {
     startChristmasEvent();
+  }// === HEAVENLY EVENT FUNCTIONS ===
+function useHeavenlyTotem() {
+  const totem = playerInventory.Relics.find(i => i.name === "Heavenly Totem");
+  if (totem && totem.count > 0 && !heavenlyEvent.active) {
+    totem.count--;
+    if (totem.count === 0) {
+      const index = playerInventory.Relics.indexOf(totem);
+      if (index > -1) {
+        playerInventory.Relics.splice(index, 1);
+      }
+    }
+    startHeavenlyEvent();
+    updateInventoryDisplay();
+  } else if (heavenlyEvent.active) {
+    alert("✨ Heavenly Event already active!");
+  } else {
+    alert("❌ No Heavenly Totem available!");
   }
+}
+
+// Make globally accessible
+window.useHeavenlyTotem = useHeavenlyTotem;
 }, 60000); // Check every minute
+// === USE ENCHANT RELIC FUNCTION ===
+function useEnchantRelic() {
+  const relic = playerInventory.Relics.find(i => i.name === "Enchant Relic");
+  
+  if (!relic || relic.count <= 0) {
+    alert("❌ No Enchant Relics available!");
+    return;
+  }
+  
+  if (enchantmentSystem.hasEnchantRelic) {
+    alert("✨ Enchant Relic already active!\nIt will be consumed on your next enchant.");
+    return;
+  }
+  
+  enchantmentSystem.hasEnchantRelic = true;
+  alert("✨ Enchant Relic activated!\n\n🍀 Next enchant has boosted odds for higher tiers!\n(Consumed after 1 enchant)");
+  updateInventoryDisplay();
+  updateEnchantUI();
+}
+// === CRAFTING SYSTEM FUNCTIONS ===
+
+function unlockCraftingRecipe(recipeName) {
+  const recipe = craftingSystem.recipes[recipeName];
+  if (!recipe) {
+    console.error("Recipe not found:", recipeName);
+    return false;
+  }
+  
+  // Check if already unlocked
+  if (craftingSystem.unlockedRecipes.includes(recipeName)) {
+    return true;
+  }
+  
+  // Auto-unlock recipes don't need unlock items
+  if (recipe.autoUnlock) {
+    craftingSystem.unlockedRecipes.push(recipeName);
+    return true;
+  }
+  
+  const unlockItem = recipe.unlockItem;
+  
+  // Check in materials
+  if (craftingSystem.materials[unlockItem] && craftingSystem.materials[unlockItem] > 0) {
+    craftingSystem.unlockedRecipes.push(recipeName);
+    console.log(`🔓 Unlocked recipe: ${recipeName} (via materials)`);
+    return true;
+  }
+  
+  // Check in inventory (for eggs, relics, swords, skins, potions)
+  for (let category in playerInventory) {
+    const item = playerInventory[category].find(i => i.name === unlockItem);
+    if (item && item.count > 0) {
+      craftingSystem.unlockedRecipes.push(recipeName);
+      console.log(`🔓 Unlocked recipe: ${recipeName} (via ${category})`);
+      return true;
+    }
+  }
+  
+  // Check for pet unlock (e.g., "Leviathan Pet" or "King Leviathan")
+  if (unlockItem.includes("Pet") || unlockItem.includes("King") || unlockItem.includes("Emperor")) {
+    const petNameVariations = [
+      unlockItem,
+      unlockItem.replace(" Pet", ""),
+      unlockItem.replace("Pet", "")
+    ];
+    
+    const hasPet = playerPets.some(p => 
+      petNameVariations.some(variation => p.name.includes(variation))
+    );
+    
+    if (hasPet) {
+      craftingSystem.unlockedRecipes.push(recipeName);
+      console.log(`🔓 Unlocked recipe: ${recipeName} (via pet)`);
+      return true;
+    }
+  }
+  
+  return false;
+}
+
+function canCraftItem(recipeName) {
+  const recipe = craftingSystem.recipes[recipeName];
+  if (!recipe) return false;
+  
+  // Check if recipe is unlocked
+  if (!recipe.autoUnlock && !craftingSystem.unlockedRecipes.includes(recipeName)) {
+    return false;
+  }
+  
+  // Check money
+  if (money < recipe.moneyCost) {
+    return false;
+  }
+  
+  // Check materials
+  for (let material in recipe.materials) {
+    const needed = recipe.materials[material];
+    const owned = craftingSystem.materials[material] || 0;
+    
+    // Special case: Check if material is an egg/pet in inventory
+    if (material === "King Leviathan") {
+      const hasPet = playerPets.some(p => p.name === material);
+      if (!hasPet) return false;
+    } else if (material.includes("Egg") || material.includes("Skin")) {
+      // Check in player inventory
+      let found = false;
+      for (let category in playerInventory) {
+        const item = playerInventory[category].find(i => i.name === material);
+        if (item && item.count >= needed) {
+          found = true;
+          break;
+        }
+      }
+      if (!found && owned < needed) return false;
+    } else {
+      if (owned < needed) return false;
+    }
+  }
+  
+  return true;
+}
+
+function craftItem(recipeName) {
+  const recipe = craftingSystem.recipes[recipeName];
+  if (!recipe) {
+    alert("❌ Recipe not found!");
+    return;
+  }
+  
+  // Try to unlock recipe first
+  if (!recipe.autoUnlock && !craftingSystem.unlockedRecipes.includes(recipeName)) {
+    const unlocked = unlockCraftingRecipe(recipeName);
+    if (!unlocked) {
+      alert(`🔒 Recipe locked! Need: ${recipe.unlockItem}`);
+      return;
+    }
+  }
+  
+  // Check if can craft
+  if (!canCraftItem(recipeName)) {
+    alert(`❌ Not enough materials or money to craft ${recipeName}!`);
+    return;
+  }
+  
+  // Build materials list for confirmation
+  let materialsText = "";
+  for (let material in recipe.materials) {
+    materialsText += `\n• ${material} x${recipe.materials[material]}`;
+  }
+  
+  const confirm = window.confirm(
+    `🔨 Craft ${recipe.icon} ${recipeName}?\n\nMaterials needed:${materialsText}\n💰 Money: ${formatBigInt(recipe.moneyCost)}\n\nContinue?`
+  );
+  
+  if (!confirm) return;
+  
+  // Consume materials
+  for (let material in recipe.materials) {
+    const needed = recipe.materials[material];
+    
+    if (material === "King Leviathan") {
+      // Remove pet
+      const petIndex = playerPets.findIndex(p => p.name === material);
+      if (petIndex > -1) {
+        playerPets.splice(petIndex, 1);
+        equippedPets = equippedPets.filter(p => p.name !== material);
+      }
+    } else if (material.includes("Egg") || material.includes("Skin") || material.includes("Potion")) {
+      // Check player inventory first
+      let consumed = false;
+      for (let category in playerInventory) {
+        const item = playerInventory[category].find(i => i.name === material);
+        if (item && item.count >= needed) {
+          item.count -= needed;
+          if (item.count <= 0) {
+            const index = playerInventory[category].indexOf(item);
+            if (index > -1) playerInventory[category].splice(index, 1);
+          }
+          consumed = true;
+          break;
+        }
+      }
+      // If not in inventory, consume from materials
+      if (!consumed) {
+        craftingSystem.materials[material] = (craftingSystem.materials[material] || 0) - needed;
+      }
+    } else {
+      // Normal materials
+      craftingSystem.materials[material] = (craftingSystem.materials[material] || 0) - needed;
+    }
+  }
+  
+  // Consume money
+  money -= recipe.moneyCost;
+  
+// Give crafted item
+if (recipe.type === "Materials" || recipe.type === "Miscellaneous" || recipe.type === "Totems") {
+  // Add to materials
+  craftingSystem.materials[recipeName] = (craftingSystem.materials[recipeName] || 0) + 1;
+  console.log(`✅ Added ${recipeName} to materials`);
+} else {
+  // Add to player inventory
+  // Ensure category exists
+  if (!playerInventory[recipe.type]) {
+    playerInventory[recipe.type] = [];
+  }
+  
+  const existing = playerInventory[recipe.type].find(i => i.name === recipeName);
+  if (existing) {
+    existing.count++;
+    console.log(`✅ Added ${recipeName} to ${recipe.type} (now ${existing.count})`);
+  } else {
+    playerInventory[recipe.type].push({
+      icon: recipe.icon,
+      name: recipeName,
+      count: 1,
+      special: recipe.special,
+      equipped: false
+    });
+    console.log(`✅ Created new ${recipeName} in ${recipe.type}`);
+  }
+}
+  
+  console.log(`✅ Crafted: ${recipeName}`);
+  
+  updateDisplays();
+  updateInventoryDisplay();
+  updateCraftingDisplay();
+  
+  alert(`✅ Successfully crafted ${recipe.icon} ${recipeName}!`);
+}
+
+function buyMaterial(materialName) {
+  const material = merchantShop[materialName];
+  if (!material) {
+    alert("❌ Material not found!");
+    return;
+  }
+  
+  if (money < material.price) {
+    alert(`❌ Not enough money! Need ${formatBigInt(material.price)}`);
+    return;
+  }
+  
+  const confirm = window.confirm(
+    `💰 Buy ${material.icon} ${materialName}?\n\nPrice: ${formatBigInt(material.price)}`
+  );
+  
+  if (!confirm) return;
+  
+  money -= material.price;
+  craftingSystem.materials[materialName] = (craftingSystem.materials[materialName] || 0) + 1;
+  
+  updateDisplays();
+  updateCraftingDisplay();
+  
+  console.log(`✅ Bought: ${materialName}`);
+}
+
+function showCraftingMenu() {
+  if (!craftingSystem.unlocked) {
+    alert("🔒 Crafting unlocks at Rebirth 1!");
+    return;
+  }
+  
+  // AUTO-CHECK: Try to unlock recipes based on current inventory
+  for (let recipeName in craftingSystem.recipes) {
+    if (!craftingSystem.unlockedRecipes.includes(recipeName)) {
+      unlockCraftingRecipe(recipeName);
+    }
+  }
+  
+  const overlay = document.createElement('div');
+  overlay.id = 'craftingOverlay';
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 10000;
+    overflow-y: auto;
+    padding: 20px;
+  `;
+  
+  let html = `
+    <div style="max-width: 1200px; margin: 0 auto; background: #1a1a2e; border-radius: 15px; padding: 20px; color: white;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="color: #FFD700; margin: 0;">🔨 Crafting System</h2>
+        <button onclick="closeCraftingMenu()" style="background: #8B0000; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 16px;">Close</button>
+      </div>
+      
+      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <button onclick="showCraftingTab('recipes')" id="tabRecipes" class="craft-tab" style="flex: 1; padding: 10px; background: #2a5298; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">📜 Recipes</button>
+        <button onclick="showCraftingTab('merchant')" id="tabMerchant" class="craft-tab" style="flex: 1; padding: 10px; background: #555; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">🛒 Merchant</button>
+        <button onclick="showCraftingTab('materials')" id="tabMaterials" class="craft-tab" style="flex: 1; padding: 10px; background: #555; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">📦 Materials</button>
+      </div>
+      
+      <div id="craftingContent"></div>
+    </div>
+  `;
+  
+  overlay.innerHTML = html;
+  document.body.appendChild(overlay);
+  
+  showCraftingTab('recipes');
+}
+
+function showCraftingTab(tab) {
+  // Update tab buttons
+  document.querySelectorAll('.craft-tab').forEach(btn => {
+    btn.style.background = '#555';
+  });
+  
+  if (tab === 'recipes') {
+    document.getElementById('tabRecipes').style.background = '#2a5298';
+    displayRecipes();
+  } else if (tab === 'merchant') {
+    document.getElementById('tabMerchant').style.background = '#2a5298';
+    displayMerchant();
+  } else if (tab === 'materials') {
+    document.getElementById('tabMaterials').style.background = '#2a5298';
+    displayMaterials();
+  }
+}
+
+function displayRecipes() {
+  const content = document.getElementById('craftingContent');
+  if (!content) return;
+  
+  let html = `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">`;
+  
+  for (let recipeName in craftingSystem.recipes) {
+    const recipe = craftingSystem.recipes[recipeName];
+    const isUnlocked = recipe.autoUnlock || craftingSystem.unlockedRecipes.includes(recipeName);
+    const canCraft = canCraftItem(recipeName);
+    
+    html += `
+      <div style="background: ${canCraft ? '#1a4d2e' : '#2a2a2a'}; padding: 15px; border-radius: 10px; border: 2px solid ${isUnlocked ? '#FFD700' : '#555'};">
+        <div style="font-size: 32px; text-align: center; margin-bottom: 10px;">${recipe.icon}</div>
+        <h3 style="margin: 0 0 10px 0; text-align: center; color: ${isUnlocked ? '#FFD700' : '#888'};">${recipeName}</h3>
+        
+        ${!isUnlocked ? `<p style="color: #ff6b6b; font-size: 12px; text-align: center;">🔒 Unlock: ${recipe.unlockItem}</p>` : ''}
+        
+        <div style="font-size: 12px; margin: 10px 0;">
+          <strong>Materials:</strong><br>
+    `;
+    
+    for (let material in recipe.materials) {
+      const needed = recipe.materials[material];
+      const owned = craftingSystem.materials[material] || 0;
+      const hasEnough = owned >= needed;
+      
+      html += `<span style="color: ${hasEnough ? '#90EE90' : '#ff6b6b'};">• ${material}: ${owned}/${needed}</span><br>`;
+    }
+    
+    html += `
+          <strong>Cost:</strong> ${formatBigInt(recipe.moneyCost)}
+        </div>
+        
+        <button 
+          onclick="craftItem('${recipeName}')" 
+          style="width: 100%; padding: 8px; background: ${canCraft ? '#228B22' : '#555'}; color: white; border: none; border-radius: 5px; cursor: ${canCraft ? 'pointer' : 'not-allowed'}; font-weight: bold;"
+          ${!canCraft ? 'disabled' : ''}
+        >
+          ${canCraft ? '🔨 Craft' : '❌ Cannot Craft'}
+        </button>
+      </div>
+    `;
+  }
+  
+  html += `</div>`;
+  content.innerHTML = html;
+}
+
+function displayMerchant() {
+  const content = document.getElementById('craftingContent');
+  if (!content) return;
+  
+  let html = `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">`;
+  
+  for (let materialName in merchantShop) {
+    const material = merchantShop[materialName];
+    const canAfford = money >= material.price;
+    
+    html += `
+      <div style="background: #2a2a2a; padding: 15px; border-radius: 10px; text-align: center;">
+        <div style="font-size: 32px; margin-bottom: 10px;">${material.icon}</div>
+        <h4 style="margin: 0 0 10px 0;">${materialName}</h4>
+        <p style="font-size: 14px; color: #FFD700; margin: 5px 0;">💰 ${formatBigInt(material.price)}</p>
+        <button 
+          onclick="buyMaterial('${materialName}')" 
+          style="width: 100%; padding: 8px; background: ${canAfford ? '#2a5298' : '#555'}; color: white; border: none; border-radius: 5px; cursor: ${canAfford ? 'pointer' : 'not-allowed'}; font-weight: bold; margin-top: 10px;"
+          ${!canAfford ? 'disabled' : ''}
+        >
+          ${canAfford ? '💰 Buy' : '❌ Too Expensive'}
+        </button>
+      </div>
+    `;
+  }
+  
+  html += `</div>`;
+  content.innerHTML = html;
+}
+
+function displayMaterials() {
+  const content = document.getElementById('craftingContent');
+  if (!content) return;
+  
+  let html = `<div style="background: #2a2a2a; padding: 20px; border-radius: 10px;">`;
+  html += `<h3 style="color: #FFD700; margin-top: 0;">📦 Your Materials</h3>`;
+  
+  // Collect all materials (including zero counts for visibility)
+  const allMaterialNames = new Set();
+  
+  // Add from merchantShop
+  for (let name in merchantShop) {
+    allMaterialNames.add(name);
+  }
+  
+  // Add from craftingSystem.materials
+  for (let name in craftingSystem.materials) {
+    if (craftingSystem.materials[name] > 0) {
+      allMaterialNames.add(name);
+    }
+  }
+  
+  // Add boss drops
+  const bossDrops = [
+    "Phoenix Feather", "Phoenix Ember",
+    "Leviathan Scale", "Leviathan Heart", "Leviathan Fang",
+    "Enchanted Leviathan Scale", "Enchanted Leviathan Heart", "Enchanted Leviathan Fang"
+  ];
+  bossDrops.forEach(name => allMaterialNames.add(name));
+  
+  // Convert to array and sort
+  const sortedMaterials = Array.from(allMaterialNames).sort();
+  
+  if (sortedMaterials.length === 0) {
+    html += `<p style="color: #888; text-align: center;">No materials yet. Buy from the merchant!</p>`;
+  } else {
+    html += `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;">`;
+    
+    sortedMaterials.forEach(materialName => {
+      const count = craftingSystem.materials[materialName] || 0;
+      
+      // Only show if count > 0
+      if (count > 0) {
+        const materialInfo = merchantShop[materialName] || craftingSystem.recipes[materialName];
+        let icon = "📦";
+        
+        // Try to find icon
+        if (materialInfo) {
+          icon = materialInfo.icon;
+        }
+        
+        html += `
+          <div style="background: #1a1a2e; padding: 10px; border-radius: 8px; text-align: center; border: 2px solid #FFD700;">
+            <div style="font-size: 24px;">${icon}</div>
+            <div style="font-size: 12px; margin-top: 5px;">${materialName}</div>
+            <div style="color: #FFD700; font-weight: bold; margin-top: 5px;">x${count}</div>
+          </div>
+        `;
+      }
+    });
+    
+    html += `</div>`;
+  }
+  
+  html += `</div>`;
+  content.innerHTML = html;
+}
+
+function updateCraftingDisplay() {
+  const content = document.getElementById('craftingContent');
+  if (!content) return;
+  
+  // Re-render current tab
+  const recipesTab = document.getElementById('tabRecipes');
+  const merchantTab = document.getElementById('tabMerchant');
+  const materialsTab = document.getElementById('tabMaterials');
+  
+  if (recipesTab && recipesTab.style.background === 'rgb(42, 82, 152)') {
+    displayRecipes();
+  } else if (merchantTab && merchantTab.style.background === 'rgb(42, 82, 152)') {
+    displayMerchant();
+  } else if (materialsTab && materialsTab.style.background === 'rgb(42, 82, 152)') {
+    displayMaterials();
+  }
+}
+
+function closeCraftingMenu() {
+  const overlay = document.getElementById('craftingOverlay');
+  if (overlay) overlay.remove();
+}
+// === LEVIATHAN BOSS FUNCTIONS ===
+
+function useLeviathanTotem() {
+  const totem = craftingSystem.materials["Leviathan Totem"];
+  if (!totem || totem < 1) {
+    alert("❌ No Leviathan Totems available!");
+    return;
+  }
+  
+  if (leviathanBoss.visible || enchantedLeviathanBoss.visible) {
+    alert("⚠️ Leviathan already active!");
+    return;
+  }
+  
+  // Check if player has harpoon
+  const hasHarpoon = craftingSystem.materials["Harpoon"] && craftingSystem.materials["Harpoon"] > 0;
+  if (!hasHarpoon) {
+    alert("❌ You need a Harpoon to fight the Leviathan!\n\nCraft one in the Crafting menu.");
+    return;
+  }
+  
+  if (!confirm("🌊 Summon the Leviathan?\n\n⚠️ This is a dangerous boss fight!\n• You have 5 HP\n• Leviathan has 50 HP\n• Use Harpoon to attack (3 damage)\n• Long range attacks!\n\nReady?")) {
+    return;
+  }
+  
+  // Consume totem
+  craftingSystem.materials["Leviathan Totem"]--;
+  
+  // Equip harpoon
+  harpoon.equipped = true;
+  
+  // Reset player HP
+  leviathanBoss.playerCurrentHP = leviathanBoss.playerMaxHP;
+  
+  // Spawn Leviathan on right side
+  leviathanBoss.x = W - leviathanBoss.w - 50;
+  leviathanBoss.y = H / 2 - leviathanBoss.h / 2;
+  leviathanBoss.visible = true;
+  leviathanBoss.hitsRemaining = leviathanBoss.hitsToDie;
+  leviathanBoss.playerHits = 0;
+  leviathanBoss.enchanted = false;
+  leviathanBoss.canSummonEnchanted = false;
+  
+  // Start Forgotten Altar event
+  startForgottenAltar();
+  
+  console.log("🌊 Leviathan summoned!");
+  updateCraftingDisplay();
+}
+function equipLeviathanArmor() {
+  const armorCount = craftingSystem.materials["Leviathan Armor"] || 0;
+  
+  if (armorCount <= 0) {
+    alert("❌ No Leviathan Armor available!");
+    return;
+  }
+  
+  if (window.leviathanArmorEquipped) {
+    alert("⚠️ Leviathan Armor already equipped!");
+    return;
+  }
+  
+  // Consume armor
+  craftingSystem.materials["Leviathan Armor"]--;
+  
+  // Apply armor effects
+  window.leviathanArmorEquipped = true;
+  window.leviathanArmorDamageReduction = 0.5; // 50% damage reduction
+  leviathanBoss.playerMaxHP += 2;
+  leviathanBoss.playerCurrentHP = leviathanBoss.playerMaxHP;
+  
+  console.log("🛡️ Leviathan Armor equipped! +2 HP, 50% damage reduction");
+  
+  updateCraftingDisplay();
+  updateInventoryDisplay();
+  
+  alert("✅ Leviathan Armor Equipped!\n\n🛡️ Effects:\n• +2 Max HP (now " + leviathanBoss.playerMaxHP + " HP)\n• 50% damage reduction\n• HP fully restored");
+}
+
+// Make globally accessible
+window.equipLeviathanArmor = equipLeviathanArmor;
+function startForgottenAltar() {
+  forgottenAltar.active = true;
+  document.body.style.background = forgottenAltar.background;
+  
+  console.log("❄️ Forgotten Altar activated!");
+  updateEventIndicator();
+}
+
+function endForgottenAltar() {
+  forgottenAltar.active = false;
+  document.body.style.background = "linear-gradient(#111,#07101a)";
+  
+  console.log("❄️ Forgotten Altar ended");
+  updateEventIndicator();
+}
+
+function useHarpoon() {
+  if (!harpoon.equipped) {
+    return;
+  }
+  
+  const now = Date.now();
+  if (now - harpoon.lastUse < harpoon.cooldown) {
+    return; // Still on cooldown
+  }
+  
+  // Check if in range of Leviathan
+  let hitLeviathan = false;
+  
+  if (leviathanBoss.visible) {
+    const dx = character.x - leviathanBoss.x;
+    const dy = character.y - leviathanBoss.y;
+    const distance = Math.hypot(dx, dy);
+    
+    if (distance < 250) { // Harpoon range
+      leviathanBoss.hitsRemaining -= harpoon.damage;
+      leviathanBoss.flash = true;
+      hitLeviathan = true;
+      
+      spawnSlash(leviathanBoss.x + leviathanBoss.w / 2, leviathanBoss.y + leviathanBoss.h / 2, Math.random() * Math.PI * 2);
+      
+      setTimeout(() => (leviathanBoss.flash = false), 150);
+      
+      console.log(`🔱 Hit Leviathan! HP: ${leviathanBoss.hitsRemaining}/${leviathanBoss.hitsToDie}`);
+      
+      // Check if defeated
+      if (leviathanBoss.hitsRemaining <= 0) {
+        defeatLeviathan();
+      }
+    }
+  }
+  
+  if (enchantedLeviathanBoss.visible) {
+    const dx = character.x - enchantedLeviathanBoss.x;
+    const dy = character.y - enchantedLeviathanBoss.y;
+    const distance = Math.hypot(dx, dy);
+    
+    if (distance < 250) {
+      enchantedLeviathanBoss.hitsRemaining -= harpoon.damage;
+      enchantedLeviathanBoss.flash = true;
+      hitLeviathan = true;
+      
+      spawnSlash(enchantedLeviathanBoss.x + enchantedLeviathanBoss.w / 2, enchantedLeviathanBoss.y + enchantedLeviathanBoss.h / 2, Math.random() * Math.PI * 2);
+      
+      setTimeout(() => (enchantedLeviathanBoss.flash = false), 150);
+      
+      console.log(`🔱 Hit Enchanted Leviathan! HP: ${enchantedLeviathanBoss.hitsRemaining}/${enchantedLeviathanBoss.hitsToDie}`);
+      
+      if (enchantedLeviathanBoss.hitsRemaining <= 0) {
+        defeatEnchantedLeviathan();
+      }
+    }
+  }
+  
+  if (hitLeviathan) {
+    harpoon.lastUse = now;
+  }
+}
+
+function defeatLeviathan() {
+  leviathanBoss.visible = false;
+  leviathanBoss.canSummonEnchanted = true;
+  leviathanBoss.enchantedSummonTimer = Date.now() + 10000; // 10 seconds
+  
+  console.log("🌊 Leviathan defeated! 10 seconds to summon Enchanted Leviathan...");
+  
+  // Apply lucky star multiplier to drop chances
+  const dropMultiplier = window.luckyStarActive ? window.luckyStarMultiplier : 1.0;
+  
+  const drops = [];
+  
+  // 100% Leviathan Scale
+  drops.push("Leviathan Scale");
+  craftingSystem.materials["Leviathan Scale"] = (craftingSystem.materials["Leviathan Scale"] || 0) + 1;
+  
+  // 10% Leviathan Heart
+  if (Math.random() <= 0.10 * dropMultiplier) {
+    drops.push("Leviathan Heart");
+    craftingSystem.materials["Leviathan Heart"] = (craftingSystem.materials["Leviathan Heart"] || 0) + 1;
+  }
+  
+  // 1% Leviathan Fang
+  if (Math.random() <= 0.01 * dropMultiplier) {
+    drops.push("Leviathan Fang");
+    craftingSystem.materials["Leviathan Fang"] = (craftingSystem.materials["Leviathan Fang"] || 0) + 1;
+  }
+  
+  bossDrops.push({
+    x: leviathanBoss.x + leviathanBoss.w / 2,
+    y: leviathanBoss.y,
+    items: drops.map(d => `🌊 ${d}`),
+    timer: 5000,
+    opacity: 1
+  });
+  
+  alert(`🌊 LEVIATHAN DEFEATED!\n\nDrops:\n${drops.map(d => `• ${d}`).join('\n')}\n\n⏱️ You have 10 seconds to use an Enchant Relic to summon the Enchanted Leviathan!`);
+  
+  updateCraftingDisplay();
+  
+  // Check for enchanted summon
+  setTimeout(() => {
+    if (leviathanBoss.canSummonEnchanted) {
+      leviathanBoss.canSummonEnchanted = false;
+      endForgottenAltar();
+      harpoon.equipped = false;
+      console.log("⏱️ Time expired - no Enchanted Leviathan summoned");
+    }
+  }, 10000);
+}
+
+function summonEnchantedLeviathan() {
+  if (!leviathanBoss.canSummonEnchanted) {
+    alert("❌ Cannot summon Enchanted Leviathan right now!");
+    return;
+  }
+  
+  // Check for Enchant Relic
+  const hasRelic = playerInventory.Relics.find(i => i.name === "Enchant Relic" && i.count > 0);
+  if (!hasRelic) {
+    alert("❌ Need an Enchant Relic to summon Enchanted Leviathan!");
+    return;
+  }
+  
+  if (!confirm("✨ Summon ENCHANTED LEVIATHAN?\n\n⚠️ EXTREME DANGER!\n• 100 HP (double health!)\n• Stronger attacks!\n• Better drops!\n\nThis will consume your Enchant Relic!\n\nContinue?")) {
+    return;
+  }
+  
+  // Consume Enchant Relic
+  hasRelic.count--;
+  if (hasRelic.count <= 0) {
+    const index = playerInventory.Relics.indexOf(hasRelic);
+    if (index > -1) {
+      playerInventory.Relics.splice(index, 1);
+    }
+  }
+  
+  leviathanBoss.canSummonEnchanted = false;
+  
+  // Reset player HP
+  leviathanBoss.playerCurrentHP = leviathanBoss.playerMaxHP;
+  
+  // Spawn Enchanted Leviathan
+  enchantedLeviathanBoss.x = W - enchantedLeviathanBoss.w - 50;
+  enchantedLeviathanBoss.y = H / 2 - enchantedLeviathanBoss.h / 2;
+  enchantedLeviathanBoss.visible = true;
+  enchantedLeviathanBoss.hitsRemaining = enchantedLeviathanBoss.hitsToDie;
+  enchantedLeviathanBoss.playerHits = 0;
+  
+  harpoon.equipped = true;
+  
+  console.log("✨🌊 ENCHANTED LEVIATHAN SUMMONED!");
+  updateInventoryDisplay();
+}
+
+function defeatEnchantedLeviathan() {
+  enchantedLeviathanBoss.visible = false;
+  harpoon.equipped = false;
+  endForgottenAltar();
+  
+  console.log("✨🌊 Enchanted Leviathan defeated!");
+  
+  const dropMultiplier = window.luckyStarActive ? window.luckyStarMultiplier : 1.0;
+  
+  const drops = [];
+  
+  // 100% Enchanted Leviathan Scale
+  drops.push("Enchanted Leviathan Scale");
+  craftingSystem.materials["Enchanted Leviathan Scale"] = (craftingSystem.materials["Enchanted Leviathan Scale"] || 0) + 1;
+  
+  // 10% Enchanted Leviathan Heart
+  if (Math.random() <= 0.10 * dropMultiplier) {
+    drops.push("Enchanted Leviathan Heart");
+    craftingSystem.materials["Enchanted Leviathan Heart"] = (craftingSystem.materials["Enchanted Leviathan Heart"] || 0) + 1;
+  }
+  
+  // 1% Enchanted Leviathan Fang
+  if (Math.random() <= 0.01 * dropMultiplier) {
+    drops.push("Enchanted Leviathan Fang");
+    craftingSystem.materials["Enchanted Leviathan Fang"] = (craftingSystem.materials["Enchanted Leviathan Fang"] || 0) + 1;
+  }
+  
+  bossDrops.push({
+    x: enchantedLeviathanBoss.x + enchantedLeviathanBoss.w / 2,
+    y: enchantedLeviathanBoss.y,
+    items: drops.map(d => `✨ ${d}`),
+    timer: 5000,
+    opacity: 1
+  });
+  
+  alert(`✨🌊 ENCHANTED LEVIATHAN DEFEATED!\n\nDrops:\n${drops.map(d => `• ${d}`).join('\n')}`);
+  
+  updateCraftingDisplay();
+}
+
+// Make functions globally accessible
+window.useLeviathanTotem = useLeviathanTotem;
+window.summonEnchantedLeviathan = summonEnchantedLeviathan;
+// Make functions globally accessible
+window.showCraftingMenu = showCraftingMenu;
+window.showCraftingTab = showCraftingTab;
+window.closeCraftingMenu = closeCraftingMenu;
+window.craftItem = craftItem;
+window.buyMaterial = buyMaterial;
+// Make globally accessible
+window.useEnchantRelic = useEnchantRelic;
+// === ENCHANTMENT SYSTEM FUNCTIONS ===
+
+function rollEnchantment() {
+  // Determine if using Enchant Relic for better odds
+  const hasRelic = enchantmentSystem.hasEnchantRelic;
+  
+  // Pick enchantment type first
+  const types = Object.keys(enchantmentTypes);
+  const typeRoll = Math.random();
+  
+  let selectedType = null;
+  
+  // Ultimate has special 0.1% chance
+  if (typeRoll < 0.001 && hasRelic) {
+    selectedType = "Ultimate";
+  } else {
+    // Pick from other types equally
+    const normalTypes = types.filter(t => t !== "Ultimate");
+    selectedType = normalTypes[Math.floor(Math.random() * normalTypes.length)];
+  }
+  
+  // Roll for tier within that type
+  const tiers = enchantmentTypes[selectedType].tiers;
+  const tierKeys = Object.keys(tiers);
+  
+  let cumulativeChance = 0;
+  const tierRoll = Math.random();
+  
+  // If has Enchant Relic, boost chances for higher tiers
+  let selectedTier = null;
+  
+  for (const tier of tierKeys.reverse()) { // Start from highest tier
+    let chance = tiers[tier].chance;
+    
+    // Enchant Relic doubles chance for Tier IV and V
+    if (hasRelic && (tier === "IV" || tier === "V")) {
+      chance *= 2;
+    }
+    
+    cumulativeChance += chance;
+    
+    if (tierRoll < cumulativeChance) {
+      selectedTier = tier;
+      break;
+    }
+  }
+  
+  // Fallback to Tier I if nothing rolled
+  if (!selectedTier) selectedTier = "I";
+  
+  return {
+    type: selectedType,
+    tier: selectedTier,
+    data: tiers[selectedTier]
+  };
+}
+
+function enchantPet(petId) {
+  const pet = playerPets.find(p => p.id === petId);
+  if (!pet) {
+    alert("❌ Pet not found!");
+    return;
+  }
+  
+  // Check if enchanting is unlocked
+  if (!enchantmentSystem.unlocked) {
+    alert("🔒 Enchanting unlocks at Rebirth 2!");
+    return;
+  }
+  
+  // Check if player has enough money
+  if (money < enchantmentSystem.enchantCost) {
+    alert(`❌ Need ${formatBigInt(enchantmentSystem.enchantCost)} to enchant!`);
+    return;
+  }
+  
+  // Check if pet already has enchantment
+  if (pet.enchantment) {
+    const confirm = window.confirm(`⚠️ ${pet.name} already has ${pet.enchantment.type} ${pet.enchantment.tier}!\n\nOverwrite with new enchantment?`);
+    if (!confirm) return;
+  }
+  
+  // Deduct cost
+  money -= enchantmentSystem.enchantCost;
+  
+  // Roll enchantment
+  const result = rollEnchantment();
+  
+  // Apply enchantment to pet
+  pet.enchantment = result;
+  
+  // Consume Enchant Relic if used
+  if (enchantmentSystem.hasEnchantRelic) {
+    enchantmentSystem.hasEnchantRelic = false;
+    const relic = playerInventory.Relics.find(i => i.name === "Enchant Relic");
+    if (relic) {
+      relic.count--;
+      if (relic.count <= 0) {
+        const index = playerInventory.Relics.indexOf(relic);
+        if (index > -1) playerInventory.Relics.splice(index, 1);
+      }
+    }
+  }
+  
+  // Increment total enchants
+  enchantmentSystem.totalEnchants++;
+  
+  // Check for milestone rewards
+  checkEnchantMilestones();
+  
+  // Update displays
+  updateDisplays();
+  updateInventoryDisplay();
+  updateEnchantUI(); // UPDATE UI
+  updateAdminPanelStats(); // UPDATE ADMIN PANEL
+  recomputeIncome();
+  
+  // Show result
+  const icon = enchantmentTypes[result.type].icon;
+  alert(`✨ ENCHANTED! ✨\n\n${pet.icon} ${pet.name}\n${icon} ${result.type} ${result.tier}\n${result.data.description}\n\nTotal Enchants: ${enchantmentSystem.totalEnchants}`);
+}
+
+function checkEnchantMilestones() {
+  const total = enchantmentSystem.totalEnchants;
+  
+  // Every 50 enchants = Enchant Egg
+  const eggMilestones = Math.floor(total / 50);
+  const currentEggs = playerInventory.Eggs.find(i => i.name === "Enchant Egg");
+  const expectedEggs = eggMilestones;
+  
+  if (!currentEggs || currentEggs.count < expectedEggs) {
+    const toAdd = expectedEggs - (currentEggs ? currentEggs.count : 0);
+    if (currentEggs) {
+      currentEggs.count = expectedEggs;
+    } else {
+      playerInventory.Eggs.push({
+        icon: "🔮",
+        name: "Enchant Egg",
+        count: expectedEggs,
+        special: 1
+      });
+    }
+    console.log(`🎁 Earned ${toAdd} Enchant Egg(s)! (Milestone: ${total})`);
+  }
+  
+  // Every 100 enchants = Enchant Relic
+  const relicMilestones = Math.floor(total / 100);
+  const currentRelics = playerInventory.Relics.find(i => i.name === "Enchant Relic");
+  const expectedRelics = relicMilestones;
+  
+  if (!currentRelics || currentRelics.count < expectedRelics) {
+    const toAdd = expectedRelics - (currentRelics ? currentRelics.count : 0);
+    if (currentRelics) {
+      currentRelics.count = expectedRelics;
+    } else {
+      playerInventory.Relics.push({
+        icon: "🍀",
+        name: "Enchant Relic",
+        count: expectedRelics,
+        special: 1.0
+      });
+    }
+    console.log(`🎁 Earned ${toAdd} Enchant Relic(s)! (Milestone: ${total})`);
+  }
+  
+  // Specific milestones
+  const milestones = [
+    { count: 100, item: "Enchanted Sword", category: "Swords", icon: "🔮", special: 4 },
+    { count: 200, item: "Enchanted Relic", category: "Relics", icon: "🔮", special: 1.40 },
+    { count: 400, item: "Enchant Skin", category: "Skins", icon: "🔮", special: 16 },
+    { count: 500, item: "Enchanted Potion", category: "Potions", icon: "🔮", special: 7 },
+    { count: 1000, item: "Rare Enchant Sword", category: "Swords", icon: "✨", special: 6 }
+  ];
+  
+  milestones.forEach(milestone => {
+    if (total >= milestone.count) {
+      const existing = playerInventory[milestone.category].find(i => i.name === milestone.item);
+      if (!existing) {
+        playerInventory[milestone.category].push({
+          icon: milestone.icon,
+          name: milestone.item,
+          count: 1,
+          special: milestone.special
+        });
+        alert(`🎉 MILESTONE REWARD!\n\n${milestone.icon} ${milestone.item}\n(${milestone.count} enchants)`);
+      }
+    }
+  });
+  
+  // UPDATE UI AFTER CHECKING MILESTONES
+  updateEnchantUI();
+  updateAdminPanelStats();
+}
+// Make globally accessible
+window.enchantPet = enchantPet;
+window.useEnchantRelic = useEnchantRelic;
 // === ADVENT CALENDAR FUNCTIONS ===
 function updateAdventDay() {
   const now = new Date();
@@ -2831,7 +5599,18 @@ window.showAdventCalendar = showAdventCalendar;
 function updateEventIndicator() {
   const indicator = document.getElementById('eventIndicator');
   if (!indicator) return;
-  
+    // Check for Forgotten Altar event first
+  if (forgottenAltar.active) {
+    indicator.textContent = "❄️";
+    indicator.title = `Active: Forgotten Altar (Leviathan Battle)`;
+    return;
+  }
+    // Check for Heavenly event first
+  if (heavenlyEvent.active) {
+    indicator.textContent = "✨";
+    indicator.title = `Active: Heavenly Event (+35% income)`;
+    return;
+  }
   // Check for Christmas event first (highest priority for seasonal)
   if (christmasEvent.active) {
     indicator.textContent = "🎄";
@@ -3140,6 +5919,65 @@ function startAdminAnimation(type) {
         });
       }
       break;
+       case "phoenix":
+      // Spawn phoenix nest
+      phoenixBoss.nestX = W / 2 - 50;
+      phoenixBoss.nestY = H / 2 - 50;
+      
+      // Fire particles around nest
+      for (let i = 0; i < 60; i++) {
+        adminEventParticles.push({
+          x: phoenixBoss.nestX + 50 + (Math.random() - 0.5) * 80,
+          y: phoenixBoss.nestY + 50 + (Math.random() - 0.5) * 80,
+          vx: (Math.random() - 0.5) * 100,
+          vy: -100 - Math.random() * 100,
+          size: 2 + Math.random() * 4,
+          life: 1,
+          color: Math.random() > 0.5 ? "#FF4500" : "#FFD700"
+        });
+      }
+      
+      // Spawn phoenix boss
+      phoenixBoss.x = phoenixBoss.nestX + 50;
+      phoenixBoss.y = phoenixBoss.nestY - 100;
+      phoenixBoss.visible = true;
+      phoenixBoss.hitsRemaining = 25;
+      break;
+      
+    case "bloodmoon":
+      // Red mist particles
+      for (let i = 0; i < 80; i++) {
+        adminEventParticles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          size: 10 + Math.random() * 30,
+          alpha: 0.1 + Math.random() * 0.2,
+          drift: Math.random() * 2 - 1,
+          driftSpeed: 20 + Math.random() * 30
+        });
+      }
+      break;
+      
+    case "tornado":
+      // Spawn tornado at random edge
+      const edge = Math.floor(Math.random() * 4);
+      if (edge === 0) { tornado.x = 0; tornado.y = Math.random() * H; }
+      else if (edge === 1) { tornado.x = W; tornado.y = Math.random() * H; }
+      else if (edge === 2) { tornado.x = Math.random() * W; tornado.y = 0; }
+      else { tornado.x = Math.random() * W; tornado.y = H; }
+      
+      tornado.visible = true;
+      
+      // Debris particles
+      for (let i = 0; i < 50; i++) {
+        adminEventParticles.push({
+          angle: Math.random() * Math.PI * 2,
+          distance: Math.random() * 60,
+          speed: 200 + Math.random() * 300,
+          size: 2 + Math.random() * 4
+        });
+      }
+      break;
   }
 }
 
@@ -3214,8 +6052,210 @@ function updateAdminAnimation(dt) {
         }
       });
       break;
+        case "phoenix":
+      // Update fire particles
+      adminEventParticles.forEach(p => {
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.vy += 200 * dt; // gravity
+        p.life -= dt * 0.8;
+        
+        if (p.life <= 0) {
+          p.x = phoenixBoss.nestX + 50 + (Math.random() - 0.5) * 80;
+          p.y = phoenixBoss.nestY + 50 + (Math.random() - 0.5) * 80;
+          p.vx = (Math.random() - 0.5) * 100;
+          p.vy = -100 - Math.random() * 100;
+          p.life = 1;
+        }
+      });
+    
+      // 🔥 PHOENIX BOSS LOGIC
+if (phoenixBoss.visible && !phoenixBoss.retreating) {
+  const dx = character.x - phoenixBoss.x;
+  const dy = character.y - phoenixBoss.y;
+  const distance = Math.hypot(dx, dy);
+  
+  // Phoenix follows player slowly
+  if (distance > 100) {
+    phoenixBoss.x += (dx / distance) * phoenixBoss.speed * dt * 0.3;
+    phoenixBoss.y += (dy / distance) * phoenixBoss.speed * dt * 0.3;
+  }
+  
+  // Long range attack
+  if (distance < phoenixBoss.longRangeRadius && !phoenixBoss.attackCooldown) {
+    phoenixBoss.attackCooldown = true;
+    
+    // Phoenix IGNORES mistletoe shield
+    phoenixBoss.playerHits++;
+    
+    console.log("🔥 Phoenix hit you with long-range attack!");
+    
+    if (phoenixBoss.playerHits >= 3) {
+      money = money / 2n;
+      phoenixBoss.visible = false;
+      phoenixBoss.playerHits = 0;
+      alert("🔥 Phoenix defeated you! Lost 50% money!");
+    }
+    
+    setTimeout(() => (phoenixBoss.attackCooldown = false), 3000);
   }
 }
+// 🗡️ Sword vs Phoenix Boss
+if (phoenixBoss.visible && character.slashing && !phoenixBoss.retreating) {
+  // ... all the sword collision code ...
+}
+// 🌊 LEVIATHAN BOSS LOGIC
+if (leviathanBoss.visible) {
+  const dx = character.x - leviathanBoss.x;
+  const dy = character.y - leviathanBoss.y;
+  const distance = Math.hypot(dx, dy);
+  
+  // Leviathan stays on right side, moves up and down slowly
+  const targetY = H / 2 + Math.sin(Date.now() / 1000) * 100;
+  leviathanBoss.y += (targetY - leviathanBoss.y) * dt * 0.5;
+  
+  // Long range attack
+  if (distance < leviathanBoss.longRangeRadius && !leviathanBoss.attackCooldown) {
+    leviathanBoss.attackCooldown = true;
+    leviathanBoss.playerHits++;
+const damageReduction = window.leviathanArmorEquipped ? (window.leviathanArmorDamageReduction || 0) : 0;
+const damage = Math.random() < damageReduction ? 0 : 1;
+leviathanBoss.playerCurrentHP -= damage;
+
+if (damage === 0) {
+  console.log("🛡️ Leviathan Armor blocked the attack!");
+}
+    
+    console.log(`🌊 Leviathan attacked! Player HP: ${leviathanBoss.playerCurrentHP}/${leviathanBoss.playerMaxHP}`);
+    
+    // Show damage indicator
+    const dmgIndicator = document.createElement('div');
+    dmgIndicator.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(30, 144, 255, 0.9);
+      color: white;
+      padding: 20px 40px;
+      border-radius: 15px;
+      font-size: 28px;
+      font-weight: bold;
+      z-index: 10001;
+      animation: fadeOut 1s forwards;
+    `;
+    dmgIndicator.textContent = `🌊 HIT! ${leviathanBoss.playerCurrentHP} HP LEFT`;
+    document.body.appendChild(dmgIndicator);
+    
+    setTimeout(() => dmgIndicator.remove(), 1000);
+    
+    if (leviathanBoss.playerCurrentHP <= 0) {
+      money = money / 2n;
+      leviathanBoss.visible = false;
+      harpoon.equipped = false;
+      endForgottenAltar();
+      alert("💀 You were defeated by the Leviathan!\n\nLost 50% money!");
+    }
+    
+    setTimeout(() => (leviathanBoss.attackCooldown = false), 3000);
+  }
+}
+
+// 🌊✨ ENCHANTED LEVIATHAN BOSS LOGIC
+if (enchantedLeviathanBoss.visible) {
+  const dx = character.x - enchantedLeviathanBoss.x;
+  const dy = character.y - enchantedLeviathanBoss.y;
+  const distance = Math.hypot(dx, dy);
+  
+  // Enchanted Leviathan moves more aggressively
+  const targetY = H / 2 + Math.sin(Date.now() / 800) * 120;
+  enchantedLeviathanBoss.y += (targetY - enchantedLeviathanBoss.y) * dt * 0.7;
+  
+  // Long range attack (faster)
+  if (distance < enchantedLeviathanBoss.longRangeRadius && !enchantedLeviathanBoss.attackCooldown) {
+    enchantedLeviathanBoss.attackCooldown = true;
+    enchantedLeviathanBoss.playerHits++;
+    leviathanBoss.playerCurrentHP--;
+    
+    console.log(`✨🌊 Enchanted Leviathan attacked! Player HP: ${leviathanBoss.playerCurrentHP}/${leviathanBoss.playerMaxHP}`);
+    
+    const dmgIndicator = document.createElement('div');
+    dmgIndicator.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(147, 112, 219, 0.9);
+      color: white;
+      padding: 20px 40px;
+      border-radius: 15px;
+      font-size: 28px;
+      font-weight: bold;
+      z-index: 10001;
+      animation: fadeOut 1s forwards;
+    `;
+    dmgIndicator.textContent = `✨ HIT! ${leviathanBoss.playerCurrentHP} HP LEFT`;
+    document.body.appendChild(dmgIndicator);
+    
+    setTimeout(() => dmgIndicator.remove(), 1000);
+    
+    if (leviathanBoss.playerCurrentHP <= 0) {
+      money = money / 2n;
+      enchantedLeviathanBoss.visible = false;
+      harpoon.equipped = false;
+      endForgottenAltar();
+      alert("💀 You were defeated by the Enchanted Leviathan!\n\nLost 50% money!");
+    }
+    
+    setTimeout(() => (enchantedLeviathanBoss.attackCooldown = false), 2500);
+  }
+}
+      break;
+      
+    case "bloodmoon":
+      adminEventParticles.forEach(p => {
+        p.x += p.drift * p.driftSpeed * dt;
+        if (p.x > W + p.size) p.x = -p.size;
+        if (p.x < -p.size) p.x = W + p.size;
+      });
+      break;
+      
+    case "tornado":
+      if (tornado.visible) {
+        // Move tornado toward player
+        const dx = character.x - tornado.x;
+        const dy = character.y - tornado.y;
+        const distance = Math.hypot(dx, dy);
+        
+        if (distance > 5) {
+          tornado.x += (dx / distance) * tornado.speed * dt;
+          tornado.y += (dy / distance) * tornado.speed * dt;
+        }
+        
+        tornado.angle += dt * 10; // rotation
+        
+        // Update debris particles
+        adminEventParticles.forEach(p => {
+          p.angle += p.speed * dt * 0.01;
+        });
+        
+        // Check collision with player
+        if (rectsOverlap(tornado, character)) {
+          tornado.visible = false;
+          endAdminEvent();
+          money = money / 2n; // Penalty
+          alert("🌪️ Tornado hit you! Lost 50% money!");
+        }
+      }
+      break;
+        // === ADD THIS CLEANUP CODE HERE (at the very end, before closing brace) ===
+  // CLEANUP: Prevent particle array from growing too large
+  if (adminEventParticles.length > MAX_PARTICLES) {
+    adminEventParticles.splice(0, adminEventParticles.length - MAX_PARTICLES);
+  }
+} // <-- This is the closing brace of updateAdminAnimation
+  }
+
 
 function drawAdminAnimation(ctx) {
   if (!currentAdminEvent) return;
@@ -3307,6 +6347,183 @@ function drawAdminAnimation(ctx) {
           ctx.fillRect(p.x, p.y, p.size, p.size);
         }
       });
+      break;
+      case "phoenix":
+      // Draw nest
+      ctx.fillStyle = "#8B4513";
+      ctx.fillRect(phoenixBoss.nestX, phoenixBoss.nestY, 100, 100);
+      ctx.strokeStyle = "#654321";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(phoenixBoss.nestX, phoenixBoss.nestY, 100, 100);
+      
+      // Draw fire particles
+      adminEventParticles.forEach(p => {
+        if (p.life > 0) {
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.life;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+      ctx.globalAlpha = 1;
+      
+      // Draw phoenix boss
+      if (phoenixBoss.visible) {
+        ctx.fillStyle = phoenixBoss.flash ? "#FFD700" : phoenixBoss.color;
+        ctx.fillRect(phoenixBoss.x, phoenixBoss.y, phoenixBoss.w, phoenixBoss.h);
+        ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+        ctx.strokeRect(phoenixBoss.x + 0.5, phoenixBoss.y + 0.5, phoenixBoss.w - 1, phoenixBoss.h - 1);
+        ctx.font = '32px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(phoenixBoss.emoji, phoenixBoss.x + phoenixBoss.w / 2, phoenixBoss.y + phoenixBoss.h / 2);
+        
+        // Draw long range circle
+        ctx.strokeStyle = "rgba(255, 69, 0, 0.3)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(phoenixBoss.x + phoenixBoss.w / 2, phoenixBoss.y + phoenixBoss.h / 2, phoenixBoss.longRangeRadius, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        // Draw HP bar
+        const barWidth = 200;
+        ctx.fillStyle = '#222';
+        ctx.fillRect(W/2 - barWidth/2, 50, barWidth, 10);
+        ctx.fillStyle = '#FF4500';
+        ctx.fillRect(W/2 - barWidth/2, 50, barWidth * (phoenixBoss.hitsRemaining / phoenixBoss.hitsToDie), 10);
+        ctx.fillStyle = '#fff';
+        ctx.font = '12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`Phoenix HP: ${phoenixBoss.hitsRemaining}/${phoenixBoss.hitsToDie}`, W/2, 45);
+      }
+      break;
+      // 🌊 Draw Leviathan Boss
+if (leviathanBoss.visible) {
+  ctx.fillStyle = leviathanBoss.flash ? "#87CEEB" : leviathanBoss.color;
+  ctx.fillRect(leviathanBoss.x, leviathanBoss.y, leviathanBoss.w, leviathanBoss.h);
+  ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+  ctx.strokeRect(leviathanBoss.x + 0.5, leviathanBoss.y + 0.5, leviathanBoss.w - 1, leviathanBoss.h - 1);
+  ctx.font = '48px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(leviathanBoss.emoji, leviathanBoss.x + leviathanBoss.w / 2, leviathanBoss.y + leviathanBoss.h / 2);
+  
+  // Draw long range circle
+  ctx.strokeStyle = "rgba(30, 144, 255, 0.3)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(leviathanBoss.x + leviathanBoss.w / 2, leviathanBoss.y + leviathanBoss.h / 2, leviathanBoss.longRangeRadius, 0, Math.PI * 2);
+  ctx.stroke();
+  
+  // Draw HP bar
+  const barWidth = 250;
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - barWidth/2, 50, barWidth, 12);
+  ctx.fillStyle = '#1E90FF';
+  ctx.fillRect(W/2 - barWidth/2, 50, barWidth * (leviathanBoss.hitsRemaining / leviathanBoss.hitsToDie), 12);
+  ctx.fillStyle = '#fff';
+  ctx.font = '14px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(`🌊 Leviathan HP: ${leviathanBoss.hitsRemaining}/${leviathanBoss.hitsToDie}`, W/2, 45);
+  
+  // Draw player HP bar
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - barWidth/2, H - 40, barWidth, 12);
+  ctx.fillStyle = '#00ff00';
+  ctx.fillRect(W/2 - barWidth/2, H - 40, barWidth * (leviathanBoss.playerCurrentHP / leviathanBoss.playerMaxHP), 12);
+  ctx.fillStyle = '#fff';
+  ctx.fillText(`Player HP: ${leviathanBoss.playerCurrentHP}/${leviathanBoss.playerMaxHP}`, W/2, H - 45);
+}
+
+// 🌊✨ Draw Enchanted Leviathan Boss
+if (enchantedLeviathanBoss.visible) {
+  ctx.fillStyle = enchantedLeviathanBoss.flash ? "#DDA0DD" : enchantedLeviathanBoss.color;
+  ctx.fillRect(enchantedLeviathanBoss.x, enchantedLeviathanBoss.y, enchantedLeviathanBoss.w, enchantedLeviathanBoss.h);
+  ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+  ctx.strokeRect(enchantedLeviathanBoss.x + 0.5, enchantedLeviathanBoss.y + 0.5, enchantedLeviathanBoss.w - 1, enchantedLeviathanBoss.h - 1);
+  ctx.font = '52px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(enchantedLeviathanBoss.emoji, enchantedLeviathanBoss.x + enchantedLeviathanBoss.w / 2, enchantedLeviathanBoss.y + enchantedLeviathanBoss.h / 2);
+  
+  // Draw long range circle
+  ctx.strokeStyle = "rgba(147, 112, 219, 0.3)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(enchantedLeviathanBoss.x + enchantedLeviathanBoss.w / 2, enchantedLeviathanBoss.y + enchantedLeviathanBoss.h / 2, enchantedLeviathanBoss.longRangeRadius, 0, Math.PI * 2);
+  ctx.stroke();
+  
+  // Draw HP bar
+  const barWidth = 250;
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - barWidth/2, 50, barWidth, 12);
+  ctx.fillStyle = '#9370DB';
+  ctx.fillRect(W/2 - barWidth/2, 50, barWidth * (enchantedLeviathanBoss.hitsRemaining / enchantedLeviathanBoss.hitsToDie), 12);
+  ctx.fillStyle = '#fff';
+  ctx.font = '14px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(`✨🌊 Enchanted Leviathan HP: ${enchantedLeviathanBoss.hitsRemaining}/${enchantedLeviathanBoss.hitsToDie}`, W/2, 45);
+  
+  // Draw player HP bar
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - barWidth/2, H - 40, barWidth, 12);
+  ctx.fillStyle = '#00ff00';
+  ctx.fillRect(W/2 - barWidth/2, H - 40, barWidth * (leviathanBoss.playerCurrentHP / leviathanBoss.playerMaxHP), 12);
+  ctx.fillStyle = '#fff';
+  ctx.fillText(`Player HP: ${leviathanBoss.playerCurrentHP}/${leviathanBoss.playerMaxHP}`, W/2, H - 45);
+}
+    case "bloodmoon":
+      // Draw bloodmoon in sky
+      ctx.save();
+      ctx.fillStyle = "#8B0000";
+      ctx.globalAlpha = 0.8;
+      ctx.beginPath();
+      ctx.arc(W - 100, 80, 40, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.restore();
+      
+      // Draw red mist particles
+      adminEventParticles.forEach(p => {
+        ctx.fillStyle = `rgba(139, 0, 0, ${p.alpha})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      break;
+      
+    case "tornado":
+      if (tornado.visible) {
+        // Draw tornado spiral
+        ctx.save();
+        ctx.translate(tornado.x + tornado.w / 2, tornado.y + tornado.h / 2);
+        ctx.rotate(tornado.angle);
+        
+        // Draw tornado body
+        ctx.strokeStyle = "rgba(100, 100, 100, 0.6)";
+        ctx.lineWidth = 15;
+        ctx.beginPath();
+        for (let i = 0; i < 20; i++) {
+          const angle = (i / 20) * Math.PI * 4;
+          const radius = (i / 20) * 40;
+          const x = Math.cos(angle) * radius;
+          const y = Math.sin(angle) * radius - i * 2;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        
+        ctx.restore();
+        
+        // Draw debris particles
+        adminEventParticles.forEach(p => {
+          const x = tornado.x + tornado.w / 2 + Math.cos(p.angle) * p.distance;
+          const y = tornado.y + tornado.h / 2 + Math.sin(p.angle) * p.distance;
+          ctx.fillStyle = "rgba(150, 150, 150, 0.5)";
+          ctx.fillRect(x, y, p.size, p.size);
+        });
+      }
       break;
   }
   
@@ -3419,12 +6636,13 @@ function updateDisplays() {
 
   incomeDisplay.textContent = "Income/sec: " + formatBigInt(incomePerSec);
   incomeDisplay.title = formatBigInt2(incomePerSec);
-  console.log("Income/Sec-2 " + incomeDisplay.title);
 
   houseDisplay.textContent = "House value: " + formatBigInt(houseValue);
   houseDisplay.title = formatBigInt2(houseValue);
+  
+  updateEnchantUI(); // NEW
 
-  if (!insideHouse) { // only update legend counts if NOT inside house
+  if (!insideHouse) {
     for (let c of currentCubes()) {
       const el = document.getElementById("cnt-" + c.name.replace(/\s+/g, "_"));
       if (el) el.textContent = legendCounts[c.name].toString();
@@ -3433,6 +6651,31 @@ function updateDisplays() {
 }
 
 function rectsOverlap(a, b) { return !(a.x + a.w <= b.x || b.x + b.w <= a.x || a.y + a.h <= b.y || b.y + b.h <= a.y); }
+
+
+// 🌪️ TORNADO LOGIC
+if (tornado.visible) {
+  const dx = character.x - tornado.x;
+  const dy = character.y - tornado.y;
+  const distance = Math.hypot(dx, dy);
+  
+  if (distance > 5) {
+    tornado.x += (dx / distance) * tornado.speed * dt;
+    tornado.y += (dy / distance) * tornado.speed * dt;
+  }
+  
+  tornado.angle += dt * 10;
+  
+  // Check collision with player
+  if (rectsOverlap(tornado, character)) {
+    tornado.visible = false;
+    endAdminEvent();
+    money = money / 2n;
+    alert("🌪️ Tornado hit you! Lost 50% money!");
+  }
+}
+checkCubeCollisions();
+  checkHouseDeposit();
 
 function checkCubeCollisions() {
   for (let c of cubes) {
@@ -3443,7 +6686,22 @@ function checkCubeCollisions() {
     }
   }
 }
+// Add this near your other admin functions
+function checkGameHealth() {
+  console.log('=== GAME HEALTH CHECK ===');
+  console.log('Player Pets:', playerPets.length);
+  console.log('Pet Timers:', Object.keys(petTimers).length);
+  console.log('Boss Drops:', bossDrops.length);
+  console.log('Specials:', specials.length);
+  console.log('Admin Particles:', adminEventParticles.length);
+  console.log('Weather Particles:', weatherParticles.length);
+  console.log('Slashes:', slashes.length);
+  console.log('Snowflakes:', christmasEvent.snowflakes.length);
+  console.log('========================');
+}
 
+// Call this every minute to monitor
+setInterval(checkGameHealth, 60000);
 function resolveSolidCollision(a, b) {
   const overlapX = Math.min(a.x + a.w - b.x, b.x + b.w - a.x);
   const overlapY = Math.min(a.y + a.h - b.y, b.y + b.h - a.y);
@@ -3474,7 +6732,15 @@ window.addEventListener("keydown", e => {
     character.slashing = true;
     setTimeout(() => { character.slashing = false; }, character.slashDuration);
   }
-
+  // NEW: Harpoon attack with X key
+  if (key === "x" && harpoon.equipped) {
+    useHarpoon();
+  }
+  
+  // NEW: Summon Enchanted Leviathan with E key (during the 10 second window)
+  if (key === "e" && leviathanBoss.canSummonEnchanted) {
+    summonEnchantedLeviathan();
+  }
   // === ADMIN PANEL (: key) ===
   if (e.key === ":") {
     toggleAdminPanel();
@@ -3515,8 +6781,9 @@ function updateTierButtons() {
   tierHint.textContent = `Current Tier: ${cubeTier + 1}`;
 }
 function performRebirth() {
+  // Check if at max rebirth and should show Ascension instead
   if (rebirthCount >= rebirthLevels.length) {
-    alert("🎉 You've reached the maximum rebirth level!");
+    performAscension();
     return;
   }
 
@@ -3532,7 +6799,6 @@ function performRebirth() {
   const cubeCount = legendCounts[nextRebirth.requiredCube] || 0n;
   
   if (cubeCount < BigInt(nextRebirth.requiredCount)) {
-    // Show all available cubes for debugging
     let availableCubes = "";
     for (let key in legendCounts) {
       if (legendCounts[key] > 0n) {
@@ -3570,10 +6836,31 @@ function performRebirth() {
     return;
   }
 
-  // Perform rebirth
-  rebirthCount++;
-  rebirthMultiplier += nextRebirth.incomeMultiplier;
-  
+// Perform rebirth
+rebirthCount++;
+rebirthMultiplier += nextRebirth.incomeMultiplier;
+
+// Unlock enchanting at rebirth 2
+if (rebirthCount >= 2) {
+  enchantmentSystem.unlocked = true;
+  console.log("🔮 Enchanting system unlocked!");
+}
+
+// Unlock crafting at rebirth 1
+if (rebirthCount >= 1) {
+  if (!craftingSystem.unlocked) {
+    craftingSystem.unlocked = true;
+    console.log("🔨 Crafting system unlocked!");
+    
+    // Auto-unlock all auto-unlock recipes
+    for (let recipeName in craftingSystem.recipes) {
+      const recipe = craftingSystem.recipes[recipeName];
+      if (recipe.autoUnlock) {
+        unlockCraftingRecipe(recipeName);
+      }
+    }
+  }
+}
   // Apply pet slot rewards
   if (nextRebirth.petSlotReward) {
     maxPetSlots += nextRebirth.petSlotReward;
@@ -3627,16 +6914,189 @@ function performRebirth() {
   alert(completionMsg);
 }
 
-function updateRebirthUI() {
-  rebirthHint.textContent = `Rebirths: ${rebirthCount} (${rebirthMultiplier}x) | Pets: ${maxPetSlots}`;
+function performAscension() {
+  // Check if max ascensions reached
+  if (ascensionCount >= ascensionLevels.length) {
+    alert("✨ You have completed all Ascensions!\n\nYou cannot progress further.");
+    return;
+  }
+
+  const nextAscension = ascensionLevels[ascensionCount];
   
-  if (rebirthCount >= rebirthLevels.length) {
-    rebirthBtn.textContent = "🔄 Rebirth (MAX)";
-    rebirthBtn.disabled = true;
+  // Check if player has enough money
+  if (money < nextAscension.cost) {
+    alert(`❌ Not enough money! Need ${formatBigInt(nextAscension.cost)}`);
+    return;
+  }
+
+  // Build rewards message
+  let rewardsMsg = `✨ ASCENSION ${nextAscension.level} ✨\n\n`;
+  rewardsMsg += `Cost: ${formatBigInt(nextAscension.cost)}\n\n`;
+  rewardsMsg += `Rewards:\n`;
+  rewardsMsg += `• ${nextAscension.rewards.eggs} Ascension Eggs\n`;
+  rewardsMsg += `• ${nextAscension.rewards.totem} Heavenly Totem\n`;
+  
+  if (nextAscension.rewards.skin) {
+    rewardsMsg += `• Heavenly Skin\n`;
+  }
+  
+  rewardsMsg += `\n⚠️ THIS WILL RESET EVERYTHING:\n`;
+  rewardsMsg += `- Money → 1K\n`;
+  rewardsMsg += `- Income/sec → 0\n`;
+  rewardsMsg += `- House Value → 0\n`;
+  rewardsMsg += `- All Legend Counts → 0\n`;
+  rewardsMsg += `- ALL Boss Drops → 0\n`;
+  rewardsMsg += `- ALL Shop Items → Cleared\n`;
+  rewardsMsg += `- Pets kept, but unequipped\n`;
+  rewardsMsg += `- REBIRTHS RESET TO 0\n\n`;
+  rewardsMsg += `⚠️ This is a MAJOR reset! Continue?`;
+
+  if (!confirm(rewardsMsg)) {
+    return;
+  }
+
+  // Perform ascension
+  ascensionCount++;
+  
+  // **RESET REBIRTHS**
+  rebirthCount = 0;
+  rebirthMultiplier = 1.0;
+  maxPetSlots = 3;
+  
+  // Give Ascension Eggs
+  const existing = playerInventory.Eggs.find(i => i.name === "Ascension Egg");
+  if (existing) {
+    existing.count += nextAscension.rewards.eggs;
   } else {
+    playerInventory.Eggs.push({
+      icon: "✨",
+      name: "Ascension Egg",
+      count: nextAscension.rewards.eggs,
+      special: 1
+    });
+  }
+  
+  // Give Heavenly Totem
+  const existingTotem = playerInventory.Relics.find(i => i.name === "Heavenly Totem");
+  if (existingTotem) {
+    existingTotem.count += nextAscension.rewards.totem;
+  } else {
+    playerInventory.Relics.push({
+      icon: "✨",
+      name: "Heavenly Totem",
+      count: nextAscension.rewards.totem,
+      special: 1.35
+    });
+  }
+  
+  // Give Heavenly Skin if reward includes it
+  if (nextAscension.rewards.skin) {
+    const existingSkin = playerInventory.Skins.find(i => i.name === "Heavenly Skin");
+    if (!existingSkin) {
+      playerInventory.Skins.push({
+        icon: "✨",
+        name: "Heavenly Skin",
+        count: 1,
+        special: 15
+      });
+    }
+  }
+  
+  // FULL RESET
+  money = 1000n;
+  incomePerSec = 0n;
+  houseValue = 0n;
+  
+  // Reset all legend counts
+  for (let key in legendCounts) {
+    legendCounts[key] = 0n;
+  }
+  
+  // Clear ALL boss drops
+  for (let key in dropCounters) {
+    dropCounters[key] = 0;
+    inventory[key] = 0;
+  }
+  
+  // Clear ALL shop items (except Ascension rewards)
+  playerInventory.Swords = [];
+  playerInventory.Potions = [];
+  
+  // Keep only Ascension eggs, Heavenly Totems, and Heavenly Skin
+  playerInventory.Eggs = playerInventory.Eggs.filter(i => i.name === "Ascension Egg");
+  playerInventory.Relics = playerInventory.Relics.filter(i => i.name === "Heavenly Totem");
+  playerInventory.Skins = playerInventory.Skins.filter(i => i.name === "Heavenly Skin");
+  
+  // Unequip all pets but keep them
+  playerPets.forEach(p => p.equipped = false);
+  equippedPets = [];
+  
+  // Reset character
+  character.assignedValue = 0n;
+  character.assignedName = null;
+  
+  // Check if any pet has enchant_keeper ability
+  const hasEnchantKeeper = playerPets.some(p => 
+    p.ability === "enchant_keeper" && p.equipped
+  );
+
+  // Remove enchantments from pets unless they have enchant_keeper
+  if (!hasEnchantKeeper) {
+    playerPets.forEach(pet => {
+      if (pet.enchantment) {
+        delete pet.enchantment;
+      }
+    });
+    console.log("💔 All pet enchantments lost on ascension");
+  } else {
+    console.log("💖 Enchantments kept thanks to Enchant Keeper pet!");
+  }
+  
+  // Recalculate income
+  recomputeIncome();
+  updateDisplays();
+  updateInventoryDisplay();
+  updateRebirthUI();
+  
+  // Auto-save
+  saveBtn.click();
+  
+  // Build completion message
+  let completionMsg = `✨ ASCENSION ${ascensionCount} COMPLETE! ✨\n\n`;
+  completionMsg += `Received:\n`;
+  completionMsg += `• ${nextAscension.rewards.eggs} Ascension Eggs\n`;
+  completionMsg += `• ${nextAscension.rewards.totem} Heavenly Totem\n`;
+  
+  if (nextAscension.rewards.skin) {
+    completionMsg += `• Heavenly Skin\n`;
+  }
+  
+  completionMsg += `\nAscensions: ${ascensionCount}/${ascensionLevels.length}`;
+  completionMsg += `\nRebirths reset to 0 - work your way back to Rebirth 9!`;
+  
+  alert(completionMsg);
+}
+
+function updateRebirthUI() {
+  // Check if at rebirth 9 (max rebirth)
+  if (rebirthCount >= rebirthLevels.length) {
+    // Show Ascension button
+    if (ascensionCount >= ascensionLevels.length) {
+      rebirthBtn.textContent = "✨ Ascension (MAX)";
+      rebirthBtn.disabled = true;
+      rebirthHint.textContent = `Rebirths: ${rebirthCount} (${rebirthMultiplier}x) | Ascensions: ${ascensionCount}/${ascensionLevels.length} (MAX)`;
+    } else {
+      const nextAscension = ascensionLevels[ascensionCount];
+      rebirthBtn.textContent = `✨ Ascension ${nextAscension.level}`;
+      rebirthBtn.disabled = false;
+      rebirthHint.textContent = `Rebirths: ${rebirthCount} (${rebirthMultiplier}x) | Ascensions: ${ascensionCount}/${ascensionLevels.length} | Pets: ${maxPetSlots}`;
+    }
+  } else {
+    // Normal rebirth
     const nextRebirth = rebirthLevels[rebirthCount];
     rebirthBtn.textContent = `🔄 Rebirth ${nextRebirth.level}`;
     rebirthBtn.disabled = false;
+    rebirthHint.textContent = `Rebirths: ${rebirthCount} (${rebirthMultiplier}x) | Pets: ${maxPetSlots}`;
   }
 }
 function initializeGame() {
@@ -3700,20 +7160,34 @@ saveBtn.addEventListener("click", () => {
     bossDrops,
     rebirthCount,
     rebirthMultiplier,
-    maxPetSlots, // NEW
-        // Christmas data with debug offset
+    maxPetSlots,
+    ascensionCount,
+    // ENCHANTMENT DATA
+    enchantmentSystem: {
+      unlocked: enchantmentSystem.unlocked,
+      totalEnchants: enchantmentSystem.totalEnchants,
+      hasEnchantRelic: enchantmentSystem.hasEnchantRelic
+    },
+      // NEW: Add crafting system data
+  craftingSystem: {
+    unlocked: craftingSystem.unlocked,
+    unlockedRecipes: craftingSystem.unlockedRecipes,
+    materials: craftingSystem.materials
+  },
     adventCalendar: {
       currentDay: adventCalendar.currentDay,
       claimedDays: adventCalendar.claimedDays,
       year: adventCalendar.year,
-      debugOffset: adventCalendar.debugOffset || 0 // NEW
+      debugOffset: adventCalendar.debugOffset || 0
     },
     christmasEvent: {
       snowCollected: christmasEvent.snowCollected,
       lastTrigger: christmasEvent.lastTrigger
+    },
+    heavenlyEvent: {
+      lastTrigger: heavenlyEvent.lastTrigger
     }
   };
-
 
   data.equipped = {
     swords: equippedSwordSpecial,
@@ -3756,13 +7230,50 @@ loadBtn.addEventListener("click", () => {
     
     rebirthCount = data.rebirthCount || 0;
     rebirthMultiplier = data.rebirthMultiplier || 1.0;
-    maxPetSlots = data.maxPetSlots || 3; // NEW
-
-  if (data.adventCalendar) {
+    maxPetSlots = data.maxPetSlots || 3;
+    ascensionCount = data.ascensionCount || 0;
+// NEW: Check if crafting should be unlocked based on rebirth level
+if (rebirthCount >= 1) {
+  craftingSystem.unlocked = true;
+  
+  // Auto-unlock all auto-unlock recipes
+  for (let recipeName in craftingSystem.recipes) {
+    const recipe = craftingSystem.recipes[recipeName];
+    if (recipe.autoUnlock && !craftingSystem.unlockedRecipes.includes(recipeName)) {
+      craftingSystem.unlockedRecipes.push(recipeName);
+    }
+  }
+}
+    if (data.heavenlyEvent) {
+      heavenlyEvent.lastTrigger = data.heavenlyEvent.lastTrigger || 0;
+    }
+    
+    // LOAD ENCHANTMENT DATA
+    if (data.enchantmentSystem) {
+      enchantmentSystem.unlocked = data.enchantmentSystem.unlocked || false;
+      enchantmentSystem.totalEnchants = data.enchantmentSystem.totalEnchants || 0;
+      enchantmentSystem.hasEnchantRelic = data.enchantmentSystem.hasEnchantRelic || false;
+      
+      console.log(`✅ Loaded enchantments: ${enchantmentSystem.totalEnchants} total, unlocked: ${enchantmentSystem.unlocked}`);
+    } else {
+      // If no enchantment data exists, check if should be unlocked based on rebirth count
+      enchantmentSystem.unlocked = (rebirthCount >= 2);
+      enchantmentSystem.totalEnchants = 0;
+      enchantmentSystem.hasEnchantRelic = false;
+    }
+    // LOAD CRAFTING DATA
+if (data.craftingSystem) {
+  craftingSystem.unlocked = data.craftingSystem.unlocked || false;
+  craftingSystem.unlockedRecipes = data.craftingSystem.unlockedRecipes || [];
+  craftingSystem.materials = data.craftingSystem.materials || {};
+  
+  console.log(`✅ Loaded crafting: ${Object.keys(craftingSystem.materials).length} materials`);
+}
+    if (data.adventCalendar) {
       adventCalendar.currentDay = data.adventCalendar.currentDay || 1;
       adventCalendar.claimedDays = data.adventCalendar.claimedDays || [];
       adventCalendar.year = data.adventCalendar.year || new Date().getFullYear();
-        adventCalendar.debugOffset = data.adventCalendar.debugOffset || 0; // NEW
+      adventCalendar.debugOffset = data.adventCalendar.debugOffset || 0;
     }
     
     if (data.christmasEvent) {
@@ -3811,6 +7322,8 @@ loadBtn.addEventListener("click", () => {
     updateInventoryDisplay();
     updateTierButtons();
     updateRebirthUI();
+    updateEnchantUI(); // UPDATE ENCHANT UI
+    updateAdminPanelStats(); // UPDATE ADMIN PANEL (this updates the enchant count in admin panel)
     initPetTimers();
     recomputeIncome();
 
@@ -3832,20 +7345,6 @@ const specials = [
   { name: "pink", color: "pink", emoji: "💖", duration: 1000, respawn: 390000, effect: c => money += money * 50n / 100n },
   { name: "magenta", color: "magenta", emoji: "💔", duration: 30000, respawn: 420000, chase: true, speed: 240, effect: c => money -= money * 50n / 100n },
 ];
-
-const boss = {
-  x: 0, y: 0, w: character.w * 1.5, h: character.h * 1.5,
-  color: "#3b1f00",
-  emoji: "☠️",
-  visible: false,
-  hitsToDie: 10,
-  hitsRemaining: 10,
-  playerHits: 0,
-  speed: character.speed * 1.3,
-  aoeRadius: 80,
-  spawnX: 0,
-  spawnY: 0,
-};
 
 // ⚡ Slash effects list
 const slashes = [];
@@ -4051,14 +7550,18 @@ if (boss.hitsRemaining <= 0) {
     opacity: 1
   });
 
-  drops.forEach(item => {
-    if (inventory[item] !== undefined) {
-      // Apply gift multiplier to quantities
-      const amount = Math.floor(1 * giftMult);
-      inventory[item] += amount;
-      dropCounters[item] += amount;
-    }
-  });
+drops.forEach(item => {
+  // Remove emoji prefix to get material name
+  const materialName = item.replace("🪶 ", "").replace("🔥 ", "");
+  
+  // Add to crafting materials instead
+  if (!craftingSystem.materials[materialName]) {
+    craftingSystem.materials[materialName] = 0;
+  }
+  craftingSystem.materials[materialName]++;
+  
+  console.log(`Added ${materialName} to crafting materials`);
+});
   updateInventoryDisplay();
 }
 
@@ -4090,7 +7593,8 @@ if (rectsOverlap(swordBox, boss) && !boss.hitCooldown && !boss.retreating) {
   });
 
   // Apply sword special multiplier + pet damage
-  const dmg = Math.max(1, Math.floor(equippedSwordSpecial * petDamageMultiplier));
+const enchantDmgBoost = window.enchantDamageBoost || 1;
+const dmg = Math.max(1, Math.floor(equippedSwordSpecial * petDamageMultiplier * enchantDmgBoost));
   boss.hitsRemaining -= dmg;
 
   boss.flash = true;
@@ -4167,16 +7671,27 @@ for (let i = slashes.length - 1; i >= 0; i--) {
   s.life++;
   if (s.life > s.maxLife) slashes.splice(i, 1);
 }
+// In the update() function, find the boss drops cleanup section and modify it:
 // 🔄 Update boss loot fade timers
 for (let i = bossDrops.length - 1; i >= 0; i--) {
   const drop = bossDrops[i];
-  drop.timer -= dt * 1000; // convert dt seconds → ms
-  drop.opacity = Math.max(0, drop.timer / 3000); // fade out over 3s
+  drop.timer -= dt * 1000;
+  drop.opacity = Math.max(0, drop.timer / 3000);
   if (drop.timer <= 0) bossDrops.splice(i, 1);
 }
 
+// Add limit to prevent array from growing too large
+if (bossDrops.length > MAX_BOSS_DROPS) {
+  bossDrops.splice(0, bossDrops.length - MAX_BOSS_DROPS);
+}
   checkCubeCollisions();
   checkHouseDeposit();
+  
+// CLEANUP: Remove old invisible specials to prevent memory leak
+const invisibleCount = specials.filter(s => !s.visible && !s.isPurpleSpawn && !s.isGiftSpawn).length;
+if (invisibleCount > MAX_SPECIALS) {
+  specials = specials.filter(s => s.visible || s.isPurpleSpawn || s.isGiftSpawn);
+}
 }
 
 
@@ -4468,6 +7983,7 @@ function initializeGame() {
   updateInventoryDisplay();
   updateDisplays();
   updateTierButtons();
+  updateEnchantUI(); // NEW
   // Schedule boss spawn
   setTimeout(spawnBoss, 600000);
 
@@ -4497,8 +8013,12 @@ function updatePets(dt) {
     pet.x = character.x + character.w/2 + Math.cos(pet.offsetAngle) * radius - 16;
     pet.y = character.y + character.h/2 + Math.sin(pet.offsetAngle) * radius - 16;
     
+    // ONLY create timer if it doesn't exist
     if (!petTimers[pet.id]) {
-      petTimers[pet.id] = { lastTrigger: Date.now(), cooldown: getPetCooldown(pet.ability) };
+      petTimers[pet.id] = { 
+        lastTrigger: Date.now(), 
+        cooldown: getPetCooldown(pet.ability) 
+      };
     }
     
     const timer = petTimers[pet.id];
@@ -4508,10 +8028,22 @@ function updatePets(dt) {
     const effectiveCooldown = timer.cooldown * (1 - cooldownReduction);
     
     if (now - timer.lastTrigger >= effectiveCooldown) {
-      triggerPetAbility(pet);
-      timer.lastTrigger = now;
+      try {
+        triggerPetAbility(pet);
+        timer.lastTrigger = now;
+      } catch (err) {
+        console.error(`Error triggering pet ability for ${pet.name}:`, err);
+      }
     }
   });
+  
+  // CLEANUP: Remove timers for pets that no longer exist
+  const validPetIds = new Set(playerPets.map(p => p.id));
+  for (let petId in petTimers) {
+    if (!validPetIds.has(Number(petId))) {
+      delete petTimers[petId];
+    }
+  }
 }
 
 // Trigger a pet's special ability
@@ -4519,31 +8051,32 @@ function triggerPetAbility(pet) {
   const roll = Math.random();
   
   switch(pet.ability) {
-case "purple_spawn":
-  if (roll < 0.20) { // 20% chance
-    console.log(`${pet.name} spawned a purple cube!`);
-    
-    // Spawn a temporary purple cube
-    const purpleCube = {
-      x: Math.random() * (W - CUBE_SIZE),
-      y: Math.random() * (H - CUBE_SIZE),
-      w: CUBE_SIZE,
-      h: CUBE_SIZE,
-      color: "#8b3bff",
-      value: money * 20n / 100n, // 20% of current money
-      visible: true,
-      isPurpleSpawn: true
-    };
-    
-    specials.push(purpleCube);
-    
-    // Remove after 3 seconds
-    setTimeout(() => {
-      const index = specials.indexOf(purpleCube);
-      if (index > -1) specials.splice(index, 1);
-    }, 3000);
-  }
-  break;
+    case "purple_spawn":
+      if (roll < 0.20) { // 20% chance
+        console.log(`${pet.name} spawned a purple cube!`);
+        
+        // Spawn a temporary purple cube
+        const purpleCube = {
+          x: Math.random() * (W - CUBE_SIZE),
+          y: Math.random() * (H - CUBE_SIZE),
+          w: CUBE_SIZE,
+          h: CUBE_SIZE,
+          color: "#8b3bff",
+          value: money * 20n / 100n, // 20% of current money
+          visible: true,
+          isPurpleSpawn: true,
+          emoji: "🟪"
+        };
+        
+        specials.push(purpleCube);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+          const index = specials.indexOf(purpleCube);
+          if (index > -1) specials.splice(index, 1);
+        }, 3000);
+      }
+      break;
       
     case "cube_grabber":
       const randomCube = cubes[Math.floor(Math.random() * cubes.length)];
@@ -4652,6 +8185,7 @@ case "purple_spawn":
       
     case "bone_giver":
       dropCounters["🦴 Skeleton Bones"]++;
+      inventory["🦴 Skeleton Bones"]++;
       console.log(`${pet.name} gave you a skeleton bone!`);
       updateInventoryDisplay();
       break;
@@ -4666,9 +8200,21 @@ case "purple_spawn":
       
     case "cycle_changer":
       if (roll < pet.abilityValue) {
-        checkDayNightCycle(); // Force next cycle
-        console.log(`${pet.name} changed the day/night cycle!`);
+        // Change to next cycle
+        const cycles = ["day", "sunset", "night", "sunrise"];
+        const currentIndex = cycles.indexOf(dayNightCycle.current);
+        const nextCycle = cycles[(currentIndex + 1) % cycles.length];
+        changeDayNightCycle(nextCycle, true);
+        console.log(`${pet.name} changed to ${nextCycle}!`);
       }
+      break;
+      
+    case "timer_reducer":
+      // Reduce all pet cooldowns by 5 minutes
+      for (let petId in petTimers) {
+        petTimers[petId].lastTrigger -= 5 * 60 * 1000;
+      }
+      console.log(`${pet.name} reduced all timers by 5 minutes!`);
       break;
       
     case "rain_event":
@@ -4704,82 +8250,102 @@ case "purple_spawn":
       if (galacticEvent) triggerAdminEvent(galacticEvent);
       console.log(`${pet.name} started Galactic event!`);
       break;
-
-      case "ember_giver":
-      const targetPet = equippedPets[Math.floor(Math.random() * equippedPets.length)];
-      if (targetPet && !targetPet.mutation) {
-        targetPet.mutation = "Ember";
-        console.log(`${pet.name} gave ${targetPet.name} Ember mutation!`);
+      
+    case "day_income_boost":
+      // Passive - handled in recomputeIncome
+      break;
+      
+    case "day_speed_boost":
+      // Passive - handled in recomputeIncome
+      break;
+      
+    case "ember_giver":
+      if (roll < pet.abilityValue) {
+        const targetPet = equippedPets[Math.floor(Math.random() * equippedPets.length)];
+        if (targetPet && !targetPet.mutation) {
+          targetPet.mutation = "Ember";
+          console.log(`${pet.name} gave ${targetPet.name} Ember mutation!`);
+          updateInventoryDisplay();
+        }
+      }
+      break;
+      
+    case "night_income_boost":
+      // Passive - handled in recomputeIncome
+      break;
+      
+    case "night_speed_boost":
+      // Passive - handled in recomputeIncome
+      break;
+      
+    case "cooldown_reducer":
+      // Passive - handled in updatePets
+      break;
+      
+    case "mutation_giver":
+      if (roll < pet.abilityValue) {
+        const mutationTypes = Object.keys(petMutations);
+        equippedPets.forEach(p => {
+          if (!p.mutation && Math.random() < 0.5) {
+            const randomMutation = mutationTypes[Math.floor(Math.random() * mutationTypes.length)];
+            p.mutation = randomMutation;
+            console.log(`${pet.name} gave ${p.name} ${randomMutation} mutation!`);
+          }
+        });
         updateInventoryDisplay();
       }
       break;
       
-    case "mutation_giver":
-      const mutationTypes = Object.keys(petMutations);
-      equippedPets.forEach(p => {
-        if (!p.mutation && Math.random() < 0.5) {
-          const randomMutation = mutationTypes[Math.floor(Math.random() * mutationTypes.length)];
-          p.mutation = randomMutation;
-          console.log(`${pet.name} gave ${p.name} ${randomMutation} mutation!`);
-        }
-      });
-      updateInventoryDisplay();
-      break;
-       
-    // === NEW CHRISTMAS PET ABILITIES ===
-    
-      case "gift_multiplier":
-      // Passive ability - already handled in recomputeIncome()
+    case "gift_multiplier":
+      // Passive - handled in recomputeIncome
       break;
       
-    case "double_income_temp":
-      if (roll < pet.abilityValue) {
-        console.log(`${pet.name} activated 2x income burst for 20 seconds!`);
-        
-        // Store original income
-        const originalIncome = incomePerSec;
-        
-        // Double income temporarily
-        incomePerSec = incomePerSec * 2n;
-        updateDisplays();
-        
-        // Create visual indicator
-        const indicator = document.createElement('div');
-        indicator.style.cssText = `
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: rgba(255, 0, 0, 0.9);
-          color: white;
-          padding: 20px 40px;
-          border-radius: 15px;
-          font-size: 24px;
-          font-weight: bold;
-          z-index: 10001;
-          box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-        `;
-        indicator.textContent = '🍬 2X INCOME! 🍬';
-        document.body.appendChild(indicator);
-        
-        // Remove after 20 seconds
-        setTimeout(() => {
-          recomputeIncome(); // Restore normal income
-          indicator.remove();
-          console.log(`${pet.name}'s income burst ended`);
-        }, 20000);
-      }
-      break;
+case "double_income_temp":
+  if (roll < pet.abilityValue) {
+    console.log(`${pet.name} activated 2x income burst for 20 seconds!`);
+    
+    const originalIncome = incomePerSec;
+    incomePerSec = incomePerSec * 2n;
+    updateDisplays();
+    
+    // Remove any existing indicator first
+    const existingIndicator = document.querySelector('.income-boost-indicator');
+    if (existingIndicator) existingIndicator.remove();
+    
+    const indicator = document.createElement('div');
+    indicator.className = 'income-boost-indicator'; // Add class for easy cleanup
+    indicator.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 0, 0, 0.9);
+      color: white;
+      padding: 20px 40px;
+      border-radius: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      z-index: 10001;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+    `;
+    indicator.textContent = '🍬 2X INCOME! 🍬';
+    document.body.appendChild(indicator);
+    
+    setTimeout(() => {
+      recomputeIncome();
+      if (indicator.parentNode) indicator.remove(); // Check before removing
+      console.log(`${pet.name}'s income burst ended`);
+    }, 20000);
+  }
+  break;
       
     case "random_cube_spawn":
       if (roll < pet.abilityValue) {
-        // Pick a random cube from current tier
         const currentTierCubes = currentCubes();
         const randomCube = currentTierCubes[Math.floor(Math.random() * currentTierCubes.length)];
         
         console.log(`${pet.name} spawned a ${randomCube.name} cube!`);
         
-        // Spawn it as a collectible special cube
         const giftCube = {
           x: Math.random() * (W - CUBE_SIZE),
           y: Math.random() * (H - CUBE_SIZE),
@@ -4794,7 +8360,6 @@ case "purple_spawn":
         
         specials.push(giftCube);
         
-        // Automatically collect after 5 seconds if not collected
         setTimeout(() => {
           const index = specials.indexOf(giftCube);
           if (index > -1) {
@@ -4811,10 +8376,8 @@ case "purple_spawn":
       if (roll < pet.abilityValue) {
         console.log(`${pet.name} prepared healing shield!`);
         
-        // Set a flag that negates next boss hit
         window.healingShieldActive = true;
         
-        // Visual indicator
         const shield = document.createElement('div');
         shield.id = 'healingShield';
         shield.style.cssText = `
@@ -4840,11 +8403,9 @@ case "purple_spawn":
       if (roll < pet.abilityValue) {
         console.log(`${pet.name} activated Lucky Star! 2x drop rates for 30s!`);
         
-        // Set global drop rate multiplier
         window.luckyStarActive = true;
-        window.luckyStarMultiplier = pet.abilityValue; // 2.0
+        window.luckyStarMultiplier = pet.abilityValue;
         
-        // Visual indicator
         const star = document.createElement('div');
         star.style.cssText = `
           position: fixed;
@@ -4864,7 +8425,6 @@ case "purple_spawn":
         star.innerHTML = '⭐ LUCKY STAR! ⭐<br><span style="font-size:18px;">2X DROP RATES!</span>';
         document.body.appendChild(star);
         
-        // Add pulse animation
         const style = document.createElement('style');
         style.textContent = `
           @keyframes pulse {
@@ -4874,7 +8434,6 @@ case "purple_spawn":
         `;
         document.head.appendChild(style);
         
-        // Remove after 30 seconds
         setTimeout(() => {
           window.luckyStarActive = false;
           window.luckyStarMultiplier = 1.0;
@@ -4884,6 +8443,348 @@ case "purple_spawn":
         }, 30000);
       }
       break;
+      
+    case "galactic_income":
+      // Passive - handled in recomputeIncome
+      break;
+      
+    case "meteor_shower":
+      if (roll < pet.abilityValue) {
+        console.log(`${pet.name} summoned meteor shower!`);
+        for (let i = 0; i < 5; i++) {
+          setTimeout(() => {
+            const bonus = money * 10n / 100n;
+            money += bonus;
+            console.log(`💫 Meteor hit! +${formatBigInt(bonus)}`);
+            updateDisplays();
+          }, i * 1000);
+        }
+      }
+      break;
+      
+    case "warp_speed":
+      // Passive - handled in recomputeIncome
+      break;
+      
+    case "explosive_income":
+      if (roll < pet.abilityValue) {
+        console.log(`${pet.name} explosive income burst!`);
+        const originalIncome = incomePerSec;
+        incomePerSec = incomePerSec * 3n;
+        updateDisplays();
+
+        setTimeout(() => {
+          recomputeIncome();
+          console.log(`${pet.name}'s burst ended`);
+        }, 15000);
+      }
+      break;
+      
+    case "gravity_well":
+      if (roll < pet.abilityValue) {
+        console.log(`${pet.name} pulled all cubes!`);
+        cubes.forEach(c => {
+          legendCounts[c.name] = (legendCounts[c.name] || 0n) + 1n;
+          houseValue += c.value;
+        });
+        recomputeIncome();
+        updateDisplays();
+      }
+      break;
+      
+    case "glitch_income":
+      // Passive - handled in recomputeIncome
+      break;
+      
+    case "duplicate_cube":
+      if (roll < pet.abilityValue) {
+        const nonZeroCubes = Object.keys(legendCounts).filter(k => legendCounts[k] > 0n);
+        if (nonZeroCubes.length > 0) {
+          const randomCubeName = nonZeroCubes[Math.floor(Math.random() * nonZeroCubes.length)];
+          legendCounts[randomCubeName] = legendCounts[randomCubeName] + 1n;
+          console.log(`${pet.name} duplicated a ${randomCubeName}!`);
+          recomputeIncome();
+          updateDisplays();
+        }
+      }
+      break;
+      
+    case "corrupt_spawn":
+      if (roll < pet.abilityValue) {
+        console.log(`${pet.name} spawned corrupted entities!`);
+        specials.forEach(s => {
+          if (!s.visible && Math.random() < 0.3) {
+            spawnSpecial(s);
+          }
+        });
+      }
+      break;
+      
+    case "unlock_tier":
+      if (roll < pet.abilityValue && cubeTier < 3) {
+        console.log(`${pet.name} unlocked next tier for 3 minutes!`);
+        const originalTier = cubeTier;
+        cubeTier++;
+        cubes = buildCubes();
+        renderLegendUI();
+        updateDisplays();
+        updateTierButtons();
+        
+        setTimeout(() => {
+          cubeTier = originalTier;
+          cubes = buildCubes();
+          renderLegendUI();
+          updateDisplays();
+          updateTierButtons();
+          console.log(`Tier reverted back to ${cubeTier + 1}`);
+        }, 180000);
+      }
+      break;
+      
+    case "code_rain":
+      if (roll < pet.abilityValue) {
+        console.log(`${pet.name} activated code rain!`);
+        const originalIncome = incomePerSec;
+        incomePerSec = incomePerSec * 5n;
+        updateDisplays();
+        
+        setTimeout(() => {
+          recomputeIncome();
+          console.log(`${pet.name}'s code rain ended`);
+        }, 10000);
+      }
+      break;
+      
+    case "disco_income":
+      // Passive - handled in recomputeIncome
+      break;
+      
+    case "rhythm_boost":
+      // Passive - handled in recomputeIncome
+      break;
+      
+    case "party_mode":
+      if (roll < pet.abilityValue) {
+        console.log(`${pet.name} activated party mode!`);
+        
+        // Temporarily double all multipliers
+        const originalWeather = weatherMultiplier;
+        const originalRelic = equippedRelicSpecial;
+        const originalRebirth = rebirthMultiplier;
+        
+        weatherMultiplier *= 2;
+        equippedRelicSpecial *= 2;
+        rebirthMultiplier *= 2;
+        
+        recomputeIncome();
+        
+        setTimeout(() => {
+          weatherMultiplier = originalWeather;
+          equippedRelicSpecial = originalRelic;
+          rebirthMultiplier = originalRebirth;
+          recomputeIncome();
+          console.log(`${pet.name}'s party mode ended`);
+        }, 20000);
+      }
+      break;
+      
+    case "disco_ball":
+      if (roll < pet.abilityValue) {
+        console.log(`${pet.name} spawned disco cubes!`);
+        
+        for (let i = 0; i < 3; i++) {
+          const discoCube = {
+            x: Math.random() * (W - CUBE_SIZE),
+            y: Math.random() * (H - CUBE_SIZE),
+            w: CUBE_SIZE,
+            h: CUBE_SIZE,
+            color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+            value: money * 15n / 100n,
+            visible: true,
+            emoji: "🪩"
+          };
+          
+          specials.push(discoCube);
+          
+          setTimeout(() => {
+            const index = specials.indexOf(discoCube);
+            if (index > -1) specials.splice(index, 1);
+          }, 5000);
+        }
+      }
+      break;
+      
+    case "strobe_effect":
+      // Random positive effect every 30s
+      const effects = [
+        () => { money += money * 10n / 100n; console.log("Strobe: +10% money"); },
+        () => { 
+          incomePerSec = incomePerSec * 2n; 
+          setTimeout(() => recomputeIncome(), 10000);
+          console.log("Strobe: 2x income for 10s"); 
+        },
+        () => { spawnBoss(); console.log("Strobe: Spawned boss"); }
+      ];
+      
+      const randomEffect = effects[Math.floor(Math.random() * effects.length)];
+      randomEffect();
+      break;
+      
+    case "bloodmoon_income":
+      // Passive - handled in recomputeIncome
+      break;
+      
+    case "shadow_strike":
+      // Passive - damage boost handled in combat
+      break;
+      
+    case "blood_ritual":
+      if (roll < pet.abilityValue) {
+        const sacrifice = money * 10n / 100n;
+        money -= sacrifice;
+        const gain = sacrifice * 15n / 10n;
+        money += gain;
+        console.log(`${pet.name} performed blood ritual! Sacrificed ${formatBigInt(sacrifice)}, gained ${formatBigInt(gain)}`);
+        updateDisplays();
+      }
+      break;
+      
+    case "life_steal":
+      // Passive - heals on boss hit
+      break;
+      
+    case "blood_pact":
+      // Passive - 2x drops during bloodmoon
+      break;
+      
+    case "divine_income":
+      // Passive - handled in recomputeIncome
+      break;
+      
+    case "celestial_speed":
+      // Passive - handled in recomputeIncome
+      break;
+      
+    case "angel_blessing":
+      if (roll < pet.abilityValue) {
+        console.log(`${pet.name} activated Angel's Blessing! 10x income for 30s!`);
+        
+        const originalIncome = incomePerSec;
+        incomePerSec = incomePerSec * 10n;
+        updateDisplays();
+        
+        const blessing = document.createElement('div');
+        blessing.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(255, 215, 0, 0.95);
+          color: white;
+          padding: 30px 50px;
+          border-radius: 20px;
+          font-size: 28px;
+          font-weight: bold;
+          z-index: 10001;
+          box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+        `;
+        blessing.textContent = '👼 ANGEL\'S BLESSING! 10X INCOME! 👼';
+        document.body.appendChild(blessing);
+        
+        setTimeout(() => {
+          recomputeIncome();
+          blessing.remove();
+          console.log(`${pet.name}'s blessing ended`);
+        }, 30000);
+      }
+      break;
+      
+    case "seraph_protection":
+      // Passive - tracked globally
+      if (!window.seraphShield) {
+        window.seraphShield = 5;
+      }
+      break;
+      
+    case "archangel_power":
+      // Passive - handled in combat calculations
+      break;
+      
+    case "heavenly_king":
+      // Passive - 3x all multipliers handled in recomputeIncome
+      break;
+      
+    case "enchant_booster":
+      if (roll < pet.abilityValue) {
+        console.log(`${pet.name} gave free enchant!`);
+        
+        const randomPet = equippedPets[Math.floor(Math.random() * equippedPets.length)];
+        if (randomPet && randomPet.id !== pet.id) {
+          const freeEnchant = rollEnchantment();
+          randomPet.enchantment = freeEnchant;
+          
+          enchantmentSystem.totalEnchants++;
+          checkEnchantMilestones();
+          
+          const icon = enchantmentTypes[freeEnchant.type].icon;
+          console.log(`🎁 Free enchant: ${randomPet.name} got ${icon} ${freeEnchant.type} ${freeEnchant.tier}!`);
+          
+          updateInventoryDisplay();
+        }
+      }
+      break;
+      
+    case "enchant_saver":
+      // Passive - 50% refund handled in enchantPet function
+      break;
+      
+    case "tier_upgrader":
+      // Passive - checked in enchantPet function
+      break;
+      
+    case "double_enchant":
+      if (roll < pet.abilityValue) {
+        console.log(`${pet.name} triggered double enchants for 30s!`);
+        
+        window.doubleEnchantActive = true;
+        
+        const indicator = document.createElement('div');
+        indicator.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(147, 112, 219, 0.95);
+          color: white;
+          padding: 30px 50px;
+          border-radius: 20px;
+          font-size: 28px;
+          font-weight: bold;
+          z-index: 10001;
+          box-shadow: 0 0 30px rgba(147, 112, 219, 0.8);
+        `;
+        indicator.textContent = '🔮 DOUBLE ENCHANTS! 🔮';
+        document.body.appendChild(indicator);
+        
+        setTimeout(() => {
+          window.doubleEnchantActive = false;
+          indicator.remove();
+          console.log(`${pet.name}'s double enchant ended`);
+        }, 30000);
+      }
+      break;
+      
+    case "enchant_keeper":
+      // Passive - keeps enchantments on rebirth (handled in performRebirth)
+      break;
+      
+    case "ultimate_enchanter":
+      // Passive - 5% chance for Ultimate tier (handled in rollEnchantment)
+      break;
+      
+    default:
+      // Passive abilities or speed boost (handled elsewhere)
+      break;
   }
 }
 /**
@@ -4892,17 +8793,27 @@ case "purple_spawn":
  * @param {number} t - The current time in milliseconds.
  */
 function loop(t) {
-  const dt = (t - lastTime) / 1000;
-  lastTime = t;
-  update(dt);
-  updateWeatherAnimation(dt);
-  updateAdminAnimation(dt);
-    updateDayNightAnimation(dt); // ← ADD THIS LINE
-      updateSnowflakes(dt); // NEW: Update snowflakes
-  render();
-  drawWeatherAnimation(ctx);
-  drawAdminAnimation(ctx);  
-    drawSnowflakes(ctx); // NEW: Draw snowflakes
+  try {
+    const dt = (t - lastTime) / 1000;
+    lastTime = t;
+    
+    // Prevent huge dt values that can cause issues
+    const safeDt = Math.min(dt, 0.1); // Cap at 100ms
+    
+    update(safeDt);
+    updateWeatherAnimation(safeDt);
+    updateAdminAnimation(safeDt);
+    updateDayNightAnimation(safeDt);
+    updateSnowflakes(safeDt);
+    render();
+    drawWeatherAnimation(ctx);
+    drawAdminAnimation(ctx);
+    drawSnowflakes(ctx);
+  } catch (err) {
+    console.error('Loop error:', err);
+    // Don't crash, just log the error
+  }
+  
   requestAnimationFrame(loop);
 }
 
@@ -4929,9 +8840,11 @@ function toggleAdminPanel() {
 function updateAdminPanelStats() {
   const adventDay = document.getElementById('adminAdventDay');
   const rebirthCount = document.getElementById('adminRebirthCount');
+  const enchantCount = document.getElementById('adminEnchantCount'); // NEW
   
   if (adventDay) adventDay.textContent = adventCalendar.currentDay;
   if (rebirthCount) rebirthCount.textContent = window.rebirthCount || 0;
+  if (enchantCount) enchantCount.textContent = enchantmentSystem.totalEnchants; // NEW
 }
 
 // Money Controls
@@ -4966,6 +8879,393 @@ function adminKillBoss() {
     console.log('⚠️ No boss active');
   }
 }
+// Enchantment Admin Functions
+function adminUnlockEnchanting() {
+  enchantmentSystem.unlocked = true;
+  updateEnchantUI();
+  console.log('🔮 Enchanting unlocked');
+}
+
+function adminAddEnchants(amount) {
+  enchantmentSystem.totalEnchants += amount;
+  checkEnchantMilestones();
+  updateEnchantUI();
+  updateAdminPanelStats();
+  console.log(`🔮 Added ${amount} enchants`);
+}
+
+function adminGiveEnchantEgg() {
+  const existing = playerInventory.Eggs.find(i => i.name === "Enchant Egg");
+  if (existing) {
+    existing.count++;
+  } else {
+    playerInventory.Eggs.push({
+      icon: "🔮",
+      name: "Enchant Egg",
+      count: 1,
+      special: 1
+    });
+  }
+  updateInventoryDisplay();
+  console.log('🔮 Gave Enchant Egg');
+}
+
+function adminGiveEnchantRelic() {
+  const existing = playerInventory.Relics.find(i => i.name === "Enchant Relic");
+  if (existing) {
+    existing.count++;
+  } else {
+    playerInventory.Relics.push({
+      icon: "🍀",
+      name: "Enchant Relic",
+      count: 1,
+      special: 1.0
+    });
+  }
+  updateInventoryDisplay();
+  console.log('🍀 Gave Enchant Relic');
+}
+
+function adminClearEnchants() {
+  if (confirm('⚠️ Clear all pet enchantments?')) {
+    playerPets.forEach(pet => {
+      if (pet.enchantment) {
+        delete pet.enchantment;
+      }
+    });
+    updateInventoryDisplay();
+    recomputeIncome();
+    console.log('🗑️ Cleared all enchantments');
+  }
+}
+
+// === CRAFTING MATERIAL ADMIN FUNCTIONS ===
+
+function adminGiveMaterial(materialName, amount) {
+  if (!craftingSystem.unlocked) {
+    alert('⚠️ Crafting must be unlocked first! (Rebirth 1)\n\nUse "🔓 Unlock Crafting System" button.');
+    return;
+  }
+  
+  // Initialize materials object if it doesn't exist
+  if (!craftingSystem.materials) {
+    craftingSystem.materials = {};
+  }
+  
+  // Add to materials - THIS WAS THE BUG
+  if (!craftingSystem.materials[materialName]) {
+    craftingSystem.materials[materialName] = 0;
+  }
+  
+  craftingSystem.materials[materialName] += amount;
+  const newCount = craftingSystem.materials[materialName];
+  
+  console.log(`✅ Admin: Gave ${amount}x ${materialName}`);
+  console.log(`   New count: ${newCount}`);
+  console.log(`   All materials:`, craftingSystem.materials);
+  
+  // Update crafting display if open
+  updateCraftingDisplay();
+  
+  // Show notification
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(34, 139, 34, 0.95);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 10002;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    animation: slideIn 0.3s ease-out;
+  `;
+  notification.innerHTML = `✅ +${amount} ${materialName}<br><small>Total: ${newCount}</small>`;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideOut 0.3s ease-in';
+    setTimeout(() => notification.remove(), 300);
+  }, 2000);
+}
+function adminTestMaterials() {
+  if (!craftingSystem.unlocked) {
+    alert('⚠️ Unlock crafting first!');
+    return;
+  }
+  
+  // Give test materials
+  craftingSystem.materials["Stick"] = 50;
+  craftingSystem.materials["Stone"] = 50;
+  craftingSystem.materials["Phoenix Feather"] = 10;
+  craftingSystem.materials["Leviathan Scale"] = 10;
+  
+  console.log('🧪 Test materials added:');
+  console.log(craftingSystem.materials);
+  
+  updateCraftingDisplay();
+  
+  alert('🧪 Test materials added!\n\nCheck the Materials tab in Crafting menu.');
+}
+
+window.adminTestMaterials = adminTestMaterials;
+function adminMaxAllMaterials() {
+  if (!confirm('⚠️ Give 999 of EVERY crafting material?')) {
+    return;
+  }
+  
+  if (!craftingSystem.unlocked) {
+    alert('⚠️ Crafting must be unlocked first! (Rebirth 1)');
+    return;
+  }
+  
+  // All materials from merchantShop
+  for (let materialName in merchantShop) {
+    craftingSystem.materials[materialName] = 999;
+  }
+  
+  // All craftable materials from recipes
+  for (let recipeName in craftingSystem.recipes) {
+    const recipe = craftingSystem.recipes[recipeName];
+    if (recipe.type === "Materials" || recipe.type === "Miscellaneous" || recipe.type === "Totems") {
+      craftingSystem.materials[recipeName] = 999;
+    }
+  }
+  
+  // Boss drops
+  const bossDrops = [
+    "Phoenix Feather", "Phoenix Ember",
+    "Leviathan Scale", "Leviathan Heart", "Leviathan Fang",
+    "Enchanted Leviathan Scale", "Enchanted Leviathan Heart", "Enchanted Leviathan Fang"
+  ];
+  
+  bossDrops.forEach(drop => {
+    craftingSystem.materials[drop] = 999;
+  });
+  
+  console.log('🔥 Maxed all crafting materials to 999');
+  updateCraftingDisplay();
+  
+  alert('✅ All crafting materials set to 999!');
+}
+
+// === CRAFTING MATERIAL ADMIN FUNCTIONS ===
+
+function adminUnlockCrafting() {
+  if (craftingSystem.unlocked) {
+    alert('✅ Crafting is already unlocked!');
+    return;
+  }
+  
+  craftingSystem.unlocked = true;
+  
+  // Auto-unlock all auto-unlock recipes
+  for (let recipeName in craftingSystem.recipes) {
+    const recipe = craftingSystem.recipes[recipeName];
+    if (recipe.autoUnlock && !craftingSystem.unlockedRecipes.includes(recipeName)) {
+      craftingSystem.unlockedRecipes.push(recipeName);
+    }
+  }
+  
+  console.log('🔓 Crafting system unlocked via admin');
+  console.log(`📜 Auto-unlocked ${craftingSystem.unlockedRecipes.length} recipes`);
+  
+  alert('✅ Crafting System Unlocked!\n\n📜 All basic recipes have been unlocked.\n\nYou can now access the 🔨 Crafting button!');
+}
+
+function adminUnlockAllRecipes() {
+  if (!craftingSystem.unlocked) {
+    alert('⚠️ Crafting must be unlocked first!\n\nClick "🔓 Unlock Crafting System" first.');
+    return;
+  }
+  
+  let unlockedCount = 0;
+  
+  for (let recipeName in craftingSystem.recipes) {
+    if (!craftingSystem.unlockedRecipes.includes(recipeName)) {
+      craftingSystem.unlockedRecipes.push(recipeName);
+      unlockedCount++;
+    }
+  }
+  
+  console.log(`📜 Unlocked ${unlockedCount} recipes`);
+  updateCraftingDisplay();
+  
+  alert(`✅ Unlocked ${unlockedCount} recipes!\n\nTotal recipes: ${craftingSystem.unlockedRecipes.length}\n\nAll recipes are now available in the Crafting menu!`);
+}
+// Make functions globally accessible
+window.adminUnlockCrafting = adminUnlockCrafting;
+window.adminUnlockAllRecipes = adminUnlockAllRecipes;
+window.adminGiveMaterial = adminGiveMaterial;
+window.adminMaxAllMaterials = adminMaxAllMaterials;
+window.adminClearAllMaterials = adminClearAllMaterials;
+function adminClearAllMaterials() {
+  if (!confirm('⚠️ Clear ALL crafting materials? This cannot be undone!')) {
+    return;
+  }
+  
+  craftingSystem.materials = {};
+  console.log('🗑️ Cleared all crafting materials');
+  updateCraftingDisplay();
+  
+  alert('✅ All crafting materials cleared!');
+}
+
+// Make functions globally accessible
+window.adminGiveMaterial = adminGiveMaterial;
+window.adminMaxAllMaterials = adminMaxAllMaterials;
+window.adminClearAllMaterials = adminClearAllMaterials;
+// 🗡️ Sword vs Boss collision check
+if (boss.visible && character.slashing && !boss.retreating) {
+  // ... existing boss code stays here ...
+}
+
+// 🔥 PHOENIX BOSS LOGIC
+if (phoenixBoss.visible && !phoenixBoss.retreating) {
+  const dx = character.x - phoenixBoss.x;
+  const dy = character.y - phoenixBoss.y;
+  const distance = Math.hypot(dx, dy);
+  
+  // Phoenix follows player slowly
+  if (distance > 100) {
+    phoenixBoss.x += (dx / distance) * phoenixBoss.speed * dt * 0.3;
+    phoenixBoss.y += (dy / distance) * phoenixBoss.speed * dt * 0.3;
+  }
+  
+  // Long range attack
+  if (distance < phoenixBoss.longRangeRadius && !phoenixBoss.attackCooldown) {
+    phoenixBoss.attackCooldown = true;
+    
+    // Phoenix IGNORES mistletoe shield
+    phoenixBoss.playerHits++;
+    
+    console.log("🔥 Phoenix hit you with long-range attack!");
+    
+    if (phoenixBoss.playerHits >= 3) {
+      money = money / 2n;
+      phoenixBoss.visible = false;
+      phoenixBoss.playerHits = 0;
+      alert("🔥 Phoenix defeated you! Lost 50% money!");
+    }
+    
+    setTimeout(() => (phoenixBoss.attackCooldown = false), 3000);
+  }
+}
+
+// 🗡️ Sword vs Phoenix Boss
+// 🗡️ Sword vs Phoenix Boss
+if (phoenixBoss.visible && character.slashing && !phoenixBoss.retreating) {
+  const swordRange = 40;
+  let swordBox = { x: character.x, y: character.y, w: character.w, h: character.h };
+  
+  if (keys.w) swordBox.y -= swordRange;
+  else if (keys.s) swordBox.y += swordRange;
+  else if (keys.a) swordBox.x -= swordRange;
+  else swordBox.x += swordRange;
+  
+  swordBox.w += swordRange / 2;
+  swordBox.h += swordRange / 2;
+  
+  if (rectsOverlap(swordBox, phoenixBoss) && !phoenixBoss.hitCooldown) {
+    let petDamageMultiplier = 1;
+    equippedPets.forEach(pet => {
+      if (pet.ability === "double_damage") {
+        petDamageMultiplier *= pet.abilityValue;
+      }
+    });
+    
+    const enchantDmgBoost = window.enchantDamageBoost || 1;
+    const bloodmoonBoost = window.bloodmoonDamageBoost || 1;
+    const archangelBoost = window.archangelDamageBoost || 1;
+    const heavenlyKingBoost = window.heavenlyKingDamageBoost || 1;
+    
+    const totalDmgBoost = enchantDmgBoost * bloodmoonBoost * archangelBoost * heavenlyKingBoost;
+    const dmg = Math.max(1, Math.floor(equippedSwordSpecial * petDamageMultiplier * totalDmgBoost));
+    
+    phoenixBoss.hitsRemaining -= dmg;
+    
+    console.log(`🔥 Hit Phoenix for ${dmg} damage! HP: ${phoenixBoss.hitsRemaining}/${phoenixBoss.hitsToDie}`);
+    
+    phoenixBoss.flash = true;
+    spawnSlash(phoenixBoss.x + phoenixBoss.w / 2, phoenixBoss.y + phoenixBoss.h / 2, Math.random() * Math.PI * 2);
+    
+    phoenixBoss.retreating = true;
+    
+    setTimeout(() => {
+      phoenixBoss.flash = false;
+      phoenixBoss.retreating = false;
+    }, 500);
+    
+    phoenixBoss.hitCooldown = true;
+    setTimeout(() => (phoenixBoss.hitCooldown = false), 300);
+    
+    // Check if phoenix is defeated
+    if (phoenixBoss.hitsRemaining <= 0) {
+      phoenixBoss.visible = false;
+      phoenixBoss.hitsRemaining = phoenixBoss.hitsToDie;
+      phoenixBoss.playerHits = 0;
+      
+      console.log("🔥 Phoenix Boss defeated!");
+      
+      // Apply lucky star and blood pact multipliers
+      const dropMultiplier = (window.luckyStarActive ? window.luckyStarMultiplier : 1.0) * 
+                            (window.bloodPactActive ? window.bloodPactMultiplier : 1.0);
+      
+      const dropNames = [];
+      
+      // 100% Phoenix Feather
+      const featherAmount = Math.floor(1 * dropMultiplier);
+      craftingSystem.materials["Phoenix Feather"] = (craftingSystem.materials["Phoenix Feather"] || 0) + featherAmount;
+      dropNames.push(`🪶 Phoenix Feather x${featherAmount}`);
+      
+      // 10% Phoenix Ember
+      if (Math.random() <= 0.10 * dropMultiplier) {
+        craftingSystem.materials["Phoenix Ember"] = (craftingSystem.materials["Phoenix Ember"] || 0) + 1;
+        dropNames.push("🔥 Phoenix Ember");
+      }
+      
+      // Show drops on screen
+      bossDrops.push({
+        x: phoenixBoss.x + phoenixBoss.w / 2,
+        y: phoenixBoss.y,
+        items: dropNames,
+        timer: 5000,
+        opacity: 1
+      });
+      
+      updateCraftingDisplay();
+      alert(`🔥 Phoenix defeated!\n\nDrops:\n${dropNames.join('\n')}`);
+    }
+  }
+}
+
+// 🌪️ TORNADO LOGIC
+if (tornado.visible) {
+  const dx = character.x - tornado.x;
+  const dy = character.y - tornado.y;
+  const distance = Math.hypot(dx, dy);
+  
+  if (distance > 5) {
+    tornado.x += (dx / distance) * tornado.speed * dt;
+    tornado.y += (dy / distance) * tornado.speed * dt;
+  }
+  
+  tornado.angle += dt * 10;
+  
+  // Check collision with player
+  if (rectsOverlap(tornado, character)) {
+    tornado.visible = false;
+    endAdminEvent();
+    money = money / 2n;
+    alert("🌪️ Tornado hit you! Lost 50% money!");
+  }
+}
+
+checkCubeCollisions();
+checkHouseDeposit();
 
 // Advent Calendar Controls
 function adminAdventSkipDay() {
@@ -5034,6 +9334,7 @@ function adminCompleteRebirth() {
   
   // Give rewards without reset
   rebirthCount++;
+  
   rebirthMultiplier += nextRebirth.incomeMultiplier;
   
   if (nextRebirth.petSlotReward) {
@@ -5104,7 +9405,7 @@ function adminUnlockAllShop() {
     ...(eventShops.night?.items?.Swords || []),
     ...(christmasShopItems?.Swords || [])
   ];
-  
+  // Enchantment Admin Functions
   allSwords.forEach(item => {
     const existing = playerInventory.Swords.find(i => i.name === item.name);
     if (!existing) {
