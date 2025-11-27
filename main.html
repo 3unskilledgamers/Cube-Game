@@ -1315,20 +1315,105 @@ const craftingSystem = {
       },
       moneyCost: 10_000_000_000_000_000_000_000_000_000_000n // 10DC
     },
-    "Enchanted Leviathan Skin": {
-      type: "Skins",
-      icon: "✨🌊💎",
-      special: 18,
-      unlockItem: "Leviathan Skin",
-      materials: {
-        "Leviathan Skin": 1,
-        "Leviathan Armor": 1,
-        "Enchanted Leviathan Heart": 1,
-        "Scroll of the Enchanted": 1
-      },
-      moneyCost: 100_000_000_000_000_000_000_000_000_000_000n // 100DC
-    },
-    
+// === PHOENIX SKIN (Replaces old #18) ===
+"Phoenix Skin": {
+  type: "Skins",
+  icon: "🔥💎",
+  special: 18,
+  unlockItem: "Phoenix Ember",
+  materials: {
+    "Phoenix Feather": 10,
+    "Phoenix Ember": 3,
+    "Phoenix Tear": 1,
+    "Scroll of Fire": 2
+  },
+  moneyCost: 1_000_000_000_000_000_000_000_000_000n // 1OC
+},
+    // === ULTIMATE SKINS (Step 4.6) ===
+"Void Skin": {
+  type: "Skins",
+  icon: "🌌💎",
+  special: 19,
+  unlockItem: "Void Essence",
+  materials: {
+    "Void Essence": 5,
+    "Void Shard": 3,
+    "Obsidian Shard": 10
+  },
+  moneyCost: 100_000_000_000_000_000_000_000_000n // 100SP
+},
+
+"Dragon Skin": {
+  type: "Skins",
+  icon: "🐉💎",
+  special: 20,
+  unlockItem: "Dragon Essence",
+  materials: {
+    "Dragon Essence": 5,
+    "Dragon Scale": 10,
+    "Mythril Ingot": 5
+  },
+  moneyCost: 1_000_000_000_000_000_000_000_000_000n // 1OC
+},
+
+"Celestial Skin": {
+  type: "Skins",
+  icon: "✨💎",
+  special: 21,
+  unlockItem: "Celestial Core",
+  materials: {
+    "Celestial Core": 3,
+    "Celestial Dust": 20,
+    "Ancient Tablet": 5
+  },
+  moneyCost: 10_000_000_000_000_000_000_000_000_000n // 10OC
+},
+
+"Mythril Skin": {
+  type: "Skins",
+  icon: "⛏️💎",
+  special: 22,
+  unlockItem: "Mythril Ingot",
+  materials: {
+    "Mythril Ingot": 10,
+    "Dragon Scale": 20,
+    "Void Shard": 5,
+    "Celestial Core": 5
+  },
+  moneyCost: 100_000_000_000_000_000_000_000_000_000n // 100OC
+},
+
+"Infinity Skin": {
+  type: "Skins",
+  icon: "♾️💎",
+  special: 23,
+  unlockItem: "Ancient Tablet",
+  materials: {
+    "Ancient Tablet": 10,
+    "Celestial Core": 10,
+    "Mythril Ingot": 10,
+    "Dragon Essence": 10,
+    "Void Essence": 10
+  },
+  moneyCost: 1_000_000_000_000_000_000_000_000_000_000n // 1NO
+},
+
+"Enchanted Leviathan Skin": {
+  type: "Skins",
+  icon: "✨🌊💎",
+  special: 24, // ULTIMATE SKIN
+  unlockItem: "Infinity Skin",
+  materials: {
+    "Infinity Skin": 1,
+    "Enchanted Leviathan Heart": 5,
+    "Enchanted Leviathan Fang": 3,
+    "Enchanted Leviathan Scale": 10,
+    "Celestial Core": 10,
+    "Mythril Ingot": 10,
+    "Ancient Tablet": 5
+  },
+  moneyCost: 10_000_000_000_000_000_000_000_000_000_000n // 10NO
+},
     // === POTIONS ===
     "Crafters Potion": {
       type: "Potions",
@@ -1341,7 +1426,94 @@ const craftingSystem = {
       },
       moneyCost: 1_000_000_000_000_000_000_000_000_000n // 1NO
     },
-    
+// === ULTIMATE POTIONS (Step 4.7 REVISED) ===
+"Void Potion": {
+  type: "Potions",
+  icon: "🌌🧪",
+  special: 12, // 12x income for 60 seconds
+  unlockItem: "Void Essence",
+  materials: {
+    "Void Essence": 3,
+    "Void Shard": 2,
+    "Obsidian Shard": 5,
+    "Divine Potion": 1
+  },
+  moneyCost: 100_000_000_000_000_000_000_000_000n // 100SP
+},
+
+"Dragon Potion": {
+  type: "Potions",
+  icon: "🐉🧪",
+  special: 15, // 15x income for 60 seconds
+  unlockItem: "Dragon Essence",
+  materials: {
+    "Dragon Essence": 3,
+    "Dragon Scale": 10,
+    "Mythril Ore": 5,
+    "Divine Potion": 2
+  },
+  moneyCost: 1_000_000_000_000_000_000_000_000_000n // 1OC
+},
+
+"Celestial Potion": {
+  type: "Potions",
+  icon: "✨🧪",
+  special: 20, // 20x income for 60 seconds
+  unlockItem: "Celestial Core",
+  materials: {
+    "Celestial Core": 2,
+    "Celestial Dust": 15,
+    "Ancient Rune": 10,
+    "Divine Potion": 3
+  },
+  moneyCost: 10_000_000_000_000_000_000_000_000_000n // 10OC
+},
+
+"Mythril Potion": {
+  type: "Potions",
+  icon: "⛏️🧪",
+  special: 25, // 25x income for 60 seconds
+  unlockItem: "Mythril Ingot",
+  materials: {
+    "Mythril Ingot": 10,
+    "Dragon Scale": 15,
+    "Void Shard": 5,
+    "Divine Potion": 5
+  },
+  moneyCost: 100_000_000_000_000_000_000_000_000_000n // 100OC
+},
+
+"Infinity Potion": {
+  type: "Potions",
+  icon: "♾️🧪",
+  special: 30, // 30x income for 60 seconds
+  unlockItem: "Ancient Tablet",
+  materials: {
+    "Ancient Tablet": 10,
+    "Celestial Core": 5,
+    "Mythril Ingot": 5,
+    "Void Essence": 5,
+    "Dragon Essence": 5,
+    "Divine Potion": 10
+  },
+  moneyCost: 1_000_000_000_000_000_000_000_000_000_000n // 1NO
+},
+
+"Enchanted Leviathan Potion": {
+  type: "Potions",
+  icon: "✨🌊🧪",
+  special: 50, // 50x income for 60 seconds (ULTIMATE!)
+  unlockItem: "Infinity Potion",
+  materials: {
+    "Infinity Potion": 1,
+    "Enchanted Leviathan Heart": 5,
+    "Enchanted Leviathan Fang": 3,
+    "Enchanted Leviathan Scale": 10,
+    "Celestial Core": 10,
+    "Ancient Tablet": 5
+  },
+  moneyCost: 10_000_000_000_000_000_000_000_000_000_000n // 10NO
+},
     // === TOTEMS ===
     "Leviathan Totem": {
       type: "Totems",
@@ -1355,7 +1527,93 @@ const craftingSystem = {
       },
       moneyCost: 1_000_000_000_000_000_000_000_000_000_000n // 1DC
     },
-    
+    // === ULTIMATE TOTEMS (Step 4.8) ===
+"Void Totem": {
+  type: "Totems",
+  icon: "🌌✨",
+  special: 1,
+  unlockItem: "Void Essence",
+  materials: {
+    "Void Essence": 5,
+    "Void Shard": 3,
+    "Obsidian Shard": 10,
+    "Empty Essence": 5
+  },
+  moneyCost: 100_000_000_000_000_000_000_000_000n // 100SP
+},
+
+"Dragon Totem": {
+  type: "Totems",
+  icon: "🐉✨",
+  special: 1,
+  unlockItem: "Dragon Essence",
+  materials: {
+    "Dragon Essence": 5,
+    "Dragon Scale": 10,
+    "Mythril Ore": 5,
+    "Ancient Rune": 5
+  },
+  moneyCost: 1_000_000_000_000_000_000_000_000_000n // 1OC
+},
+
+"Celestial Totem": {
+  type: "Totems",
+  icon: "✨💫",
+  special: 1,
+  unlockItem: "Celestial Core",
+  materials: {
+    "Celestial Core": 3,
+    "Celestial Dust": 20,
+    "Ancient Rune": 10,
+    "Ancient Tablet": 3
+  },
+  moneyCost: 10_000_000_000_000_000_000_000_000_000n // 10OC
+},
+
+"Mythril Totem": {
+  type: "Totems",
+  icon: "⛏️✨",
+  special: 1,
+  unlockItem: "Mythril Ingot",
+  materials: {
+    "Mythril Ingot": 10,
+    "Dragon Scale": 15,
+    "Void Shard": 5,
+    "Celestial Dust": 10
+  },
+  moneyCost: 100_000_000_000_000_000_000_000_000_000n // 100OC
+},
+
+"Infinity Totem": {
+  type: "Totems",
+  icon: "♾️✨",
+  special: 1,
+  unlockItem: "Ancient Tablet",
+  materials: {
+    "Ancient Tablet": 10,
+    "Celestial Core": 10,
+    "Mythril Ingot": 10,
+    "Void Essence": 5,
+    "Dragon Essence": 5
+  },
+  moneyCost: 1_000_000_000_000_000_000_000_000_000_000n // 1NO
+},
+
+"Enchanted Leviathan Totem": {
+  type: "Totems",
+  icon: "✨🌊",
+  special: 1,
+  unlockItem: "Enchanted Leviathan Scale",
+  materials: {
+    "Enchanted Leviathan Scale": 15,
+    "Enchanted Leviathan Heart": 5,
+    "Enchanted Leviathan Fang": 3,
+    "Leviathan Totem": 1,
+    "Celestial Core": 10,
+    "Ancient Tablet": 5
+  },
+  moneyCost: 10_000_000_000_000_000_000_000_000_000_000_000n // 10DC (CHANGED from 10NO)
+},
     // === CRAFTED ITEMS (Auto-unlocked) ===
     "Elemental Stone": {
       type: "Materials",
@@ -1721,13 +1979,12 @@ const tornado = {
   angle: 0
 };
 
-// === LEVIATHAN BOSS CONFIGURATION ===
 const leviathanBoss = {
   x: 0,
   y: 0,
   w: 120,
   h: 120,
-  color: "#1E90FF",
+  color: "#1E5A8E",
   emoji: "🌊",
   visible: false,
   hitsToDie: 50,
@@ -1741,7 +1998,19 @@ const leviathanBoss = {
   flash: false,
   enchanted: false,
   canSummonEnchanted: false,
-  enchantedSummonTimer: 0
+  enchantedSummonTimer: 0,
+  
+  // NEW: Attack system
+  currentAttack: null,
+  attackTimer: 0,
+  attackPattern: 0,
+  phase: 1, // Changes at 50%, 25% HP
+  
+  // Attack projectiles
+  waterBalls: [],
+  tidalWaves: [],
+  whirlpools: [],
+  iceSpikes: [],
 };
 
 const enchantedLeviathanBoss = {
@@ -1749,7 +2018,7 @@ const enchantedLeviathanBoss = {
   y: 0,
   w: 140,
   h: 140,
-  color: "#9370DB",
+  color: "#6B4E9B",
   emoji: "✨🌊",
   visible: false,
   hitsToDie: 100,
@@ -1758,16 +2027,167 @@ const enchantedLeviathanBoss = {
   speed: 180,
   longRangeRadius: 220,
   attackCooldown: false,
-  flash: false
+  flash: false,
+  
+  // NEW: Enhanced attack system
+  currentAttack: null,
+  attackTimer: 0,
+  attackPattern: 0,
+  phase: 1,
+  
+  // Attack projectiles
+  waterBalls: [],
+  tidalWaves: [],
+  whirlpools: [],
+  iceSpikes: [],
+  lightningBolts: []
+};
+// === ULTIMATE BOSS OBJECTS ===
+
+const voidBoss = {
+  x: 0,
+  y: 0,
+  w: 150,
+  h: 150,
+  color: "#1a0033",
+  emoji: "🌌",
+  visible: false,
+  hitsToDie: 150,
+  hitsRemaining: 150,
+  playerHits: 0,
+  playerMaxHP: 10,
+  playerCurrentHP: 10,
+  speed: 180,
+  longRangeRadius: 250,
+  attackCooldown: false,
+  flash: false,
+  phase: 1,
+  
+  // Attack system
+  currentAttack: null,
+  attackTimer: 0,
+  voidOrbs: [],
+  blackHoles: [],
+  voidRifts: [],
+  darkPulses: []
 };
 
+const dragonBoss = {
+  x: 0,
+  y: 0,
+  w: 180,
+  h: 180,
+  color: "#8B0000",
+  emoji: "🐉",
+  visible: false,
+  hitsToDie: 200,
+  hitsRemaining: 200,
+  playerHits: 0,
+  playerMaxHP: 12,
+  playerCurrentHP: 12,
+  speed: 160,
+  longRangeRadius: 280,
+  attackCooldown: false,
+  flash: false,
+  phase: 1,
+  
+  // Attack system
+  currentAttack: null,
+  attackTimer: 0,
+  fireBreath: [],
+  dragonClaws: [],
+  meteorShower: [],
+  dragonRoar: []
+};
+
+const celestialBoss = {
+  x: 0,
+  y: 0,
+  w: 200,
+  h: 200,
+  color: "#FFD700",
+  emoji: "✨",
+  visible: false,
+  hitsToDie: 250,
+  hitsRemaining: 250,
+  playerHits: 0,
+  playerMaxHP: 15,
+  playerCurrentHP: 15,
+  speed: 140,
+  longRangeRadius: 300,
+  attackCooldown: false,
+  flash: false,
+  phase: 1,
+  
+  // Attack system
+  currentAttack: null,
+  attackTimer: 0,
+  starfall: [],
+  celestialBeam: [],
+  cosmicNova: [],
+  divineLight: []
+};
+
+const mythrilBoss = {
+  x: 0,
+  y: 0,
+  w: 220,
+  h: 220,
+  color: "#C0C0C0",
+  emoji: "⛏️",
+  visible: false,
+  hitsToDie: 300,
+  hitsRemaining: 300,
+  playerHits: 0,
+  playerMaxHP: 18,
+  playerCurrentHP: 18,
+  speed: 120,
+  longRangeRadius: 320,
+  attackCooldown: false,
+  flash: false,
+  phase: 1,
+  
+  // Attack system
+  currentAttack: null,
+  attackTimer: 0,
+  metalShards: [],
+  hammerSlam: [],
+  forgeExplosion: [],
+  ironWall: []
+};
+
+const infinityBoss = {
+  x: 0,
+  y: 0,
+  w: 250,
+  h: 250,
+  color: "#FF1493",
+  emoji: "♾️",
+  visible: false,
+  hitsToDie: 500,
+  hitsRemaining: 500,
+  playerHits: 0,
+  playerMaxHP: 25,
+  playerCurrentHP: 25,
+  speed: 100,
+  longRangeRadius: 350,
+  attackCooldown: false,
+  flash: false,
+  phase: 1,
+  
+  // Attack system
+  currentAttack: null,
+  attackTimer: 0,
+  infinityBlast: [],
+  timeSplit: [],
+  realityWarp: [],
+  endlessVoid: []
+};
 // Forgotten Altar event
 const forgottenAltar = {
   active: false,
-  duration: 0,
-  incomeBoost: 1.0,
-  background: "radial-gradient(circle at center, #B0E0E6 0%, #4682B4 50%, #1E90FF 100%)",
-  overlay: "rgba(176, 224, 230, 0.3)"
+  background: "radial-gradient(circle at center, #4682B4 0%, #1E3A5F 50%, #0A1929 100%)", // Darker blues
+  overlay: "rgba(10, 25, 41, 0.5)" // Darker overlay
 };
 
 // Player harpoon
@@ -1843,7 +2263,15 @@ const skins = {
   13: { color: "#ff00ff" }, // Disco
   14: { color: "#8B0000" }, // Bloodmoon
   15: { color: "#FFFACD" }, // Heavenly
-  16: { color: "#9370DB" }  // Enchant - NEW
+  16: { color: "#9370DB" }, // Enchant
+  17: { color: "#4682B4" }, // Leviathan
+  18: { color: "#FF4500" }, // Phoenix Skin (CHANGED - was Enchanted Leviathan)
+  19: { color: "#1a0033" }, // Void Skin
+  20: { color: "#8B0000" }, // Dragon Skin
+  21: { color: "#FFD700" }, // Celestial Skin
+  22: { color: "#C0C0C0" }, // Mythril Skin
+  23: { color: "#FF1493" }, // Infinity Skin
+  24: { color: "#00CED1" }  // Enchanted Leviathan Skin (ULTIMATE)
 };
 // Global pet ability flags
 window.giftDropMultiplier = 1.0;
@@ -2080,71 +2508,185 @@ categories.forEach(cat => {
     }
 
 // Add Use button for Heavenly Totem
-    if (item.name === "Heavenly Totem" && item.count > 0) {
-      html += `
-        <button
-          onclick="useHeavenlyTotem()"
-          style="
-            margin-left:5px; 
-            padding:2px 6px; 
-            border-radius:5px; 
-            background:#FFD700; 
-            color:white; 
-            border:none; 
-            cursor:pointer;
-          ">
-          Use ✨
-        </button>`;
-    }
-    
-    // NEW: Add Use button for Harpoon
-    if (item.name === "Harpoon") {
-      const harpoonCount = craftingSystem.materials["Harpoon"] || 0;
-      if (harpoonCount > 0) {
-        html += ` (${harpoonCount} in materials)`;
-      }
-    }
-    
-    // NEW: Add Use button for Leviathan Armor
-    if (item.name === "Leviathan Armor") {
-      const armorCount = craftingSystem.materials["Leviathan Armor"] || 0;
-      if (armorCount > 0) {
-        html += `
-          <button
-            onclick="equipLeviathanArmor()"
-            style="
-              margin-left:5px; 
-              padding:2px 6px; 
-              border-radius:5px; 
-              background:#4682B4; 
-              color:white; 
-              border:none; 
-              cursor:pointer;
-            ">
-            Equip 🛡️ (${armorCount})
-          </button>`;
-      }
-    }
-    // NEW: Add Use button for Leviathan Totem
-if (item.name === "Leviathan Totem") {
-  const totemCount = craftingSystem.materials["Leviathan Totem"] || 0;
-  if (totemCount > 0) {
-    html += `
-      <button
-        onclick="useLeviathanTotem()"
-        style="
-          margin-left:5px; 
-          padding:2px 6px; 
-          border-radius:5px; 
-          background:#1E90FF; 
-          color:white; 
-          border:none; 
-          cursor:pointer;
-        ">
-        Use 🌊 (${totemCount})
-      </button>`;
-  }
+if (item.name === "Heavenly Totem" && item.count > 0) {
+  html += `
+    <button
+      onclick="useHeavenlyTotem()"
+      style="
+        margin-left:5px; 
+        padding:2px 6px; 
+        border-radius:5px; 
+        background:#FFD700; 
+        color:white; 
+        border:none; 
+        cursor:pointer;
+      ">
+      Use ✨
+    </button>`;
 }
+// Add Use button for Void Totem
+if (item.name === "Void Totem" && item.count > 0) {
+  html += `
+    <button
+      onclick="useVoidTotem()"
+      style="
+        margin-left:5px; 
+        padding:2px 6px; 
+        border-radius:5px; 
+        background:#4B0082; 
+        color:white; 
+        border:none; 
+        cursor:pointer;
+      ">
+      Use 🌌
+    </button>`;
+}
+
+// Add Use button for Dragon Totem
+if (item.name === "Dragon Totem" && item.count > 0) {
+  html += `
+    <button
+      onclick="useDragonTotem()"
+      style="
+        margin-left:5px; 
+        padding:2px 6px; 
+        border-radius:5px; 
+        background:#8B0000; 
+        color:white; 
+        border:none; 
+        cursor:pointer;
+      ">
+      Use 🐉
+    </button>`;
+}
+
+// Add Use button for Celestial Totem
+if (item.name === "Celestial Totem" && item.count > 0) {
+  html += `
+    <button
+      onclick="useCelestialTotem()"
+      style="
+        margin-left:5px; 
+        padding:2px 6px; 
+        border-radius:5px; 
+        background:#FFD700; 
+        color:white; 
+        border:none; 
+        cursor:pointer;
+      ">
+      Use ✨
+    </button>`;
+}
+
+// Add Use button for Mythril Totem
+if (item.name === "Mythril Totem" && item.count > 0) {
+  html += `
+    <button
+      onclick="useMythrilTotem()"
+      style="
+        margin-left:5px; 
+        padding:2px 6px; 
+        border-radius:5px; 
+        background:#C0C0C0; 
+        color:black; 
+        border:none; 
+        cursor:pointer;
+      ">
+      Use ⛏️
+    </button>`;
+}
+
+// Add Use button for Infinity Totem
+if (item.name === "Infinity Totem" && item.count > 0) {
+  html += `
+    <button
+      onclick="useInfinityTotem()"
+      style="
+        margin-left:5px; 
+        padding:2px 6px; 
+        border-radius:5px; 
+        background:#FF1493; 
+        color:white; 
+        border:none; 
+        cursor:pointer;
+      ">
+      Use ♾️
+    </button>`;
+}
+
+// Add Use button for Enchanted Leviathan Totem
+if (item.name === "Enchanted Leviathan Totem" && item.count > 0) {
+  html += `
+    <button
+      onclick="useEnchantedLeviathanTotem()"
+      style="
+        margin-left:5px; 
+        padding:2px 6px; 
+        border-radius:5px; 
+        background:#00CED1; 
+        color:white; 
+        border:none; 
+        cursor:pointer;
+      ">
+      Use ✨🌊
+    </button>`;
+}
+// NEW: Add Use button for Leviathan Totem
+if (item.name === "Leviathan Totem" && item.count > 0) {
+  html += `
+    <button
+      onclick="useLeviathanTotem()"
+      style="
+        margin-left:5px; 
+        padding:2px 6px; 
+        border-radius:5px; 
+        background:#1E90FF; 
+        color:white; 
+        border:none; 
+        cursor:pointer;
+      ">
+      Use 🌊
+    </button>`;
+}
+
+// NEW: Add Equip button for Harpoon
+if (item.name === "Harpoon" && item.count > 0) {
+  const isEquipped = harpoon.equipped;
+  html += `
+    <button
+      onclick="toggleHarpoon()"
+      style="
+        margin-left:5px; 
+        padding:2px 6px; 
+        border-radius:5px; 
+        background:${isEquipped ? '#28a745' : '#333'}; 
+        color:white; 
+        border:none; 
+        cursor:pointer;
+      ">
+      ${isEquipped ? '✓ Equipped' : 'Equip'} 🔱
+    </button>`;
+}
+
+// NEW: Add Equip button for Leviathan Armor
+if (item.name === "Leviathan Armor" && item.count > 0) {
+  const isEquipped = window.leviathanArmorEquipped || false;
+  html += `
+    <button
+      onclick="equipLeviathanArmor()"
+      style="
+        margin-left:5px; 
+        padding:2px 6px; 
+        border-radius:5px; 
+        background:${isEquipped ? '#28a745' : '#4682B4'}; 
+        color:white; 
+        border:none; 
+        cursor:pointer;
+      ">
+      ${isEquipped ? '✓ Equipped' : 'Equip'} 🛡️
+    </button>`;
+}
+
 // NEW: Add Use button for Enchant Relic
 if (item.name === "Enchant Relic" && item.count > 0) {
   html += `
@@ -4351,6 +4893,271 @@ function useHeavenlyTotem() {
 // Make globally accessible
 window.useHeavenlyTotem = useHeavenlyTotem;
 }, 60000); // Check every minute
+// ========================================
+// TOTEM SUMMONING FUNCTIONS (FIXED)
+// ========================================
+
+function useVoidTotem() {
+  // Check if Void Blade is equipped
+  const voidBlade = playerInventory.Swords?.find(i => i.name === "Void Blade" && i.equipped);
+  
+  if (!voidBlade) {
+    alert("❌ You need the Void Blade equipped to summon the Void Boss!\n\n🌌 Craft it in the Swords tab, then equip it from your inventory.");
+    return;
+  }
+  
+  // Check for totem
+  const totem = playerInventory.Totems?.find(i => i.name === "Void Totem");
+  if (!totem || totem.count <= 0) {
+    alert("❌ No Void Totem available!");
+    return;
+  }
+  
+  // Consume totem
+  totem.count--;
+  if (totem.count <= 0) {
+    const index = playerInventory.Totems.indexOf(totem);
+    if (index > -1) playerInventory.Totems.splice(index, 1);
+  }
+  
+  // Spawn boss
+  voidBoss.visible = true;
+  voidBoss.hitsRemaining = voidBoss.hitsToDie;
+  voidBoss.playerHits = 0;
+  voidBoss.playerCurrentHP = voidBoss.playerMaxHP;
+  voidBoss.phase = 1;
+  voidBoss.x = canvas.width / 2 - voidBoss.w / 2;
+  voidBoss.y = 50;
+  voidBoss.flash = false;
+  voidBoss.currentAttack = null;
+  voidBoss.attackTimer = 3000;
+  
+  // Clear attack arrays
+  voidBoss.voidOrbs = [];
+  voidBoss.blackHoles = [];
+  voidBoss.voidRifts = [];
+  voidBoss.darkPulses = [];
+  
+  alert("🌌 VOID BOSS SUMMONED!\n\n⚠️ Use your Void Blade (Z key) to attack!\n💀 Boss HP: " + voidBoss.hitsRemaining + "/" + voidBoss.hitsToDie + "\n❤️ Your HP: " + voidBoss.playerCurrentHP + "/" + voidBoss.playerMaxHP);
+  updateInventoryDisplay();
+}
+
+function useDragonTotem() {
+  // Check if Dragon Slayer is equipped
+  const dragonSlayer = playerInventory.Swords?.find(i => i.name === "Dragon Slayer" && i.equipped);
+  
+  if (!dragonSlayer) {
+    alert("❌ You need the Dragon Slayer equipped to summon the Dragon Boss!\n\n🐉 Craft it in the Swords tab, then equip it from your inventory.");
+    return;
+  }
+  
+  const totem = playerInventory.Totems?.find(i => i.name === "Dragon Totem");
+  if (!totem || totem.count <= 0) {
+    alert("❌ No Dragon Totem available!");
+    return;
+  }
+  
+  totem.count--;
+  if (totem.count <= 0) {
+    const index = playerInventory.Totems.indexOf(totem);
+    if (index > -1) playerInventory.Totems.splice(index, 1);
+  }
+  
+  dragonBoss.visible = true;
+  dragonBoss.hitsRemaining = dragonBoss.hitsToDie;
+  dragonBoss.playerHits = 0;
+  dragonBoss.playerCurrentHP = dragonBoss.playerMaxHP;
+  dragonBoss.phase = 1;
+  dragonBoss.x = canvas.width / 2 - dragonBoss.w / 2;
+  dragonBoss.y = 50;
+  dragonBoss.flash = false;
+  dragonBoss.currentAttack = null;
+  dragonBoss.attackTimer = 2800;
+  
+  dragonBoss.fireBreath = [];
+  dragonBoss.dragonClaws = [];
+  dragonBoss.meteorShower = [];
+  dragonBoss.dragonRoar = [];
+  
+  alert("🐉 DRAGON BOSS SUMMONED!\n\n⚠️ Use your Dragon Slayer (Z key) to attack!\n💀 Boss HP: " + dragonBoss.hitsRemaining + "/" + dragonBoss.hitsToDie + "\n❤️ Your HP: " + dragonBoss.playerCurrentHP + "/" + dragonBoss.playerMaxHP);
+  updateInventoryDisplay();
+}
+
+function useCelestialTotem() {
+  // Check if Celestial Blade is equipped
+  const celestialBlade = playerInventory.Swords?.find(i => i.name === "Celestial Blade" && i.equipped);
+  
+  if (!celestialBlade) {
+    alert("❌ You need the Celestial Blade equipped to summon the Celestial Boss!\n\n✨ Craft it in the Swords tab, then equip it from your inventory.");
+    return;
+  }
+  
+  const totem = playerInventory.Totems?.find(i => i.name === "Celestial Totem");
+  if (!totem || totem.count <= 0) {
+    alert("❌ No Celestial Totem available!");
+    return;
+  }
+  
+  totem.count--;
+  if (totem.count <= 0) {
+    const index = playerInventory.Totems.indexOf(totem);
+    if (index > -1) playerInventory.Totems.splice(index, 1);
+  }
+  
+  celestialBoss.visible = true;
+  celestialBoss.hitsRemaining = celestialBoss.hitsToDie;
+  celestialBoss.playerHits = 0;
+  celestialBoss.playerCurrentHP = celestialBoss.playerMaxHP;
+  celestialBoss.phase = 1;
+  celestialBoss.x = canvas.width / 2 - celestialBoss.w / 2;
+  celestialBoss.y = 50;
+  celestialBoss.flash = false;
+  celestialBoss.currentAttack = null;
+  celestialBoss.attackTimer = 3000;
+  
+  celestialBoss.starfall = [];
+  celestialBoss.celestialBeam = [];
+  celestialBoss.cosmicNova = [];
+  celestialBoss.divineLight = [];
+  
+  alert("✨ CELESTIAL BOSS SUMMONED!\n\n⚠️ Use your Celestial Blade (Z key) to attack!\n💀 Boss HP: " + celestialBoss.hitsRemaining + "/" + celestialBoss.hitsToDie + "\n❤️ Your HP: " + celestialBoss.playerCurrentHP + "/" + celestialBoss.playerMaxHP);
+  updateInventoryDisplay();
+}
+
+function useMythrilTotem() {
+  // Check if Mythril Greatsword is equipped
+  const mythrilGreatsword = playerInventory.Swords?.find(i => i.name === "Mythril Greatsword" && i.equipped);
+  
+  if (!mythrilGreatsword) {
+    alert("❌ You need the Mythril Greatsword equipped to summon the Mythril Boss!\n\n⛏️ Craft it in the Swords tab, then equip it from your inventory.");
+    return;
+  }
+  
+  const totem = playerInventory.Totems?.find(i => i.name === "Mythril Totem");
+  if (!totem || totem.count <= 0) {
+    alert("❌ No Mythril Totem available!");
+    return;
+  }
+  
+  totem.count--;
+  if (totem.count <= 0) {
+    const index = playerInventory.Totems.indexOf(totem);
+    if (index > -1) playerInventory.Totems.splice(index, 1);
+  }
+  
+  mythrilBoss.visible = true;
+  mythrilBoss.hitsRemaining = mythrilBoss.hitsToDie;
+  mythrilBoss.playerHits = 0;
+  mythrilBoss.playerCurrentHP = mythrilBoss.playerMaxHP;
+  mythrilBoss.phase = 1;
+  mythrilBoss.x = canvas.width / 2 - mythrilBoss.w / 2;
+  mythrilBoss.y = 50;
+  mythrilBoss.flash = false;
+  mythrilBoss.currentAttack = null;
+  mythrilBoss.attackTimer = 3500;
+  
+  mythrilBoss.metalShards = [];
+  mythrilBoss.hammerSlam = [];
+  mythrilBoss.forgeExplosion = [];
+  mythrilBoss.ironWall = [];
+  
+  alert("⛏️ MYTHRIL BOSS SUMMONED!\n\n⚠️ Use your Mythril Greatsword (Z key) to attack!\n💀 Boss HP: " + mythrilBoss.hitsRemaining + "/" + mythrilBoss.hitsToDie + "\n❤️ Your HP: " + mythrilBoss.playerCurrentHP + "/" + mythrilBoss.playerMaxHP);
+  updateInventoryDisplay();
+}
+
+function useInfinityTotem() {
+  // Check if Infinity Blade is equipped
+  const infinityBlade = playerInventory.Swords?.find(i => i.name === "Infinity Blade" && i.equipped);
+  
+  if (!infinityBlade) {
+    alert("❌ You need the Infinity Blade equipped to summon the Infinity Boss!\n\n♾️ Craft it in the Swords tab, then equip it from your inventory.");
+    return;
+  }
+  
+  const totem = playerInventory.Totems?.find(i => i.name === "Infinity Totem");
+  if (!totem || totem.count <= 0) {
+    alert("❌ No Infinity Totem available!");
+    return;
+  }
+  
+  totem.count--;
+  if (totem.count <= 0) {
+    const index = playerInventory.Totems.indexOf(totem);
+    if (index > -1) playerInventory.Totems.splice(index, 1);
+  }
+  
+  infinityBoss.visible = true;
+  infinityBoss.hitsRemaining = infinityBoss.hitsToDie;
+  infinityBoss.playerHits = 0;
+  infinityBoss.playerCurrentHP = infinityBoss.playerMaxHP;
+  infinityBoss.phase = 1;
+  infinityBoss.x = canvas.width / 2 - infinityBoss.w / 2;
+  infinityBoss.y = 50;
+  infinityBoss.flash = false;
+  infinityBoss.currentAttack = null;
+  infinityBoss.attackTimer = 4000;
+  
+  infinityBoss.infinityBlast = [];
+  infinityBoss.timeSplit = [];
+  infinityBoss.realityWarp = [];
+  infinityBoss.endlessVoid = [];
+  
+  alert("♾️ INFINITY BOSS SUMMONED!\n\n⚠️ Use your Infinity Blade (Z key) to attack!\n💀 Boss HP: " + infinityBoss.hitsRemaining + "/" + infinityBoss.hitsToDie + "\n❤️ Your HP: " + infinityBoss.playerCurrentHP + "/" + infinityBoss.playerMaxHP);
+  updateInventoryDisplay();
+}
+
+function useEnchantedLeviathanTotem() {
+  const totem = playerInventory.Totems?.find(i => i.name === "Enchanted Leviathan Totem");
+  
+  if (!totem || totem.count < 1) {
+    alert("❌ No Enchanted Leviathan Totems available!");
+    return;
+  }
+  
+  if (!confirm("✨🌊 Use Enchanted Leviathan Totem?\n\nDIRECTLY summons Enchanted Leviathan!\n⚠️ Skip regular Leviathan!\n⚠️ Requires Harpoon!\n\nContinue?")) {
+    return;
+  }
+  
+  // Check if player has harpoon equipped
+  if (!harpoon.equipped) {
+    alert("❌ You need a Harpoon equipped to fight the Leviathan!\n\nCraft a Harpoon and equip it first!");
+    return;
+  }
+  
+  // Consume totem
+  totem.count--;
+  if (totem.count <= 0) {
+    const index = playerInventory.Totems.indexOf(totem);
+    if (index > -1) playerInventory.Totems.splice(index, 1);
+  }
+  
+  // Reset player HP
+  leviathanBoss.playerCurrentHP = leviathanBoss.playerMaxHP;
+  
+  // Spawn Enchanted Leviathan DIRECTLY
+  enchantedLeviathanBoss.x = W - enchantedLeviathanBoss.w - 50;
+  enchantedLeviathanBoss.y = H / 2 - enchantedLeviathanBoss.h / 2;
+  enchantedLeviathanBoss.visible = true;
+  enchantedLeviathanBoss.hitsRemaining = enchantedLeviathanBoss.hitsToDie;
+  enchantedLeviathanBoss.playerHits = 0;
+  enchantedLeviathanBoss.attackTimer = 2000;
+  
+  harpoon.equipped = true;
+  
+  // Start Forgotten Altar event
+  startForgottenAltar();
+  
+  console.log("✨🌊 ENCHANTED LEVIATHAN SUMMONED DIRECTLY!");
+  updateInventoryDisplay();
+}
+
+// Make functions globally accessible
+window.useVoidTotem = useVoidTotem;
+window.useDragonTotem = useDragonTotem;
+window.useCelestialTotem = useCelestialTotem;
+window.useMythrilTotem = useMythrilTotem;
+window.useInfinityTotem = useInfinityTotem;
+window.useEnchantedLeviathanTotem = useEnchantedLeviathanTotem;
 // === USE ENCHANT RELIC FUNCTION ===
 function useEnchantRelic() {
   const relic = playerInventory.Relics.find(i => i.name === "Enchant Relic");
@@ -4445,30 +5252,30 @@ function canCraftItem(recipeName) {
     return false;
   }
   
-  // Check materials
-  for (let material in recipe.materials) {
-    const needed = recipe.materials[material];
-    const owned = craftingSystem.materials[material] || 0;
-    
-    // Special case: Check if material is an egg/pet in inventory
-    if (material === "King Leviathan") {
-      const hasPet = playerPets.some(p => p.name === material);
-      if (!hasPet) return false;
-    } else if (material.includes("Egg") || material.includes("Skin")) {
-      // Check in player inventory
-      let found = false;
-      for (let category in playerInventory) {
-        const item = playerInventory[category].find(i => i.name === material);
-        if (item && item.count >= needed) {
-          found = true;
-          break;
-        }
+// Check materials
+for (let material in recipe.materials) {
+  const needed = recipe.materials[material];
+  const owned = craftingSystem.materials[material] || 0;
+  
+  // Special case: Check if material is an egg/pet in inventory
+  if (material === "King Leviathan" || material === "Enchanted Leviathan King") {
+    const hasPet = playerPets.some(p => p.name === material);
+    if (!hasPet) return false;
+  } else if (material.includes("Egg") || material.includes("Skin") || material.includes("Potion") || material.includes("Sword") || material.includes("Relic")) {
+    // Check in player inventory for items that might be in inventory categories
+    let found = false;
+    for (let category in playerInventory) {
+      const item = playerInventory[category].find(i => i.name === material);
+      if (item && item.count >= needed) {
+        found = true;
+        break;
       }
-      if (!found && owned < needed) return false;
-    } else {
-      if (owned < needed) return false;
     }
+    if (!found && owned < needed) return false;
+  } else {
+    if (owned < needed) return false;
   }
+}
   
   return true;
 }
@@ -4507,18 +5314,18 @@ function craftItem(recipeName) {
   
   if (!confirm) return;
   
-  // Consume materials
-  for (let material in recipe.materials) {
-    const needed = recipe.materials[material];
-    
-    if (material === "King Leviathan") {
-      // Remove pet
-      const petIndex = playerPets.findIndex(p => p.name === material);
-      if (petIndex > -1) {
-        playerPets.splice(petIndex, 1);
-        equippedPets = equippedPets.filter(p => p.name !== material);
-      }
-    } else if (material.includes("Egg") || material.includes("Skin") || material.includes("Potion")) {
+// Consume materials
+for (let material in recipe.materials) {
+  const needed = recipe.materials[material];
+  
+  if (material === "King Leviathan" || material === "Enchanted Leviathan King") {
+    // Remove pet
+    const petIndex = playerPets.findIndex(p => p.name === material);
+    if (petIndex > -1) {
+      playerPets.splice(petIndex, 1);
+      equippedPets = equippedPets.filter(p => p.name !== material);
+    }
+  } else if (material.includes("Egg") || material.includes("Skin") || material.includes("Potion") || material.includes("Sword") || material.includes("Relic") || material.includes("Totem")) {
       // Check player inventory first
       let consumed = false;
       for (let category in playerInventory) {
@@ -4547,12 +5354,13 @@ function craftItem(recipeName) {
   money -= recipe.moneyCost;
   
 // Give crafted item
-if (recipe.type === "Materials" || recipe.type === "Miscellaneous" || recipe.type === "Totems") {
-  // Add to materials
+if (recipe.type === "Materials") {
+  // Only pure materials go here
   craftingSystem.materials[recipeName] = (craftingSystem.materials[recipeName] || 0) + 1;
   console.log(`✅ Added ${recipeName} to materials`);
 } else {
-  // Add to player inventory
+  // Everything else goes to player inventory (Swords, Relics, Eggs, Skins, Potions, Totems, Miscellaneous)
+  
   // Ensure category exists
   if (!playerInventory[recipe.type]) {
     playerInventory[recipe.type] = [];
@@ -4850,8 +5658,9 @@ function closeCraftingMenu() {
 // === LEVIATHAN BOSS FUNCTIONS ===
 
 function useLeviathanTotem() {
-  const totem = craftingSystem.materials["Leviathan Totem"];
-  if (!totem || totem < 1) {
+  const totem = playerInventory.Totems?.find(i => i.name === "Leviathan Totem");
+  
+  if (!totem || totem.count < 1) {
     alert("❌ No Leviathan Totems available!");
     return;
   }
@@ -4861,10 +5670,9 @@ function useLeviathanTotem() {
     return;
   }
   
-  // Check if player has harpoon
-  const hasHarpoon = craftingSystem.materials["Harpoon"] && craftingSystem.materials["Harpoon"] > 0;
-  if (!hasHarpoon) {
-    alert("❌ You need a Harpoon to fight the Leviathan!\n\nCraft one in the Crafting menu.");
+  // Check if player has harpoon equipped
+  if (!harpoon.equipped) {
+    alert("❌ You need a Harpoon equipped to fight the Leviathan!\n\nCraft a Harpoon and equip it first!");
     return;
   }
   
@@ -4873,10 +5681,13 @@ function useLeviathanTotem() {
   }
   
   // Consume totem
-  craftingSystem.materials["Leviathan Totem"]--;
-  
-  // Equip harpoon
-  harpoon.equipped = true;
+  totem.count--;
+  if (totem.count <= 0) {
+    const index = playerInventory.Totems.indexOf(totem);
+    if (index > -1) {
+      playerInventory.Totems.splice(index, 1);
+    }
+  }
   
   // Reset player HP
   leviathanBoss.playerCurrentHP = leviathanBoss.playerMaxHP;
@@ -4894,12 +5705,35 @@ function useLeviathanTotem() {
   startForgottenAltar();
   
   console.log("🌊 Leviathan summoned!");
-  updateCraftingDisplay();
+  updateInventoryDisplay();
 }
-function equipLeviathanArmor() {
-  const armorCount = craftingSystem.materials["Leviathan Armor"] || 0;
+
+function toggleHarpoon() {
+  const harpoonItem = playerInventory.Miscellaneous?.find(i => i.name === "Harpoon");
   
-  if (armorCount <= 0) {
+  if (!harpoonItem || harpoonItem.count <= 0) {
+    alert("❌ No Harpoon available!");
+    return;
+  }
+  
+  harpoon.equipped = !harpoon.equipped;
+  
+  if (harpoon.equipped) {
+    console.log("🔱 Harpoon equipped!");
+    alert("✅ Harpoon Equipped!\n\nPress X to attack when fighting Leviathan!");
+  } else {
+    console.log("🔱 Harpoon unequipped");
+  }
+  
+  updateInventoryDisplay();
+}
+
+// Make globally accessible
+window.toggleHarpoon = toggleHarpoon;
+function equipLeviathanArmor() {
+  const armor = playerInventory.Miscellaneous?.find(i => i.name === "Leviathan Armor");
+  
+  if (!armor || armor.count <= 0) {
     alert("❌ No Leviathan Armor available!");
     return;
   }
@@ -4910,7 +5744,13 @@ function equipLeviathanArmor() {
   }
   
   // Consume armor
-  craftingSystem.materials["Leviathan Armor"]--;
+  armor.count--;
+  if (armor.count <= 0) {
+    const index = playerInventory.Miscellaneous.indexOf(armor);
+    if (index > -1) {
+      playerInventory.Miscellaneous.splice(index, 1);
+    }
+  }
   
   // Apply armor effects
   window.leviathanArmorEquipped = true;
@@ -4920,7 +5760,6 @@ function equipLeviathanArmor() {
   
   console.log("🛡️ Leviathan Armor equipped! +2 HP, 50% damage reduction");
   
-  updateCraftingDisplay();
   updateInventoryDisplay();
   
   alert("✅ Leviathan Armor Equipped!\n\n🛡️ Effects:\n• +2 Max HP (now " + leviathanBoss.playerMaxHP + " HP)\n• 50% damage reduction\n• HP fully restored");
@@ -4962,7 +5801,7 @@ function useHarpoon() {
     const dy = character.y - leviathanBoss.y;
     const distance = Math.hypot(dx, dy);
     
-    if (distance < 250) { // Harpoon range
+    if (distance < 250) {
       leviathanBoss.hitsRemaining -= harpoon.damage;
       leviathanBoss.flash = true;
       hitLeviathan = true;
@@ -4973,7 +5812,6 @@ function useHarpoon() {
       
       console.log(`🔱 Hit Leviathan! HP: ${leviathanBoss.hitsRemaining}/${leviathanBoss.hitsToDie}`);
       
-      // Check if defeated
       if (leviathanBoss.hitsRemaining <= 0) {
         defeatLeviathan();
       }
@@ -5006,8 +5844,12 @@ function useHarpoon() {
     harpoon.lastUse = now;
   }
 }
-
 function defeatLeviathan() {
+  // Clear all attack projectiles
+leviathanBoss.waterBalls = [];
+leviathanBoss.tidalWaves = [];
+leviathanBoss.whirlpools = [];
+leviathanBoss.iceSpikes = [];
   leviathanBoss.visible = false;
   leviathanBoss.canSummonEnchanted = true;
   leviathanBoss.enchantedSummonTimer = Date.now() + 10000; // 10 seconds
@@ -5103,6 +5945,11 @@ function summonEnchantedLeviathan() {
 }
 
 function defeatEnchantedLeviathan() {
+  enchantedLeviathanBoss.waterBalls = [];
+enchantedLeviathanBoss.tidalWaves = [];
+enchantedLeviathanBoss.whirlpools = [];
+enchantedLeviathanBoss.iceSpikes = [];
+if (enchantedLeviathanBoss.lightningBolts) enchantedLeviathanBoss.lightningBolts = [];
   enchantedLeviathanBoss.visible = false;
   harpoon.equipped = false;
   endForgottenAltar();
@@ -5141,7 +5988,2013 @@ function defeatEnchantedLeviathan() {
   
   updateCraftingDisplay();
 }
+// ========================================
+// LEVIATHAN ATTACK SYSTEM
+// ========================================
 
+function leviathanWaterBallAttack(boss) {
+  const angle = Math.atan2(character.y - boss.y, character.x - boss.x);
+  
+  // Shoot 3 water balls in a spread pattern
+  for (let i = -1; i <= 1; i++) {
+    const spread = i * 0.3;
+    boss.waterBalls.push({
+      x: boss.x + boss.w / 2,
+      y: boss.y + boss.h / 2,
+      vx: Math.cos(angle + spread) * 200,
+      vy: Math.sin(angle + spread) * 200,
+      size: 15,
+      life: 3000,
+      damage: 1
+    });
+  }
+  
+  console.log("🌊 Leviathan used Water Ball!");
+}
+
+function leviathanTidalWaveAttack(boss) {
+  // Create a wave that moves across the screen
+  const isEnchanted = boss === enchantedLeviathanBoss;
+  
+  boss.tidalWaves.push({
+    x: boss.x > W / 2 ? W : 0,
+    y: 0,
+    direction: boss.x > W / 2 ? -1 : 1,
+    speed: isEnchanted ? 150 : 100,
+    height: H,
+    width: 40,
+    life: 5000,
+    damage: 1
+  });
+  
+  console.log("🌊 Leviathan used Tidal Wave!");
+}
+
+function leviathanWhirlpoolAttack(boss) {
+  // Create a whirlpool at player's location
+  boss.whirlpools.push({
+    x: character.x + character.w / 2,
+    y: character.y + character.h / 2,
+    radius: 10,
+    maxRadius: 80,
+    growing: true,
+    life: 4000,
+    damage: 1,
+    pullStrength: 150,
+    angle: 0
+  });
+  
+  console.log("🌀 Leviathan used Whirlpool!");
+}
+
+function leviathanIceSpikeAttack(boss) {
+  const isEnchanted = boss === enchantedLeviathanBoss;
+  const spikeCount = isEnchanted ? 8 : 6;
+  
+  // Create ice spikes in a circle around player
+  for (let i = 0; i < spikeCount; i++) {
+    const angle = (i / spikeCount) * Math.PI * 2;
+    const distance = 100;
+    
+    boss.iceSpikes.push({
+      x: character.x + character.w / 2 + Math.cos(angle) * distance,
+      y: character.y + character.h / 2 + Math.sin(angle) * distance,
+      targetX: character.x + character.w / 2,
+      targetY: character.y + character.h / 2,
+      speed: isEnchanted ? 300 : 200,
+      size: 20,
+      life: 2000,
+      damage: 1,
+      warning: true,
+      warningTime: 800
+    });
+  }
+  
+  console.log("❄️ Leviathan used Ice Spike!");
+}
+// ============================================
+// ENCHANTED LEVIATHAN ATTACK SYSTEM
+// ============================================
+
+function updateEnchantedLeviathanAttacks(boss, dt) {
+  if (!boss.visible) return;
+  
+  // Update phase based on HP
+  const hpPercent = boss.hitsRemaining / boss.hitsToDie;
+  if (hpPercent > 0.66) boss.phase = 1;
+  else if (hpPercent > 0.33) boss.phase = 2;
+  else boss.phase = 3;
+  
+  // Attack timer
+  boss.attackTimer -= dt;
+  
+  // Select new attack when timer expires
+  if (boss.attackTimer <= 0 && !boss.currentAttack) {
+    const attacks = {
+      1: ['waterBalls', 'tidalWaves', 'whirlpools'],
+      2: ['waterBalls', 'tidalWaves', 'whirlpools', 'iceSpikes', 'lightningBolts'],
+      3: ['tidalWaves', 'whirlpools', 'iceSpikes', 'lightningBolts', 'lightningBolts'] // More lightning in phase 3
+    };
+    
+    const availableAttacks = attacks[boss.phase];
+    boss.currentAttack = availableAttacks[Math.floor(Math.random() * availableAttacks.length)];
+    boss.attackTimer = boss.phase === 3 ? 1500 : (boss.phase === 2 ? 2000 : 2500);
+    
+    // Launch attack
+    if (boss.currentAttack === 'waterBalls') launchWaterBalls(boss, true);
+    else if (boss.currentAttack === 'tidalWaves') launchTidalWave(boss, true);
+    else if (boss.currentAttack === 'whirlpools') launchWhirlpool(boss, true);
+    else if (boss.currentAttack === 'iceSpikes') launchIceSpikes(boss, true);
+    else if (boss.currentAttack === 'lightningBolts') launchLightningBolts(boss);
+    
+    boss.currentAttack = null;
+  }
+  
+  // Update all active attacks (using existing update functions)
+  updateWaterBalls(boss, dt);
+  updateTidalWaves(boss, dt);
+  updateWhirlpools(boss, dt);
+  updateIceSpikes(boss, dt);
+  updateLightningBolts(boss, dt);
+}
+
+// Lightning-specific functions for Enchanted Leviathan
+function launchLightningBolts(boss) {
+  const count = boss.phase === 3 ? 5 : 3;
+  
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      if (!boss.visible) return;
+      
+      boss.lightningBolts.push({
+        x: Math.random() * W,
+        y: -10,
+        width: 15,
+        height: H + 20,
+        life: 800,
+        warningTime: 500,
+        age: 0,
+        flash: true
+      });
+    }, i * 400);
+  }
+  
+  console.log("⚡ Enchanted Leviathan used Lightning Strike!");
+}
+
+function updateLightningBolts(boss, dt) {
+  for (let i = boss.lightningBolts.length - 1; i >= 0; i--) {
+    const bolt = boss.lightningBolts[i];
+    bolt.age += dt * 1000;
+    
+    // Check collision after warning period
+    if (bolt.age > bolt.warningTime) {
+      const distance = Math.abs(character.x + character.w / 2 - bolt.x);
+      
+      if (distance < bolt.width / 2 + character.w / 2) {
+        dealLeviathanDamage(1, "⚡ Lightning Strike!");
+        boss.lightningBolts.splice(i, 1);
+        continue;
+      }
+    }
+    
+    bolt.life -= dt * 1000;
+    
+    // Remove if expired
+    if (bolt.life <= 0) {
+      boss.lightningBolts.splice(i, 1);
+    }
+  }
+}
+
+// Shared attack functions with enhancement parameter
+function launchWaterBalls(boss, isEnchanted = false) {
+  const count = isEnchanted ? (boss.phase === 3 ? 5 : 4) : 3;
+  const spreadAngle = Math.PI / 3;
+  
+  for (let i = 0; i < count; i++) {
+    const angle = -Math.PI/2 + spreadAngle * (i / (count - 1)) - spreadAngle/2;
+    boss.waterBalls.push({
+      x: boss.x + boss.w / 2,
+      y: boss.y + boss.h,
+      vx: Math.cos(angle) * (isEnchanted ? 180 : 150),
+      vy: Math.sin(angle) * (isEnchanted ? 180 : 150),
+      size: 15,
+      life: 5000,
+      age: 0
+    });
+  }
+  
+  console.log("💧 Water Ball Attack!");
+}
+
+function updateWaterBalls(boss, dt) {
+  for (let i = boss.waterBalls.length - 1; i >= 0; i--) {
+    const ball = boss.waterBalls[i];
+    ball.x += ball.vx * dt;
+    ball.y += ball.vy * dt;
+    ball.age += dt * 1000;
+    
+    // Check collision with player
+    const dx = ball.x - (character.x + character.w / 2);
+    const dy = ball.y - (character.y + character.h / 2);
+    const dist = Math.hypot(dx, dy);
+    
+    if (dist < ball.size + character.w / 2) {
+      dealLeviathanDamage(1, "💧 Water Ball Hit!");
+      boss.waterBalls.splice(i, 1);
+      continue;
+    }
+    
+    // Remove if expired or off-screen
+    if (ball.age > ball.life || ball.y > H + 50 || ball.x < -50 || ball.x > W + 50) {
+      boss.waterBalls.splice(i, 1);
+    }
+  }
+}
+
+function launchTidalWave(boss, isEnchanted = false) {
+  boss.tidalWaves.push({
+    x: boss.x > W / 2 ? W : 0,
+    y: 0,
+    direction: boss.x > W / 2 ? -1 : 1,
+    speed: isEnchanted ? 150 : 100,
+    height: H,
+    width: isEnchanted ? 50 : 40,
+    life: 6000,
+    age: 0
+  });
+  
+  console.log("🌊 Tidal Wave Attack!");
+}
+
+function updateTidalWaves(boss, dt) {
+  for (let i = boss.tidalWaves.length - 1; i >= 0; i--) {
+    const wave = boss.tidalWaves[i];
+    wave.x += wave.direction * wave.speed * dt;
+    wave.age += dt * 1000;
+    
+    // Check collision
+    if (rectsOverlap(
+      { x: wave.x, y: wave.y, w: wave.width, h: wave.height },
+      character
+    )) {
+      dealLeviathanDamage(1, "🌊 Tidal Wave Hit!");
+      boss.tidalWaves.splice(i, 1);
+      continue;
+    }
+    
+    // Remove if off-screen
+    if (wave.age > wave.life || wave.x < -100 || wave.x > W + 100) {
+      boss.tidalWaves.splice(i, 1);
+    }
+  }
+}
+
+function launchWhirlpool(boss, isEnchanted = false) {
+  boss.whirlpools.push({
+    x: character.x + character.w / 2,
+    y: character.y + character.h / 2,
+    radius: 10,
+    maxRadius: isEnchanted ? 100 : 80,
+    growing: true,
+    life: isEnchanted ? 5000 : 4000,
+    age: 0,
+    pullStrength: isEnchanted ? 180 : 150,
+    angle: 0
+  });
+  
+  console.log("🌀 Whirlpool Attack!");
+}
+
+function updateWhirlpools(boss, dt) {
+  for (let i = boss.whirlpools.length - 1; i >= 0; i--) {
+    const pool = boss.whirlpools[i];
+    pool.age += dt * 1000;
+    pool.angle += dt * 5;
+    
+    // Grow to max size
+    if (pool.growing && pool.radius < pool.maxRadius) {
+      pool.radius += dt * 120;
+      if (pool.radius >= pool.maxRadius) {
+        pool.growing = false;
+      }
+    }
+    
+    // Pull player
+    const dx = pool.x - (character.x + character.w / 2);
+    const dy = pool.y - (character.y + character.h / 2);
+    const distance = Math.hypot(dx, dy);
+    
+    if (distance < pool.radius) {
+      character.x += (dx / distance) * pool.pullStrength * dt;
+      character.y += (dy / distance) * pool.pullStrength * dt;
+      
+      // Damage if very close
+      if (distance < 30 && !pool.damageDealt) {
+        dealLeviathanDamage(1, "🌀 Whirlpool Damage!");
+        pool.damageDealt = true;
+      }
+    }
+    
+    // Remove if expired
+    if (pool.age > pool.life) {
+      boss.whirlpools.splice(i, 1);
+    }
+  }
+}
+
+function launchIceSpikes(boss, isEnchanted = false) {
+  const count = isEnchanted ? 10 : 6;
+  
+  for (let i = 0; i < count; i++) {
+    const angle = (i / count) * Math.PI * 2;
+    const distance = 120;
+    
+    boss.iceSpikes.push({
+      x: character.x + character.w / 2 + Math.cos(angle) * distance,
+      y: character.y + character.h / 2 + Math.sin(angle) * distance,
+      targetX: character.x + character.w / 2,
+      targetY: character.y + character.h / 2,
+      speed: isEnchanted ? 350 : 250,
+      size: 20,
+      life: 3000,
+      age: 0,
+      warning: true,
+      warningTime: isEnchanted ? 600 : 800
+    });
+  }
+  
+  console.log("❄️ Ice Spike Attack!");
+}
+
+function updateIceSpikes(boss, dt) {
+  for (let i = boss.iceSpikes.length - 1; i >= 0; i--) {
+    const spike = boss.iceSpikes[i];
+    spike.age += dt * 1000;
+    
+    // Warning phase
+    if (spike.warning) {
+      spike.warningTime -= dt * 1000;
+      if (spike.warningTime <= 0) {
+        spike.warning = false;
+      }
+    } else {
+      // Move toward target
+      const dx = spike.targetX - spike.x;
+      const dy = spike.targetY - spike.y;
+      const distance = Math.hypot(dx, dy);
+      
+      if (distance > 5) {
+        spike.x += (dx / distance) * spike.speed * dt;
+        spike.y += (dy / distance) * spike.speed * dt;
+      }
+      
+      // Check collision
+      if (rectsOverlap(
+        { x: spike.x - spike.size / 2, y: spike.y - spike.size / 2, w: spike.size, h: spike.size },
+        character
+      )) {
+        dealLeviathanDamage(1, "❄️ Ice Spike Hit!");
+        boss.iceSpikes.splice(i, 1);
+        continue;
+      }
+    }
+    
+    // Remove if expired
+    if (spike.age > spike.life) {
+      boss.iceSpikes.splice(i, 1);
+    }
+  }
+}
+function enchantedLeviathanLightningAttack(boss) {
+  // Enchanted only: Lightning strikes
+  for (let i = 0; i < 3; i++) {
+    setTimeout(() => {
+      boss.lightningBolts.push({
+        x: Math.random() * W,
+        y: 0,
+        width: 10,
+        height: H,
+        life: 500,
+        damage: 1,
+        flash: true
+      });
+    }, i * 300);
+  }
+  
+  console.log("⚡ Enchanted Leviathan used Lightning Strike!");
+}
+
+function leviathanChooseAttack(boss) {
+  const isEnchanted = boss === enchantedLeviathanBoss;
+  const hpPercent = boss.hitsRemaining / boss.hitsToDie;
+  
+  // Determine phase
+  if (hpPercent > 0.5) {
+    boss.phase = 1;
+  } else if (hpPercent > 0.25) {
+    boss.phase = 2;
+  } else {
+    boss.phase = 3;
+  }
+  
+  // Attack patterns based on phase
+  let attacks = [];
+  
+  if (boss.phase === 1) {
+    attacks = ['waterBall', 'waterBall', 'whirlpool'];
+  } else if (boss.phase === 2) {
+    attacks = ['waterBall', 'tidalWave', 'whirlpool', 'iceSpike'];
+  } else {
+    attacks = ['tidalWave', 'whirlpool', 'iceSpike', 'iceSpike'];
+  }
+  
+  // Enchanted gets lightning in phase 2+
+  if (isEnchanted && boss.phase >= 2) {
+    attacks.push('lightning', 'lightning');
+  }
+  
+  const chosenAttack = attacks[Math.floor(Math.random() * attacks.length)];
+  
+  switch (chosenAttack) {
+    case 'waterBall':
+      leviathanWaterBallAttack(boss);
+      boss.attackTimer = isEnchanted ? 2000 : 2500;
+      break;
+    case 'tidalWave':
+      leviathanTidalWaveAttack(boss);
+      boss.attackTimer = isEnchanted ? 4000 : 5000;
+      break;
+    case 'whirlpool':
+      leviathanWhirlpoolAttack(boss);
+      boss.attackTimer = isEnchanted ? 3500 : 4000;
+      break;
+    case 'iceSpike':
+      leviathanIceSpikeAttack(boss);
+      boss.attackTimer = isEnchanted ? 3000 : 3500;
+      break;
+    case 'lightning':
+      enchantedLeviathanLightningAttack(boss);
+      boss.attackTimer = 3000;
+      break;
+  }
+  
+  boss.currentAttack = chosenAttack;
+}
+
+function updateLeviathanAttacks(boss, dt) {
+  const isEnchanted = boss === enchantedLeviathanBoss;
+  
+  // Update attack timer
+  if (boss.attackTimer > 0) {
+    boss.attackTimer -= dt * 1000;
+  } else if (boss.visible) {
+    leviathanChooseAttack(boss);
+  }
+  
+  // Update water balls
+  for (let i = boss.waterBalls.length - 1; i >= 0; i--) {
+    const ball = boss.waterBalls[i];
+    ball.x += ball.vx * dt;
+    ball.y += ball.vy * dt;
+    ball.life -= dt * 1000;
+    
+    // Check collision with player
+    if (rectsOverlap(
+      { x: ball.x - ball.size, y: ball.y - ball.size, w: ball.size * 2, h: ball.size * 2 },
+      character
+    )) {
+      dealLeviathanDamage(ball.damage, "💧 Water Ball Hit!");
+      boss.waterBalls.splice(i, 1);
+      continue;
+    }
+    
+    // Remove if off screen or expired
+    if (ball.life <= 0 || ball.x < -50 || ball.x > W + 50 || ball.y < -50 || ball.y > H + 50) {
+      boss.waterBalls.splice(i, 1);
+    }
+  }
+  
+  // Update tidal waves
+  for (let i = boss.tidalWaves.length - 1; i >= 0; i--) {
+    const wave = boss.tidalWaves[i];
+    wave.x += wave.direction * wave.speed * dt;
+    wave.life -= dt * 1000;
+    
+    // Check collision with player
+    if (rectsOverlap(
+      { x: wave.x, y: wave.y, w: wave.width, h: wave.height },
+      character
+    )) {
+      dealLeviathanDamage(wave.damage, "🌊 Tidal Wave Hit!");
+      boss.tidalWaves.splice(i, 1);
+      continue;
+    }
+    
+    // Remove if off screen
+    if (wave.life <= 0 || wave.x < -100 || wave.x > W + 100) {
+      boss.tidalWaves.splice(i, 1);
+    }
+  }
+  
+  // Update whirlpools
+  for (let i = boss.whirlpools.length - 1; i >= 0; i--) {
+    const pool = boss.whirlpools[i];
+    pool.life -= dt * 1000;
+    pool.angle += dt * 5;
+    
+    // Grow to max size
+    if (pool.growing && pool.radius < pool.maxRadius) {
+      pool.radius += dt * 100;
+      if (pool.radius >= pool.maxRadius) {
+        pool.growing = false;
+      }
+    }
+    
+    // Pull player toward center
+    const dx = pool.x - (character.x + character.w / 2);
+    const dy = pool.y - (character.y + character.h / 2);
+    const distance = Math.hypot(dx, dy);
+    
+    if (distance < pool.radius) {
+      character.x += (dx / distance) * pool.pullStrength * dt;
+      character.y += (dy / distance) * pool.pullStrength * dt;
+      
+      // Damage if very close to center
+      if (distance < 30 && !pool.damageDealt) {
+        dealLeviathanDamage(pool.damage, "🌀 Whirlpool Damage!");
+        pool.damageDealt = true;
+      }
+    }
+    
+    // Remove if expired
+    if (pool.life <= 0) {
+      boss.whirlpools.splice(i, 1);
+    }
+  }
+  
+  // Update ice spikes
+  for (let i = boss.iceSpikes.length - 1; i >= 0; i--) {
+    const spike = boss.iceSpikes[i];
+    spike.life -= dt * 1000;
+    
+    // Warning phase
+    if (spike.warning) {
+      spike.warningTime -= dt * 1000;
+      if (spike.warningTime <= 0) {
+        spike.warning = false;
+      }
+    } else {
+      // Move toward target
+      const dx = spike.targetX - spike.x;
+      const dy = spike.targetY - spike.y;
+      const distance = Math.hypot(dx, dy);
+      
+      if (distance > 5) {
+        spike.x += (dx / distance) * spike.speed * dt;
+        spike.y += (dy / distance) * spike.speed * dt;
+      }
+      
+      // Check collision
+      if (rectsOverlap(
+        { x: spike.x - spike.size / 2, y: spike.y - spike.size / 2, w: spike.size, h: spike.size },
+        character
+      )) {
+        dealLeviathanDamage(spike.damage, "❄️ Ice Spike Hit!");
+        boss.iceSpikes.splice(i, 1);
+        continue;
+      }
+    }
+    
+    // Remove if expired
+    if (spike.life <= 0) {
+      boss.iceSpikes.splice(i, 1);
+    }
+  }
+  
+  // Update lightning bolts (enchanted only)
+  if (isEnchanted) {
+    for (let i = boss.lightningBolts.length - 1; i >= 0; i--) {
+      const bolt = boss.lightningBolts[i];
+      bolt.life -= dt * 1000;
+      
+      // Check collision with player
+      if (rectsOverlap(
+        { x: bolt.x - bolt.width / 2, y: bolt.y, w: bolt.width, h: bolt.height },
+        character
+      )) {
+        dealLeviathanDamage(bolt.damage, "⚡ Lightning Strike!");
+        boss.lightningBolts.splice(i, 1);
+        continue;
+      }
+      
+      // Remove if expired
+      if (bolt.life <= 0) {
+        boss.lightningBolts.splice(i, 1);
+      }
+    }
+  }
+}
+// ============================================
+// VOID BOSS ATTACK SYSTEM
+// ============================================
+
+function updateVoidBossAttacks(boss, dt) {
+  if (!boss.visible) return;
+  
+  // Update phase based on HP
+  const hpPercent = boss.hitsRemaining / boss.hitsToDie;
+  if (hpPercent > 0.66) boss.phase = 1;
+  else if (hpPercent > 0.33) boss.phase = 2;
+  else boss.phase = 3;
+  
+  // Attack timer
+  boss.attackTimer -= dt;
+  
+  // Select new attack when timer expires
+  if (boss.attackTimer <= 0 && !boss.currentAttack) {
+    const attacks = {
+      1: ['voidOrbs', 'blackHoles', 'voidRifts'],
+      2: ['voidOrbs', 'blackHoles', 'voidRifts', 'darkPulses'],
+      3: ['voidOrbs', 'blackHoles', 'voidRifts', 'darkPulses', 'voidOrbs'] // More orbs in phase 3
+    };
+    
+    const availableAttacks = attacks[boss.phase];
+    boss.currentAttack = availableAttacks[Math.floor(Math.random() * availableAttacks.length)];
+    boss.attackTimer = boss.phase === 3 ? 2000 : (boss.phase === 2 ? 2500 : 3000);
+    
+    // Launch attack
+    if (boss.currentAttack === 'voidOrbs') launchVoidOrbs(boss);
+    else if (boss.currentAttack === 'blackHoles') launchBlackHoles(boss);
+    else if (boss.currentAttack === 'voidRifts') launchVoidRifts(boss);
+    else if (boss.currentAttack === 'darkPulses') launchDarkPulses(boss);
+    
+    boss.currentAttack = null;
+  }
+  
+  // Update all active attacks
+  updateVoidOrbs(boss, dt);
+  updateBlackHoles(boss, dt);
+  updateVoidRifts(boss, dt);
+  updateDarkPulses(boss, dt);
+}
+
+function launchVoidOrbs(boss) {
+  const count = boss.phase === 3 ? 5 : (boss.phase === 2 ? 4 : 3);
+  const spreadAngle = Math.PI / 3;
+  
+  for (let i = 0; i < count; i++) {
+    const angle = -Math.PI/2 + spreadAngle * (i / (count - 1)) - spreadAngle/2;
+    boss.voidOrbs.push({
+      x: boss.x + boss.w / 2,
+      y: boss.y + boss.h,
+      vx: Math.cos(angle) * 150,
+      vy: Math.sin(angle) * 150,
+      radius: 15,
+      lifetime: 5000,
+      age: 0
+    });
+  }
+}
+
+function updateVoidOrbs(boss, dt) {
+  for (let i = boss.voidOrbs.length - 1; i >= 0; i--) {
+    const orb = boss.voidOrbs[i];
+    orb.x += orb.vx * dt / 1000;
+    orb.y += orb.vy * dt / 1000;
+    orb.age += dt;
+    
+    // Check player collision
+    const dx = orb.x - player.x;
+    const dy = orb.y - player.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    if (dist < orb.radius + player.size / 2) {
+      boss.playerCurrentHP--;
+      boss.voidOrbs.splice(i, 1);
+      
+      if (boss.playerCurrentHP <= 0) {
+        defeatVoidBoss();
+      }
+      continue;
+    }
+    
+    // Remove if expired or off-screen
+    if (orb.age > orb.lifetime || orb.y > canvas.height + 50) {
+      boss.voidOrbs.splice(i, 1);
+    }
+  }
+}
+
+function launchBlackHoles(boss) {
+  const count = boss.phase === 3 ? 3 : (boss.phase === 2 ? 2 : 1);
+  
+  for (let i = 0; i < count; i++) {
+    const x = Math.random() * (canvas.width - 100) + 50;
+    const y = Math.random() * 200 + 100;
+    
+    boss.blackHoles.push({
+      x: x,
+      y: y,
+      radius: 40,
+      pullRadius: 150,
+      lifetime: boss.phase === 3 ? 4000 : 3000,
+      age: 0
+    });
+  }
+}
+
+function updateBlackHoles(boss, dt) {
+  for (let i = boss.blackHoles.length - 1; i >= 0; i--) {
+    const hole = boss.blackHoles[i];
+    hole.age += dt;
+    
+    // Pull player towards black hole
+    const dx = hole.x - player.x;
+    const dy = hole.y - player.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    if (dist < hole.pullRadius) {
+      const pullStrength = (1 - dist / hole.pullRadius) * 100;
+      player.x += (dx / dist) * pullStrength * dt / 1000;
+      player.y += (dy / dist) * pullStrength * dt / 1000;
+      
+      // Damage if too close
+      if (dist < hole.radius) {
+        boss.playerCurrentHP--;
+        boss.blackHoles.splice(i, 1);
+        
+        if (boss.playerCurrentHP <= 0) {
+          defeatVoidBoss();
+        }
+        continue;
+      }
+    }
+    
+    // Remove if expired
+    if (hole.age > hole.lifetime) {
+      boss.blackHoles.splice(i, 1);
+    }
+  }
+}
+
+function launchVoidRifts(boss) {
+  const count = boss.phase === 3 ? 4 : 3;
+  
+  for (let i = 0; i < count; i++) {
+    boss.voidRifts.push({
+      x: Math.random() * canvas.width,
+      y: -50,
+      width: 30,
+      height: canvas.height + 100,
+      speed: boss.phase === 3 ? 200 : 150,
+      warningTime: 1000,
+      age: 0
+    });
+  }
+}
+
+function updateVoidRifts(boss, dt) {
+  for (let i = boss.voidRifts.length - 1; i >= 0; i--) {
+    const rift = boss.voidRifts[i];
+    rift.age += dt;
+    
+    // Move after warning
+    if (rift.age > rift.warningTime) {
+      rift.y += rift.speed * dt / 1000;
+    }
+    
+    // Check collision after warning
+    if (rift.age > rift.warningTime) {
+      if (player.x > rift.x - rift.width / 2 && 
+          player.x < rift.x + rift.width / 2 &&
+          player.y > rift.y && 
+          player.y < rift.y + rift.height) {
+        boss.playerCurrentHP -= 2;
+        boss.voidRifts.splice(i, 1);
+        
+        if (boss.playerCurrentHP <= 0) {
+          defeatVoidBoss();
+        }
+        continue;
+      }
+    }
+    
+    // Remove if off-screen
+    if (rift.y > canvas.height + 50) {
+      boss.voidRifts.splice(i, 1);
+    }
+  }
+}
+
+function launchDarkPulses(boss) {
+  const rings = boss.phase === 3 ? 4 : 3;
+  
+  for (let i = 0; i < rings; i++) {
+    boss.darkPulses.push({
+      x: boss.x + boss.w / 2,
+      y: boss.y + boss.h / 2,
+      radius: 20,
+      maxRadius: 400,
+      speed: 250,
+      thickness: 30
+    });
+  }
+}
+
+function updateDarkPulses(boss, dt) {
+  for (let i = boss.darkPulses.length - 1; i >= 0; i--) {
+    const pulse = boss.darkPulses[i];
+    pulse.radius += pulse.speed * dt / 1000;
+    
+    // Check player collision
+    const dx = player.x - pulse.x;
+    const dy = player.y - pulse.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    if (dist > pulse.radius - pulse.thickness && dist < pulse.radius + pulse.thickness) {
+      boss.playerCurrentHP--;
+      boss.darkPulses.splice(i, 1);
+      
+      if (boss.playerCurrentHP <= 0) {
+        defeatVoidBoss();
+      }
+      continue;
+    }
+    
+    // Remove if expanded beyond max
+    if (pulse.radius > pulse.maxRadius) {
+      boss.darkPulses.splice(i, 1);
+    }
+  }
+}
+
+// ============================================
+// DRAGON BOSS ATTACK SYSTEM
+// ============================================
+
+function updateDragonBossAttacks(boss, dt) {
+  if (!boss.visible) return;
+  
+  const hpPercent = boss.hitsRemaining / boss.hitsToDie;
+  if (hpPercent > 0.66) boss.phase = 1;
+  else if (hpPercent > 0.33) boss.phase = 2;
+  else boss.phase = 3;
+  
+  boss.attackTimer -= dt;
+  
+  if (boss.attackTimer <= 0 && !boss.currentAttack) {
+    const attacks = {
+      1: ['fireBreath', 'dragonClaws', 'meteorShower'],
+      2: ['fireBreath', 'dragonClaws', 'meteorShower', 'dragonRoar'],
+      3: ['fireBreath', 'dragonClaws', 'meteorShower', 'dragonRoar', 'fireBreath']
+    };
+    
+    const availableAttacks = attacks[boss.phase];
+    boss.currentAttack = availableAttacks[Math.floor(Math.random() * availableAttacks.length)];
+    boss.attackTimer = boss.phase === 3 ? 1800 : (boss.phase === 2 ? 2200 : 2800);
+    
+    if (boss.currentAttack === 'fireBreath') launchFireBreath(boss);
+    else if (boss.currentAttack === 'dragonClaws') launchDragonClaws(boss);
+    else if (boss.currentAttack === 'meteorShower') launchMeteorShower(boss);
+    else if (boss.currentAttack === 'dragonRoar') launchDragonRoar(boss);
+    
+    boss.currentAttack = null;
+  }
+  
+  updateFireBreath(boss, dt);
+  updateDragonClaws(boss, dt);
+  updateMeteorShower(boss, dt);
+  updateDragonRoar(boss, dt);
+}
+
+function launchFireBreath(boss) {
+  const streams = boss.phase === 3 ? 5 : 3;
+  const spreadAngle = boss.phase === 3 ? Math.PI / 2 : Math.PI / 4;
+  
+  for (let i = 0; i < streams; i++) {
+    const angle = -Math.PI/2 + spreadAngle * (i / (streams - 1)) - spreadAngle/2;
+    boss.fireBreath.push({
+      x: boss.x + boss.w / 2,
+      y: boss.y + boss.h,
+      vx: Math.cos(angle) * 180,
+      vy: Math.sin(angle) * 180,
+      radius: 20,
+      lifetime: 4000,
+      age: 0
+    });
+  }
+}
+
+function updateFireBreath(boss, dt) {
+  for (let i = boss.fireBreath.length - 1; i >= 0; i--) {
+    const fire = boss.fireBreath[i];
+    fire.x += fire.vx * dt / 1000;
+    fire.y += fire.vy * dt / 1000;
+    fire.age += dt;
+    
+    const dx = fire.x - player.x;
+    const dy = fire.y - player.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    if (dist < fire.radius + player.size / 2) {
+      boss.playerCurrentHP -= 2;
+      boss.fireBreath.splice(i, 1);
+      
+      if (boss.playerCurrentHP <= 0) {
+        defeatDragonBoss();
+      }
+      continue;
+    }
+    
+    if (fire.age > fire.lifetime || fire.y > canvas.height + 50) {
+      boss.fireBreath.splice(i, 1);
+    }
+  }
+}
+
+function launchDragonClaws(boss) {
+  const count = boss.phase === 3 ? 6 : 4;
+  
+  for (let i = 0; i < count; i++) {
+    const targetX = player.x + (Math.random() - 0.5) * 100;
+    const targetY = player.y + (Math.random() - 0.5) * 100;
+    
+    boss.dragonClaws.push({
+      x: boss.x + boss.w / 2,
+      y: boss.y + boss.h,
+      targetX: targetX,
+      targetY: targetY,
+      speed: boss.phase === 3 ? 350 : 280,
+      radius: 25,
+      warningTime: 500,
+      age: 0
+    });
+  }
+}
+
+function updateDragonClaws(boss, dt) {
+  for (let i = boss.dragonClaws.length - 1; i >= 0; i--) {
+    const claw = boss.dragonClaws[i];
+    claw.age += dt;
+    
+    if (claw.age > claw.warningTime) {
+      const dx = claw.targetX - claw.x;
+      const dy = claw.targetY - claw.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      
+      if (dist > 5) {
+        claw.x += (dx / dist) * claw.speed * dt / 1000;
+        claw.y += (dy / dist) * claw.speed * dt / 1000;
+      }
+    }
+    
+    if (claw.age > claw.warningTime) {
+      const dx = claw.x - player.x;
+      const dy = claw.y - player.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      
+      if (dist < claw.radius + player.size / 2) {
+        boss.playerCurrentHP -= 2;
+        boss.dragonClaws.splice(i, 1);
+        
+        if (boss.playerCurrentHP <= 0) {
+          defeatDragonBoss();
+        }
+        continue;
+      }
+    }
+    
+    const reachedTarget = Math.abs(claw.x - claw.targetX) < 10 && Math.abs(claw.y - claw.targetY) < 10;
+    if (reachedTarget || claw.age > 5000) {
+      boss.dragonClaws.splice(i, 1);
+    }
+  }
+}
+// ============================================
+// CELESTIAL BOSS ATTACK SYSTEM
+// ============================================
+
+function updateCelestialBossAttacks(boss, dt) {
+  if (!boss.visible) return;
+  
+  // Update phase based on HP
+  const hpPercent = boss.hitsRemaining / boss.hitsToDie;
+  if (hpPercent > 0.66) boss.phase = 1;
+  else if (hpPercent > 0.33) boss.phase = 2;
+  else boss.phase = 3;
+  
+  // Attack timer
+  boss.attackTimer -= dt * 1000;
+  
+  // Select new attack when timer expires
+  if (boss.attackTimer <= 0 && !boss.currentAttack) {
+    const attacks = {
+      1: ['starfall', 'starfall', 'celestialBeam'],
+      2: ['starfall', 'celestialBeam', 'cosmicNova'],
+      3: ['celestialBeam', 'cosmicNova', 'divineLight', 'divineLight']
+    };
+    
+    const availableAttacks = attacks[boss.phase];
+    boss.currentAttack = availableAttacks[Math.floor(Math.random() * availableAttacks.length)];
+    
+    // Phase-based cooldowns
+    if (boss.phase === 1) boss.attackTimer = 3000;
+    else if (boss.phase === 2) boss.attackTimer = 2500;
+    else boss.attackTimer = 2000;
+    
+    // Launch attack
+    if (boss.currentAttack === 'starfall') launchStarfall(boss);
+    else if (boss.currentAttack === 'celestialBeam') launchCelestialBeam(boss);
+    else if (boss.currentAttack === 'cosmicNova') launchCosmicNova(boss);
+    else if (boss.currentAttack === 'divineLight') launchDivineLight(boss);
+    
+    boss.currentAttack = null;
+  }
+  
+  // Update all active attacks
+  updateStarfall(boss, dt);
+  updateCelestialBeam(boss, dt);
+  updateCosmicNova(boss, dt);
+  updateDivineLight(boss, dt);
+}
+
+function launchStarfall(boss) {
+  const count = boss.phase === 3 ? 12 : (boss.phase === 2 ? 8 : 5);
+  
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      if (!boss.visible) return;
+      
+      boss.starfall.push({
+        x: Math.random() * W,
+        y: -30,
+        vx: (Math.random() - 0.5) * 50,
+        vy: 250 + Math.random() * 100,
+        size: 12,
+        trail: [],
+        life: 5000,
+        age: 0
+      });
+    }, i * 200);
+  }
+  
+  console.log("⭐ Celestial Boss used Starfall!");
+}
+
+function updateStarfall(boss, dt) {
+  for (let i = boss.starfall.length - 1; i >= 0; i--) {
+    const star = boss.starfall[i];
+    
+    // Store trail position
+    star.trail.push({ x: star.x, y: star.y });
+    if (star.trail.length > 10) star.trail.shift();
+    
+    star.x += star.vx * dt;
+    star.y += star.vy * dt;
+    star.age += dt * 1000;
+    
+    // Check collision with player
+    const dx = star.x - (character.x + character.w / 2);
+    const dy = star.y - (character.y + character.h / 2);
+    const dist = Math.hypot(dx, dy);
+    
+    if (dist < star.size + character.w / 2) {
+      dealBossDamage(celestialBoss, 2, "⭐ Starfall Hit!");
+      boss.starfall.splice(i, 1);
+      continue;
+    }
+    
+    // Remove if off-screen or expired
+    if (star.y > H + 50 || star.age > star.life) {
+      boss.starfall.splice(i, 1);
+    }
+  }
+}
+
+function launchCelestialBeam(boss) {
+  const targetX = character.x + character.w / 2;
+  const targetY = character.y + character.h / 2;
+  
+  boss.celestialBeam.push({
+    x: boss.x + boss.w / 2,
+    y: boss.y + boss.h / 2,
+    targetX: targetX,
+    targetY: targetY,
+    width: 25,
+    charging: true,
+    chargeTime: 1000,
+    fireTime: 1500,
+    age: 0,
+    life: 2500
+  });
+  
+  console.log("✨ Celestial Boss used Celestial Beam!");
+}
+
+function updateCelestialBeam(boss, dt) {
+  for (let i = boss.celestialBeam.length - 1; i >= 0; i--) {
+    const beam = boss.celestialBeam[i];
+    beam.age += dt * 1000;
+    
+    // Charging phase
+    if (beam.charging && beam.age < beam.chargeTime) {
+      // Just charging, no damage
+    } else if (beam.charging) {
+      beam.charging = false;
+      beam.fired = true;
+    }
+    
+    // Firing phase
+    if (beam.fired) {
+      // Check if player is in beam path
+      const dx = beam.targetX - beam.x;
+      const dy = beam.targetY - beam.y;
+      const distance = Math.hypot(dx, dy);
+      
+      // Calculate perpendicular distance from player to beam line
+      const playerX = character.x + character.w / 2;
+      const playerY = character.y + character.h / 2;
+      
+      const t = Math.max(0, Math.min(1, ((playerX - beam.x) * dx + (playerY - beam.y) * dy) / (distance * distance)));
+      const closestX = beam.x + t * dx;
+      const closestY = beam.y + t * dy;
+      
+      const distToBeam = Math.hypot(playerX - closestX, playerY - closestY);
+      
+      if (distToBeam < beam.width / 2 + character.w / 2 && !beam.hitPlayer) {
+        dealBossDamage(celestialBoss, 2, "✨ Celestial Beam Hit!");
+        beam.hitPlayer = true;
+      }
+    }
+    
+    // Remove if expired
+    if (beam.age > beam.life) {
+      boss.celestialBeam.splice(i, 1);
+    }
+  }
+}
+
+function launchCosmicNova(boss) {
+  boss.cosmicNova.push({
+    x: boss.x + boss.w / 2,
+    y: boss.y + boss.h / 2,
+    radius: 20,
+    maxRadius: 250,
+    speed: 200,
+    expanding: true,
+    life: 3000,
+    age: 0,
+    damage: 2
+  });
+  
+  console.log("💫 Celestial Boss used Cosmic Nova!");
+}
+
+function updateCosmicNova(boss, dt) {
+  for (let i = boss.cosmicNova.length - 1; i >= 0; i--) {
+    const nova = boss.cosmicNova[i];
+    nova.age += dt * 1000;
+    
+    // Expand
+    if (nova.expanding && nova.radius < nova.maxRadius) {
+      nova.radius += nova.speed * dt;
+      
+      if (nova.radius >= nova.maxRadius) {
+        nova.expanding = false;
+      }
+    }
+    
+    // Check collision with player (ring damage)
+    const dx = nova.x - (character.x + character.w / 2);
+    const dy = nova.y - (character.y + character.h / 2);
+    const distToCenter = Math.hypot(dx, dy);
+    
+    const distToEdge = Math.abs(distToCenter - nova.radius);
+    
+    if (distToEdge < 30 && !nova.hitPlayer) {
+      dealBossDamage(celestialBoss, nova.damage, "💫 Cosmic Nova Hit!");
+      nova.hitPlayer = true;
+      
+      // Reset hit after a short time to allow multiple hits
+      setTimeout(() => { nova.hitPlayer = false; }, 500);
+    }
+    
+    // Remove if expired
+    if (nova.age > nova.life) {
+      boss.cosmicNova.splice(i, 1);
+    }
+  }
+}
+
+function launchDivineLight(boss) {
+  const count = 4;
+  
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      if (!boss.visible) return;
+      
+      boss.divineLight.push({
+        x: Math.random() * W,
+        y: 0,
+        width: 40,
+        height: H,
+        warningTime: 800,
+        activeTime: 1000,
+        age: 0,
+        warning: true
+      });
+    }, i * 400);
+  }
+  
+  console.log("🌟 Celestial Boss used Divine Light!");
+}
+
+function updateDivineLight(boss, dt) {
+  for (let i = boss.divineLight.length - 1; i >= 0; i--) {
+    const light = boss.divineLight[i];
+    light.age += dt * 1000;
+    
+    // Warning phase
+    if (light.warning && light.age < light.warningTime) {
+      // Just warning
+    } else if (light.warning) {
+      light.warning = false;
+      light.active = true;
+    }
+    
+    // Active phase - damage
+    if (light.active) {
+      if (rectsOverlap(
+        { x: light.x - light.width / 2, y: light.y, w: light.width, h: light.height },
+        character
+      ) && !light.hitPlayer) {
+        dealBossDamage(celestialBoss, 1, "🌟 Divine Light Hit!");
+        light.hitPlayer = true;
+      }
+    }
+    
+    // Remove if expired
+    if (light.age > light.warningTime + light.activeTime) {
+      boss.divineLight.splice(i, 1);
+    }
+  }
+}
+
+// ============================================
+// MYTHRIL BOSS ATTACK SYSTEM
+// ============================================
+
+function updateMythrilBossAttacks(boss, dt) {
+  if (!boss.visible) return;
+  
+  // Update phase based on HP
+  const hpPercent = boss.hitsRemaining / boss.hitsToDie;
+  if (hpPercent > 0.66) boss.phase = 1;
+  else if (hpPercent > 0.33) boss.phase = 2;
+  else boss.phase = 3;
+  
+  // Attack timer
+  boss.attackTimer -= dt * 1000;
+  
+  // Select new attack when timer expires
+  if (boss.attackTimer <= 0 && !boss.currentAttack) {
+    const attacks = {
+      1: ['metalShards', 'metalShards', 'hammerSlam'],
+      2: ['metalShards', 'hammerSlam', 'forgeExplosion'],
+      3: ['hammerSlam', 'forgeExplosion', 'ironWall', 'ironWall']
+    };
+    
+    const availableAttacks = attacks[boss.phase];
+    boss.currentAttack = availableAttacks[Math.floor(Math.random() * availableAttacks.length)];
+    
+    // Phase-based cooldowns
+    if (boss.phase === 1) boss.attackTimer = 3500;
+    else if (boss.phase === 2) boss.attackTimer = 2800;
+    else boss.attackTimer = 2200;
+    
+    // Launch attack
+    if (boss.currentAttack === 'metalShards') launchMetalShards(boss);
+    else if (boss.currentAttack === 'hammerSlam') launchHammerSlam(boss);
+    else if (boss.currentAttack === 'forgeExplosion') launchForgeExplosion(boss);
+    else if (boss.currentAttack === 'ironWall') launchIronWall(boss);
+    
+    boss.currentAttack = null;
+  }
+  
+  // Update all active attacks
+  updateMetalShards(boss, dt);
+  updateHammerSlam(boss, dt);
+  updateForgeExplosion(boss, dt);
+  updateIronWall(boss, dt);
+}
+
+function launchMetalShards(boss) {
+  const count = boss.phase === 3 ? 16 : (boss.phase === 2 ? 12 : 8);
+  
+  for (let i = 0; i < count; i++) {
+    const angle = (i / count) * Math.PI * 2;
+    
+    boss.metalShards.push({
+      x: boss.x + boss.w / 2,
+      y: boss.y + boss.h / 2,
+      vx: Math.cos(angle) * 220,
+      vy: Math.sin(angle) * 220,
+      size: 15,
+      rotation: 0,
+      rotationSpeed: 5,
+      life: 4000,
+      age: 0
+    });
+  }
+  
+  console.log("⚙️ Mythril Boss used Metal Shards!");
+}
+
+function updateMetalShards(boss, dt) {
+  for (let i = boss.metalShards.length - 1; i >= 0; i--) {
+    const shard = boss.metalShards[i];
+    
+    shard.x += shard.vx * dt;
+    shard.y += shard.vy * dt;
+    shard.rotation += shard.rotationSpeed * dt;
+    shard.age += dt * 1000;
+    
+    // Check collision with player
+    const dx = shard.x - (character.x + character.w / 2);
+    const dy = shard.y - (character.y + character.h / 2);
+    const dist = Math.hypot(dx, dy);
+    
+    if (dist < shard.size + character.w / 2) {
+      dealBossDamage(mythrilBoss, 2, "⚙️ Metal Shard Hit!");
+      boss.metalShards.splice(i, 1);
+      continue;
+    }
+    
+    // Remove if off-screen or expired
+    if (shard.age > shard.life || shard.x < -50 || shard.x > W + 50 || shard.y < -50 || shard.y > H + 50) {
+      boss.metalShards.splice(i, 1);
+    }
+  }
+}
+
+function launchHammerSlam(boss) {
+  const targetX = character.x + character.w / 2;
+  const targetY = character.y + character.h / 2;
+  
+  boss.hammerSlam.push({
+    x: targetX,
+    y: -50,
+    targetY: targetY,
+    speed: 400,
+    size: 60,
+    impactRadius: 100,
+    falling: true,
+    impacted: false,
+    life: 3000,
+    age: 0
+  });
+  
+  console.log("🔨 Mythril Boss used Hammer Slam!");
+}
+
+function updateHammerSlam(boss, dt) {
+  for (let i = boss.hammerSlam.length - 1; i >= 0; i--) {
+    const hammer = boss.hammerSlam[i];
+    hammer.age += dt * 1000;
+    
+    // Falling phase
+    if (hammer.falling) {
+      hammer.y += hammer.speed * dt;
+      
+      // Check if reached target
+      if (hammer.y >= hammer.targetY) {
+        hammer.falling = false;
+        hammer.impacted = true;
+        hammer.impactTime = hammer.age;
+        
+        // Check if player is in impact radius
+        const dx = hammer.x - (character.x + character.w / 2);
+        const dy = hammer.y - (character.y + character.h / 2);
+        const dist = Math.hypot(dx, dy);
+        
+        if (dist < hammer.impactRadius) {
+          dealBossDamage(mythrilBoss, 3, "🔨 Hammer Slam Impact!");
+        }
+      }
+    }
+    
+    // Remove after impact animation
+    if (hammer.impacted && hammer.age > hammer.impactTime + 500) {
+      boss.hammerSlam.splice(i, 1);
+    }
+    
+    // Remove if expired
+    if (hammer.age > hammer.life) {
+      boss.hammerSlam.splice(i, 1);
+    }
+  }
+}
+
+function launchForgeExplosion(boss) {
+  boss.forgeExplosion.push({
+    x: boss.x + boss.w / 2,
+    y: boss.y + boss.h / 2,
+    radius: 30,
+    maxRadius: 200,
+    speed: 250,
+    expanding: true,
+    pulses: 3,
+    currentPulse: 0,
+    life: 4000,
+    age: 0
+  });
+  
+  console.log("💥 Mythril Boss used Forge Explosion!");
+}
+
+function updateForgeExplosion(boss, dt) {
+  for (let i = boss.forgeExplosion.length - 1; i >= 0; i--) {
+    const explosion = boss.forgeExplosion[i];
+    explosion.age += dt * 1000;
+    
+    // Expand
+    if (explosion.expanding) {
+      explosion.radius += explosion.speed * dt;
+      
+      // Check if pulse complete
+      if (explosion.radius >= explosion.maxRadius) {
+        explosion.currentPulse++;
+        
+        if (explosion.currentPulse < explosion.pulses) {
+          explosion.radius = 30; // Reset for next pulse
+        } else {
+          explosion.expanding = false;
+        }
+      }
+      
+      // Check collision during expansion
+      const dx = explosion.x - (character.x + character.w / 2);
+      const dy = explosion.y - (character.y + character.h / 2);
+      const distToCenter = Math.hypot(dx, dy);
+      
+      const distToEdge = Math.abs(distToCenter - explosion.radius);
+      
+      if (distToEdge < 40 && !explosion.hitThisPulse) {
+        dealBossDamage(mythrilBoss, 2, "💥 Forge Explosion Hit!");
+        explosion.hitThisPulse = true;
+      }
+      
+      // Reset hit detection for next pulse
+      if (explosion.radius > explosion.maxRadius - 10) {
+        explosion.hitThisPulse = false;
+      }
+    }
+    
+    // Remove if expired
+    if (explosion.age > explosion.life || (!explosion.expanding && explosion.currentPulse >= explosion.pulses)) {
+      boss.forgeExplosion.splice(i, 1);
+    }
+  }
+}
+
+function launchIronWall(boss) {
+  const count = boss.phase === 3 ? 5 : 4;
+  const spacing = W / (count + 1);
+  
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      if (!boss.visible) return;
+      
+      boss.ironWall.push({
+        x: spacing * (i + 1),
+        y: -50,
+        width: 50,
+        height: 80,
+        speed: 200,
+        falling: true,
+        life: 5000,
+        age: 0
+      });
+    }, i * 300);
+  }
+  
+  console.log("🛡️ Mythril Boss used Iron Wall!");
+}
+
+function updateIronWall(boss, dt) {
+  for (let i = boss.ironWall.length - 1; i >= 0; i--) {
+    const wall = boss.ironWall[i];
+    wall.age += dt * 1000;
+    
+    // Falling
+    if (wall.falling) {
+      wall.y += wall.speed * dt;
+      
+      // Stop at ground
+      if (wall.y >= H - wall.height) {
+        wall.y = H - wall.height;
+        wall.falling = false;
+        wall.grounded = true;
+      }
+    }
+    
+    // Check collision with player
+    if (rectsOverlap(
+      { x: wall.x - wall.width / 2, y: wall.y, w: wall.width, h: wall.height },
+      character
+    )) {
+      dealBossDamage(mythrilBoss, 2, "🛡️ Iron Wall Hit!");
+      boss.ironWall.splice(i, 1);
+      continue;
+    }
+    
+    // Remove if expired
+    if (wall.age > wall.life) {
+      boss.ironWall.splice(i, 1);
+    }
+  }
+}
+
+// ============================================
+// INFINITY BOSS ATTACK SYSTEM
+// ============================================
+
+function updateInfinityBossAttacks(boss, dt) {
+  if (!boss.visible) return;
+  
+  // Update phase based on HP
+  const hpPercent = boss.hitsRemaining / boss.hitsToDie;
+  if (hpPercent > 0.66) boss.phase = 1;
+  else if (hpPercent > 0.33) boss.phase = 2;
+  else boss.phase = 3;
+  
+  // Attack timer
+  boss.attackTimer -= dt * 1000;
+  
+  // Select new attack when timer expires
+  if (boss.attackTimer <= 0 && !boss.currentAttack) {
+    const attacks = {
+      1: ['infinityBlast', 'infinityBlast', 'timeSplit'],
+      2: ['infinityBlast', 'timeSplit', 'realityWarp'],
+      3: ['timeSplit', 'realityWarp', 'endlessVoid', 'endlessVoid']
+    };
+    
+    const availableAttacks = attacks[boss.phase];
+    boss.currentAttack = availableAttacks[Math.floor(Math.random() * availableAttacks.length)];
+    
+    // Phase-based cooldowns
+    if (boss.phase === 1) boss.attackTimer = 4000;
+    else if (boss.phase === 2) boss.attackTimer = 3000;
+    else boss.attackTimer = 2500;
+    
+    // Launch attack
+    if (boss.currentAttack === 'infinityBlast') launchInfinityBlast(boss);
+    else if (boss.currentAttack === 'timeSplit') launchTimeSplit(boss);
+    else if (boss.currentAttack === 'realityWarp') launchRealityWarp(boss);
+    else if (boss.currentAttack === 'endlessVoid') launchEndlessVoid(boss);
+    
+    boss.currentAttack = null;
+  }
+  
+  // Update all active attacks
+  updateInfinityBlast(boss, dt);
+  updateTimeSplit(boss, dt);
+  updateRealityWarp(boss, dt);
+  updateEndlessVoid(boss, dt);
+}
+
+function launchInfinityBlast(boss) {
+  const count = boss.phase === 3 ? 8 : (boss.phase === 2 ? 6 : 4);
+  
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      if (!boss.visible) return;
+      
+      const angle = Math.atan2(character.y - boss.y, character.x - boss.x);
+      const spread = (Math.random() - 0.5) * 0.4;
+      
+      boss.infinityBlast.push({
+        x: boss.x + boss.w / 2,
+        y: boss.y + boss.h / 2,
+        vx: Math.cos(angle + spread) * 280,
+        vy: Math.sin(angle + spread) * 280,
+        size: 20,
+        hue: Math.random() * 360,
+        life: 4000,
+        age: 0
+      });
+    }, i * 150);
+  }
+  
+  console.log("♾️ Infinity Boss used Infinity Blast!");
+}
+
+function updateInfinityBlast(boss, dt) {
+  for (let i = boss.infinityBlast.length - 1; i >= 0; i--) {
+    const blast = boss.infinityBlast[i];
+    
+    blast.x += blast.vx * dt;
+    blast.y += blast.vy * dt;
+    blast.hue = (blast.hue + 200 * dt) % 360;
+    blast.age += dt * 1000;
+    
+    // Check collision with player
+    const dx = blast.x - (character.x + character.w / 2);
+    const dy = blast.y - (character.y + character.h / 2);
+    const dist = Math.hypot(dx, dy);
+    
+    if (dist < blast.size + character.w / 2) {
+      dealBossDamage(infinityBoss, 3, "♾️ Infinity Blast Hit!");
+      boss.infinityBlast.splice(i, 1);
+      continue;
+    }
+    
+    // Remove if off-screen or expired
+    if (blast.age > blast.life || blast.x < -50 || blast.x > W + 50 || blast.y < -50 || blast.y > H + 50) {
+      boss.infinityBlast.splice(i, 1);
+    }
+  }
+}
+
+function launchTimeSplit(boss) {
+  // Create temporal clones at previous player positions
+  const cloneCount = boss.phase === 3 ? 4 : 3;
+  
+  for (let i = 0; i < cloneCount; i++) {
+    setTimeout(() => {
+      if (!boss.visible) return;
+      
+      boss.timeSplit.push({
+        x: character.x,
+        y: character.y,
+        size: character.w,
+        delay: 1000,
+        age: 0,
+        life: 3000,
+        exploding: false
+      });
+    }, i * 800);
+  }
+  
+  console.log("⏰ Infinity Boss used Time Split!");
+}
+
+function updateTimeSplit(boss, dt) {
+  for (let i = boss.timeSplit.length - 1; i >= 0; i--) {
+    const split = boss.timeSplit[i];
+    split.age += dt * 1000;
+    
+    // After delay, explode
+    if (split.age > split.delay && !split.exploding) {
+      split.exploding = true;
+      split.explosionRadius = 0;
+      split.maxExplosionRadius = 80;
+    }
+    
+    // Expand explosion
+    if (split.exploding) {
+      split.explosionRadius += 300 * dt;
+      
+      // Check collision
+      if (!split.hitPlayer) {
+        const dx = split.x + split.size / 2 - (character.x + character.w / 2);
+        const dy = split.y + split.size / 2 - (character.y + character.h / 2);
+        const dist = Math.hypot(dx, dy);
+        
+        if (dist < split.explosionRadius) {
+          dealBossDamage(infinityBoss, 2, "⏰ Time Split Explosion!");
+          split.hitPlayer = true;
+        }
+      }
+    }
+    
+    // Remove if expired
+    if (split.age > split.life || (split.exploding && split.explosionRadius > split.maxExplosionRadius)) {
+      boss.timeSplit.splice(i, 1);
+    }
+  }
+}
+
+function launchRealityWarp(boss) {
+  boss.realityWarp.push({
+    x: Math.random() * W,
+    y: Math.random() * H,
+    radius: 80,
+    pulseRadius: 80,
+    maxPulseRadius: 200,
+    pulling: true,
+    pullStrength: 250,
+    life: 4000,
+    age: 0
+  });
+  
+  console.log("🌀 Infinity Boss used Reality Warp!");
+}
+
+function updateRealityWarp(boss, dt) {
+  for (let i = boss.realityWarp.length - 1; i >= 0; i--) {
+    const warp = boss.realityWarp[i];
+    warp.age += dt * 1000;
+    
+    // Pulse effect
+    warp.pulseRadius += 150 * dt;
+    if (warp.pulseRadius > warp.maxPulseRadius) {
+      warp.pulseRadius = warp.radius;
+    }
+    
+    // Pull player
+    const dx = warp.x - (character.x + character.w / 2);
+    const dy = warp.y - (character.y + character.h / 2);
+    const distance = Math.hypot(dx, dy);
+    
+    if (distance < warp.maxPulseRadius) {
+      const force = (1 - distance / warp.maxPulseRadius) * warp.pullStrength;
+      character.x += (dx / distance) * force * dt;
+      character.y += (dy / distance) * force * dt;
+      
+      // Damage if very close
+      if (distance < warp.radius && !warp.hitThisFrame) {
+        dealBossDamage(infinityBoss, 2, "🌀 Reality Warp Damage!");
+        warp.hitThisFrame = true;
+        setTimeout(() => { warp.hitThisFrame = false; }, 500);
+      }
+    }
+    
+    // Remove if expired
+    if (warp.age > warp.life) {
+      boss.realityWarp.splice(i, 1);
+    }
+  }
+}
+
+function launchEndlessVoid(boss) {
+  const count = boss.phase === 3 ? 6 : 4;
+  
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      if (!boss.visible) return;
+      
+      boss.endlessVoid.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        radius: 10,
+        maxRadius: 120,
+        speed: 180,
+        expanding: true,
+        life: 5000,
+        age: 0,
+        damage: 3
+      });
+    }, i * 500);
+  }
+  
+  console.log("🕳️ Infinity Boss used Endless Void!");
+}
+
+function updateEndlessVoid(boss, dt) {
+  for (let i = boss.endlessVoid.length - 1; i >= 0; i--) {
+    const void_ = boss.endlessVoid[i];
+    void_.age += dt * 1000;
+    
+    // Expand
+    if (void_.expanding && void_.radius < void_.maxRadius) {
+      void_.radius += void_.speed * dt;
+      
+      if (void_.radius >= void_.maxRadius) {
+        void_.expanding = false;
+        void_.shrinking = true;
+      }
+    }
+    
+    // Shrink
+    if (void_.shrinking) {
+      void_.radius -= void_.speed * 0.5 * dt;
+      
+      if (void_.radius <= 10) {
+        void_.shrinking = false;
+        void_.expanding = true;
+      }
+    }
+    
+    // Check collision
+    const dx = void_.x - (character.x + character.w / 2);
+    const dy = void_.y - (character.y + character.h / 2);
+    const distance = Math.hypot(dx, dy);
+    
+    if (distance < void_.radius && !void_.hitPlayer) {
+      dealBossDamage(infinityBoss, void_.damage, "🕳️ Endless Void Hit!");
+      void_.hitPlayer = true;
+      setTimeout(() => { void_.hitPlayer = false; }, 1000);
+    }
+    
+    // Remove if expired
+    if (void_.age > void_.life) {
+      boss.endlessVoid.splice(i, 1);
+    }
+  }
+}
+
+// ============================================
+// GENERIC BOSS DAMAGE FUNCTION
+// ============================================
+
+function dealBossDamage(boss, damage, message) {
+  // Determine which boss and use appropriate HP system
+  if (boss === voidBoss || boss === dragonBoss || boss === celestialBoss || 
+      boss === mythrilBoss || boss === infinityBoss) {
+    
+    const damageReduction = window.leviathanArmorEquipped ? (window.leviathanArmorDamageReduction || 0) : 0;
+    const actualDamage = Math.random() < damageReduction ? 0 : damage;
+    
+    boss.playerCurrentHP -= actualDamage;
+    
+    const dmgIndicator = document.createElement('div');
+    dmgIndicator.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: ${actualDamage === 0 ? 'rgba(34, 139, 34, 0.9)' : 'rgba(220, 20, 60, 0.9)'};
+      color: white;
+      padding: 20px 40px;
+      border-radius: 15px;
+      font-size: 24px;
+      font-weight: bold;
+      z-index: 10001;
+      animation: fadeOut 1s forwards;
+    `;
+    dmgIndicator.textContent = actualDamage === 0 ? '🛡️ BLOCKED!' : message;
+    document.body.appendChild(dmgIndicator);
+    
+    setTimeout(() => dmgIndicator.remove(), 1000);
+    
+    if (boss.playerCurrentHP <= 0) {
+      money = money / 2n;
+      boss.visible = false;
+      boss.playerCurrentHP = boss.playerMaxHP;
+      
+      // Clear all attack arrays
+      boss.voidOrbs = [];
+      boss.blackHoles = [];
+      boss.voidRifts = [];
+      boss.darkPulses = [];
+      boss.fireBreath = [];
+      boss.dragonClaws = [];
+      boss.meteorShower = [];
+      boss.dragonRoar = [];
+      boss.starfall = [];
+      boss.celestialBeam = [];
+      boss.cosmicNova = [];
+      boss.divineLight = [];
+      boss.metalShards = [];
+      boss.hammerSlam = [];
+      boss.forgeExplosion = [];
+      boss.ironWall = [];
+      boss.infinityBlast = [];
+      boss.timeSplit = [];
+      boss.realityWarp = [];
+      boss.endlessVoid = [];
+      
+      alert(`💀 Defeated by ${boss.emoji} boss!\n\nLost 50% money!`);
+      updateDisplays();
+    }
+  }
+}
+function launchMeteorShower(boss) {
+  const count = boss.phase === 3 ? 12 : (boss.phase === 2 ? 8 : 6);
+  
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      if (!boss.visible) return;
+      
+      boss.meteorShower.push({
+        x: Math.random() * canvas.width,
+        y: -50,
+        vx: (Math.random() - 0.5) * 50,
+        vy: boss.phase === 3 ? 350 : 280,
+        radius: 18,
+        explosionRadius: 60
+      });
+    }, i * 200);
+  }
+}
+
+function updateMeteorShower(boss, dt) {
+  for (let i = boss.meteorShower.length - 1; i >= 0; i--) {
+    const meteor = boss.meteorShower[i];
+    meteor.x += meteor.vx * dt / 1000;
+    meteor.y += meteor.vy * dt / 1000;
+    
+    const dx = meteor.x - player.x;
+    const dy = meteor.y - player.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    if (dist < meteor.radius + player.size / 2) {
+      boss.playerCurrentHP -= 2;
+      boss.meteorShower.splice(i, 1);
+      
+      if (boss.playerCurrentHP <= 0) {
+        defeatDragonBoss();
+      }
+      continue;
+    }
+    
+    if (meteor.y > canvas.height) {
+      const explosionDist = Math.sqrt((meteor.x - player.x) ** 2 + (canvas.height - player.y) ** 2);
+      if (explosionDist < meteor.explosionRadius) {
+        boss.playerCurrentHP--;
+        if (boss.playerCurrentHP <= 0) {
+          defeatDragonBoss();
+        }
+      }
+      boss.meteorShower.splice(i, 1);
+    }
+  }
+}
+
+function launchDragonRoar(boss) {
+  boss.dragonRoar.push({
+    x: boss.x + boss.w / 2,
+    y: boss.y + boss.h / 2,
+    radius: 50,
+    maxRadius: 500,
+    speed: 400,
+    damage: 3
+  });
+}
+
+function updateDragonRoar(boss, dt) {
+  for (let i = boss.dragonRoar.length - 1; i >= 0; i--) {
+    const roar = boss.dragonRoar[i];
+    roar.radius += roar.speed * dt / 1000;
+    
+    const dx = player.x - roar.x;
+    const dy = player.y - roar.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    if (dist < roar.radius && dist > roar.radius - 50) {
+      boss.playerCurrentHP -= roar.damage;
+      boss.dragonRoar.splice(i, 1);
+      
+      if (boss.playerCurrentHP <= 0) {
+        defeatDragonBoss();
+      }
+      continue;
+    }
+    
+    if (roar.radius > roar.maxRadius) {
+      boss.dragonRoar.splice(i, 1);
+    }
+  }
+}
+
+function dealLeviathanDamage(damage, message) {
+  const damageReduction = window.leviathanArmorEquipped ? (window.leviathanArmorDamageReduction || 0) : 0;
+  const actualDamage = Math.random() < damageReduction ? 0 : damage;
+  
+  leviathanBoss.playerCurrentHP -= actualDamage;
+  
+  const dmgIndicator = document.createElement('div');
+  dmgIndicator.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: ${actualDamage === 0 ? 'rgba(34, 139, 34, 0.9)' : 'rgba(220, 20, 60, 0.9)'};
+    color: white;
+    padding: 20px 40px;
+    border-radius: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    z-index: 10001;
+    animation: fadeOut 1s forwards;
+  `;
+  dmgIndicator.textContent = actualDamage === 0 ? '🛡️ BLOCKED!' : message;
+  document.body.appendChild(dmgIndicator);
+  
+  setTimeout(() => dmgIndicator.remove(), 1000);
+  
+  if (leviathanBoss.playerCurrentHP <= 0) {
+    const activeBoss = leviathanBoss.visible ? leviathanBoss : enchantedLeviathanBoss;
+    money = money / 2n;
+    activeBoss.visible = false;
+    leviathanBoss.visible = false;
+    enchantedLeviathanBoss.visible = false;
+    harpoon.equipped = false;
+    endForgottenAltar();
+    
+    // Clear all attack projectiles
+    activeBoss.waterBalls = [];
+    activeBoss.tidalWaves = [];
+    activeBoss.whirlpools = [];
+    activeBoss.iceSpikes = [];
+    if (activeBoss.lightningBolts) activeBoss.lightningBolts = [];
+    
+    alert("💀 Defeated by the Leviathan!\n\nLost 50% money!");
+  }
+}
 // Make functions globally accessible
 window.useLeviathanTotem = useLeviathanTotem;
 window.summonEnchantedLeviathan = summonEnchantedLeviathan;
@@ -6109,7 +8962,8 @@ if (leviathanBoss.visible) {
   const dx = character.x - leviathanBoss.x;
   const dy = character.y - leviathanBoss.y;
   const distance = Math.hypot(dx, dy);
-  
+    // ADD THIS LINE:
+  updateLeviathanAttacks(leviathanBoss, dt);
   // Leviathan stays on right side, moves up and down slowly
   const targetY = H / 2 + Math.sin(Date.now() / 1000) * 100;
   leviathanBoss.y += (targetY - leviathanBoss.y) * dt * 0.5;
@@ -6118,15 +8972,16 @@ if (leviathanBoss.visible) {
   if (distance < leviathanBoss.longRangeRadius && !leviathanBoss.attackCooldown) {
     leviathanBoss.attackCooldown = true;
     leviathanBoss.playerHits++;
-const damageReduction = window.leviathanArmorEquipped ? (window.leviathanArmorDamageReduction || 0) : 0;
-const damage = Math.random() < damageReduction ? 0 : 1;
-leviathanBoss.playerCurrentHP -= damage;
-
-if (damage === 0) {
-  console.log("🛡️ Leviathan Armor blocked the attack!");
-}
     
-    console.log(`🌊 Leviathan attacked! Player HP: ${leviathanBoss.playerCurrentHP}/${leviathanBoss.playerMaxHP}`);
+    const damageReduction = window.leviathanArmorEquipped ? (window.leviathanArmorDamageReduction || 0) : 0;
+    const damage = Math.random() < damageReduction ? 0 : 1;
+    leviathanBoss.playerCurrentHP -= damage;
+    
+    if (damage === 0) {
+      console.log("🛡️ Leviathan Armor blocked the attack!");
+    } else {
+      console.log(`🌊 Leviathan attacked! Player HP: ${leviathanBoss.playerCurrentHP}/${leviathanBoss.playerMaxHP}`);
+    }
     
     // Show damage indicator
     const dmgIndicator = document.createElement('div');
@@ -6144,7 +8999,7 @@ if (damage === 0) {
       z-index: 10001;
       animation: fadeOut 1s forwards;
     `;
-    dmgIndicator.textContent = `🌊 HIT! ${leviathanBoss.playerCurrentHP} HP LEFT`;
+    dmgIndicator.textContent = damage === 0 ? '🛡️ BLOCKED!' : `🌊 HIT! ${leviathanBoss.playerCurrentHP} HP LEFT`;
     document.body.appendChild(dmgIndicator);
     
     setTimeout(() => dmgIndicator.remove(), 1000);
@@ -6170,14 +9025,21 @@ if (enchantedLeviathanBoss.visible) {
   // Enchanted Leviathan moves more aggressively
   const targetY = H / 2 + Math.sin(Date.now() / 800) * 120;
   enchantedLeviathanBoss.y += (targetY - enchantedLeviathanBoss.y) * dt * 0.7;
-  
+  updateEnchantedLeviathanAttacks(enchantedLeviathanBoss, dt);
   // Long range attack (faster)
   if (distance < enchantedLeviathanBoss.longRangeRadius && !enchantedLeviathanBoss.attackCooldown) {
     enchantedLeviathanBoss.attackCooldown = true;
     enchantedLeviathanBoss.playerHits++;
-    leviathanBoss.playerCurrentHP--;
     
-    console.log(`✨🌊 Enchanted Leviathan attacked! Player HP: ${leviathanBoss.playerCurrentHP}/${leviathanBoss.playerMaxHP}`);
+    const damageReduction = window.leviathanArmorEquipped ? (window.leviathanArmorDamageReduction || 0) : 0;
+    const damage = Math.random() < damageReduction ? 0 : 1;
+    leviathanBoss.playerCurrentHP -= damage;
+    
+    if (damage === 0) {
+      console.log("🛡️ Leviathan Armor blocked the attack!");
+    } else {
+      console.log(`✨🌊 Enchanted Leviathan attacked! Player HP: ${leviathanBoss.playerCurrentHP}/${leviathanBoss.playerMaxHP}`);
+    }
     
     const dmgIndicator = document.createElement('div');
     dmgIndicator.style.cssText = `
@@ -6194,7 +9056,7 @@ if (enchantedLeviathanBoss.visible) {
       z-index: 10001;
       animation: fadeOut 1s forwards;
     `;
-    dmgIndicator.textContent = `✨ HIT! ${leviathanBoss.playerCurrentHP} HP LEFT`;
+    dmgIndicator.textContent = damage === 0 ? '🛡️ BLOCKED!' : `✨ HIT! ${leviathanBoss.playerCurrentHP} HP LEFT`;
     document.body.appendChild(dmgIndicator);
     
     setTimeout(() => dmgIndicator.remove(), 1000);
@@ -6209,6 +9071,86 @@ if (enchantedLeviathanBoss.visible) {
     
     setTimeout(() => (enchantedLeviathanBoss.attackCooldown = false), 2500);
   }
+}
+// After the Leviathan boss updates, add:
+
+// 🌌 VOID BOSS LOGIC
+if (voidBoss.visible) {
+  const dx = character.x - voidBoss.x;
+  const dy = character.y - voidBoss.y;
+  const distance = Math.hypot(dx, dy);
+  
+  // Void boss floats and follows slowly
+  if (distance > 100) {
+    voidBoss.x += (dx / distance) * voidBoss.speed * dt * 0.4;
+    voidBoss.y += (dy / distance) * voidBoss.speed * dt * 0.4;
+  }
+  
+  updateVoidBossAttacks(voidBoss, dt);
+}
+
+// 🐉 DRAGON BOSS LOGIC
+if (dragonBoss.visible) {
+  const dx = character.x - dragonBoss.x;
+  const dy = character.y - dragonBoss.y;
+  const distance = Math.hypot(dx, dy);
+  
+  // Dragon flies around player
+  if (distance > 150) {
+    dragonBoss.x += (dx / distance) * dragonBoss.speed * dt * 0.5;
+    dragonBoss.y += (dy / distance) * dragonBoss.speed * dt * 0.5;
+  }
+  
+  updateDragonBossAttacks(dragonBoss, dt);
+}
+
+// ✨ CELESTIAL BOSS LOGIC
+if (celestialBoss.visible) {
+  const dx = character.x - celestialBoss.x;
+  const dy = character.y - celestialBoss.y;
+  const distance = Math.hypot(dx, dy);
+  
+  // Celestial boss glides gracefully
+  celestialBoss.y += Math.sin(Date.now() / 1000) * 100 * dt;
+  
+  if (distance > 200) {
+    celestialBoss.x += (dx / distance) * celestialBoss.speed * dt * 0.3;
+  }
+  
+  updateCelestialBossAttacks(celestialBoss, dt);
+}
+
+// ⛏️ MYTHRIL BOSS LOGIC
+if (mythrilBoss.visible) {
+  const dx = character.x - mythrilBoss.x;
+  const dy = character.y - mythrilBoss.y;
+  const distance = Math.hypot(dx, dy);
+  
+  // Mythril boss moves slowly but steadily
+  if (distance > 120) {
+    mythrilBoss.x += (dx / distance) * mythrilBoss.speed * dt * 0.3;
+    mythrilBoss.y += (dy / distance) * mythrilBoss.speed * dt * 0.3;
+  }
+  
+  updateMythrilBossAttacks(mythrilBoss, dt);
+}
+
+// ♾️ INFINITY BOSS LOGIC
+if (infinityBoss.visible) {
+  const dx = character.x - infinityBoss.x;
+  const dy = character.y - infinityBoss.y;
+  const distance = Math.hypot(dx, dy);
+  
+  // Infinity boss teleports around periodically
+  if (Math.random() < 0.001) {
+    infinityBoss.x = Math.random() * (W - infinityBoss.w);
+    infinityBoss.y = Math.random() * (H - infinityBoss.h);
+  } else if (distance > 150) {
+    infinityBoss.x += (dx / distance) * infinityBoss.speed * dt * 0.25;
+    infinityBoss.y += (dy / distance) * infinityBoss.speed * dt * 0.25;
+  }
+  
+  updateInfinityBossAttacks(infinityBoss, dt);
 }
       break;
       
@@ -6398,81 +9340,7 @@ function drawAdminAnimation(ctx) {
         ctx.fillText(`Phoenix HP: ${phoenixBoss.hitsRemaining}/${phoenixBoss.hitsToDie}`, W/2, 45);
       }
       break;
-      // 🌊 Draw Leviathan Boss
-if (leviathanBoss.visible) {
-  ctx.fillStyle = leviathanBoss.flash ? "#87CEEB" : leviathanBoss.color;
-  ctx.fillRect(leviathanBoss.x, leviathanBoss.y, leviathanBoss.w, leviathanBoss.h);
-  ctx.strokeStyle = 'rgba(0,0,0,0.6)';
-  ctx.strokeRect(leviathanBoss.x + 0.5, leviathanBoss.y + 0.5, leviathanBoss.w - 1, leviathanBoss.h - 1);
-  ctx.font = '48px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(leviathanBoss.emoji, leviathanBoss.x + leviathanBoss.w / 2, leviathanBoss.y + leviathanBoss.h / 2);
-  
-  // Draw long range circle
-  ctx.strokeStyle = "rgba(30, 144, 255, 0.3)";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(leviathanBoss.x + leviathanBoss.w / 2, leviathanBoss.y + leviathanBoss.h / 2, leviathanBoss.longRangeRadius, 0, Math.PI * 2);
-  ctx.stroke();
-  
-  // Draw HP bar
-  const barWidth = 250;
-  ctx.fillStyle = '#222';
-  ctx.fillRect(W/2 - barWidth/2, 50, barWidth, 12);
-  ctx.fillStyle = '#1E90FF';
-  ctx.fillRect(W/2 - barWidth/2, 50, barWidth * (leviathanBoss.hitsRemaining / leviathanBoss.hitsToDie), 12);
-  ctx.fillStyle = '#fff';
-  ctx.font = '14px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(`🌊 Leviathan HP: ${leviathanBoss.hitsRemaining}/${leviathanBoss.hitsToDie}`, W/2, 45);
-  
-  // Draw player HP bar
-  ctx.fillStyle = '#222';
-  ctx.fillRect(W/2 - barWidth/2, H - 40, barWidth, 12);
-  ctx.fillStyle = '#00ff00';
-  ctx.fillRect(W/2 - barWidth/2, H - 40, barWidth * (leviathanBoss.playerCurrentHP / leviathanBoss.playerMaxHP), 12);
-  ctx.fillStyle = '#fff';
-  ctx.fillText(`Player HP: ${leviathanBoss.playerCurrentHP}/${leviathanBoss.playerMaxHP}`, W/2, H - 45);
-}
 
-// 🌊✨ Draw Enchanted Leviathan Boss
-if (enchantedLeviathanBoss.visible) {
-  ctx.fillStyle = enchantedLeviathanBoss.flash ? "#DDA0DD" : enchantedLeviathanBoss.color;
-  ctx.fillRect(enchantedLeviathanBoss.x, enchantedLeviathanBoss.y, enchantedLeviathanBoss.w, enchantedLeviathanBoss.h);
-  ctx.strokeStyle = 'rgba(0,0,0,0.6)';
-  ctx.strokeRect(enchantedLeviathanBoss.x + 0.5, enchantedLeviathanBoss.y + 0.5, enchantedLeviathanBoss.w - 1, enchantedLeviathanBoss.h - 1);
-  ctx.font = '52px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(enchantedLeviathanBoss.emoji, enchantedLeviathanBoss.x + enchantedLeviathanBoss.w / 2, enchantedLeviathanBoss.y + enchantedLeviathanBoss.h / 2);
-  
-  // Draw long range circle
-  ctx.strokeStyle = "rgba(147, 112, 219, 0.3)";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(enchantedLeviathanBoss.x + enchantedLeviathanBoss.w / 2, enchantedLeviathanBoss.y + enchantedLeviathanBoss.h / 2, enchantedLeviathanBoss.longRangeRadius, 0, Math.PI * 2);
-  ctx.stroke();
-  
-  // Draw HP bar
-  const barWidth = 250;
-  ctx.fillStyle = '#222';
-  ctx.fillRect(W/2 - barWidth/2, 50, barWidth, 12);
-  ctx.fillStyle = '#9370DB';
-  ctx.fillRect(W/2 - barWidth/2, 50, barWidth * (enchantedLeviathanBoss.hitsRemaining / enchantedLeviathanBoss.hitsToDie), 12);
-  ctx.fillStyle = '#fff';
-  ctx.font = '14px sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(`✨🌊 Enchanted Leviathan HP: ${enchantedLeviathanBoss.hitsRemaining}/${enchantedLeviathanBoss.hitsToDie}`, W/2, 45);
-  
-  // Draw player HP bar
-  ctx.fillStyle = '#222';
-  ctx.fillRect(W/2 - barWidth/2, H - 40, barWidth, 12);
-  ctx.fillStyle = '#00ff00';
-  ctx.fillRect(W/2 - barWidth/2, H - 40, barWidth * (leviathanBoss.playerCurrentHP / leviathanBoss.playerMaxHP), 12);
-  ctx.fillStyle = '#fff';
-  ctx.fillText(`Player HP: ${leviathanBoss.playerCurrentHP}/${leviathanBoss.playerMaxHP}`, W/2, H - 45);
-}
     case "bloodmoon":
       // Draw bloodmoon in sky
       ctx.save();
@@ -7933,6 +10801,213 @@ if (boss.visible) {
   ctx.fillStyle = '#fff';
   ctx.fillText(`Player HP: ${3 - boss.playerHits}/3`, W/2, H - 35);
 }
+
+// 🌊 Draw Leviathan Boss
+if (leviathanBoss.visible) {
+  ctx.fillStyle = leviathanBoss.flash ? "#87CEEB" : leviathanBoss.color;
+  ctx.fillRect(leviathanBoss.x, leviathanBoss.y, leviathanBoss.w, leviathanBoss.h);
+  ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+  ctx.strokeRect(leviathanBoss.x + 0.5, leviathanBoss.y + 0.5, leviathanBoss.w - 1, leviathanBoss.h - 1);
+  ctx.font = '48px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(leviathanBoss.emoji, leviathanBoss.x + leviathanBoss.w / 2, leviathanBoss.y + leviathanBoss.h / 2);
+  
+  // Draw long range circle
+  ctx.strokeStyle = "rgba(30, 144, 255, 0.3)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(leviathanBoss.x + leviathanBoss.w / 2, leviathanBoss.y + leviathanBoss.h / 2, leviathanBoss.longRangeRadius, 0, Math.PI * 2);
+  ctx.stroke();
+  
+  // Draw Boss HP bar at top
+  const barWidth = 250;
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - barWidth/2, 50, barWidth, 12);
+  ctx.fillStyle = '#1E90FF';
+  ctx.fillRect(W/2 - barWidth/2, 50, barWidth * (leviathanBoss.hitsRemaining / leviathanBoss.hitsToDie), 12);
+  ctx.fillStyle = '#fff';
+  ctx.font = '14px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(`🌊 Leviathan HP: ${leviathanBoss.hitsRemaining}/${leviathanBoss.hitsToDie}`, W/2, 45);
+  
+  // Draw Player HP bar at bottom
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - barWidth/2, H - 40, barWidth, 12);
+  ctx.fillStyle = '#00ff00';
+  ctx.fillRect(W/2 - barWidth/2, H - 40, barWidth * (leviathanBoss.playerCurrentHP / leviathanBoss.playerMaxHP), 12);
+  ctx.fillStyle = '#fff';
+  ctx.fillText(`Player HP: ${leviathanBoss.playerCurrentHP}/${leviathanBoss.playerMaxHP}`, W/2, H - 45);
+}
+
+// 🌊✨ Draw Enchanted Leviathan Boss
+if (enchantedLeviathanBoss.visible) {
+  ctx.fillStyle = enchantedLeviathanBoss.flash ? "#DDA0DD" : enchantedLeviathanBoss.color;
+  ctx.fillRect(enchantedLeviathanBoss.x, enchantedLeviathanBoss.y, enchantedLeviathanBoss.w, enchantedLeviathanBoss.h);
+  ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+  ctx.strokeRect(enchantedLeviathanBoss.x + 0.5, enchantedLeviathanBoss.y + 0.5, enchantedLeviathanBoss.w - 1, enchantedLeviathanBoss.h - 1);
+  ctx.font = '52px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(enchantedLeviathanBoss.emoji, enchantedLeviathanBoss.x + enchantedLeviathanBoss.w / 2, enchantedLeviathanBoss.y + enchantedLeviathanBoss.h / 2);
+  
+  // Draw long range circle
+  ctx.strokeStyle = "rgba(147, 112, 219, 0.3)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(enchantedLeviathanBoss.x + enchantedLeviathanBoss.w / 2, enchantedLeviathanBoss.y + enchantedLeviathanBoss.h / 2, enchantedLeviathanBoss.longRangeRadius, 0, Math.PI * 2);
+  ctx.stroke();
+  
+  // Draw Boss HP bar
+  const barWidth2 = 250;
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - barWidth2/2, 50, barWidth2, 12);
+  ctx.fillStyle = '#9370DB';
+  ctx.fillRect(W/2 - barWidth2/2, 50, barWidth2 * (enchantedLeviathanBoss.hitsRemaining / enchantedLeviathanBoss.hitsToDie), 12);
+  ctx.fillStyle = '#fff';
+  ctx.font = '14px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(`✨🌊 Enchanted Leviathan HP: ${enchantedLeviathanBoss.hitsRemaining}/${enchantedLeviathanBoss.hitsToDie}`, W/2, 45);
+  
+  // Draw Player HP bar
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - barWidth2/2, H - 40, barWidth2, 12);
+  ctx.fillStyle = '#00ff00';
+  ctx.fillRect(W/2 - barWidth2/2, H - 40, barWidth2 * (leviathanBoss.playerCurrentHP / leviathanBoss.playerMaxHP), 12);
+  ctx.fillStyle = '#fff';
+  ctx.fillText(`Player HP: ${leviathanBoss.playerCurrentHP}/${leviathanBoss.playerMaxHP}`, W/2, H - 45);
+}
+// Draw Leviathan attack projectiles
+function drawLeviathanAttacks(ctx, boss) {
+  const isEnchanted = boss === enchantedLeviathanBoss;
+  const baseColor = isEnchanted ? "#9370DB" : "#1E90FF";
+  
+  // Draw water balls
+  boss.waterBalls.forEach(ball => {
+    ctx.save();
+    ctx.globalAlpha = 0.8;
+    ctx.fillStyle = baseColor;
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Inner glow
+    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.size * 0.6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+  
+  // Draw tidal waves
+  boss.tidalWaves.forEach(wave => {
+    ctx.save();
+    ctx.globalAlpha = 0.6;
+    const gradient = ctx.createLinearGradient(wave.x, 0, wave.x + wave.width, 0);
+    gradient.addColorStop(0, `${baseColor}00`);
+    gradient.addColorStop(0.5, baseColor);
+    gradient.addColorStop(1, `${baseColor}00`);
+    ctx.fillStyle = gradient;
+    ctx.fillRect(wave.x, wave.y, wave.width, wave.height);
+    ctx.restore();
+  });
+  
+  // Draw whirlpools
+  boss.whirlpools.forEach(pool => {
+    ctx.save();
+    ctx.globalAlpha = 0.5;
+    
+    // Draw rotating spiral
+    ctx.strokeStyle = baseColor;
+    ctx.lineWidth = 3;
+    
+    for (let i = 0; i < 3; i++) {
+      ctx.beginPath();
+      const startAngle = pool.angle + (i * Math.PI * 2 / 3);
+      ctx.arc(pool.x, pool.y, pool.radius * 0.8, startAngle, startAngle + Math.PI * 0.8);
+      ctx.stroke();
+    }
+    
+    // Draw pull range
+    ctx.strokeStyle = `${baseColor}40`;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.arc(pool.x, pool.y, pool.radius, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    ctx.restore();
+  });
+  
+  // Draw ice spikes
+  boss.iceSpikes.forEach(spike => {
+    ctx.save();
+    
+    if (spike.warning) {
+      // Draw warning indicator
+      ctx.globalAlpha = 0.3 + Math.sin(Date.now() / 100) * 0.2;
+      ctx.fillStyle = "#FF0000";
+      ctx.beginPath();
+      ctx.arc(spike.x, spike.y, spike.size * 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      // Draw actual spike
+      ctx.globalAlpha = 0.9;
+      ctx.fillStyle = "#87CEEB";
+      ctx.strokeStyle = "#4682B4";
+      ctx.lineWidth = 2;
+      
+      // Diamond shape
+      ctx.beginPath();
+      ctx.moveTo(spike.x, spike.y - spike.size);
+      ctx.lineTo(spike.x + spike.size * 0.6, spike.y);
+      ctx.lineTo(spike.x, spike.y + spike.size);
+      ctx.lineTo(spike.x - spike.size * 0.6, spike.y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+    
+    ctx.restore();
+  });
+  
+  // Draw lightning bolts (enchanted only)
+  if (isEnchanted && boss.lightningBolts) {
+    boss.lightningBolts.forEach(bolt => {
+      ctx.save();
+      ctx.globalAlpha = bolt.flash ? 1.0 : 0.6;
+      
+      // Lightning effect
+      const gradient = ctx.createLinearGradient(bolt.x - bolt.width, 0, bolt.x + bolt.width, 0);
+      gradient.addColorStop(0, "#FFFF0000");
+      gradient.addColorStop(0.5, "#FFFF00");
+      gradient.addColorStop(1, "#FFFF0000");
+      
+      ctx.fillStyle = gradient;
+      ctx.fillRect(bolt.x - bolt.width / 2, bolt.y, bolt.width, bolt.height);
+      
+      // Flash effect
+      if (bolt.flash) {
+        ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+        ctx.fillRect(0, 0, W, H);
+        bolt.flash = false;
+      }
+      
+      ctx.restore();
+    });
+  }
+}
+
+// Call this after drawing each boss
+if (leviathanBoss.visible) {
+  drawLeviathanAttacks(ctx, leviathanBoss);
+}
+
+if (enchantedLeviathanBoss.visible) {
+  drawLeviathanAttacks(ctx, enchantedLeviathanBoss);
+}
+
 
 specials.forEach(s => {
   if (!s.visible) return;
