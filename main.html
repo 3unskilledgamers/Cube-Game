@@ -853,6 +853,36 @@ let maxPetSlots = 3; // NEW: Track max pet slots
 
 const rebirthBtn = document.getElementById('rebirthBtn');
 const rebirthHint = document.getElementById('rebirthHint');
+// === TOTEM EVENT DEFINITIONS ===
+const voidRiftEvent = {
+  active: false,
+  background: "linear-gradient(180deg, #1a0033, #0d001a)",
+  incomeBoost: 1.5
+};
+
+const dragonsLairEvent = {
+  active: false,
+  background: "linear-gradient(180deg, #330000, #1a0000)",
+  incomeBoost: 1.5
+};
+
+const cosmicAscensionEvent = {
+  active: false,
+  background: "linear-gradient(180deg, #000033, #00001a)",
+  incomeBoost: 1.5
+};
+
+const ancientForgeEvent = {
+  active: false,
+  background: "linear-gradient(180deg, #332200, #1a1100)",
+  incomeBoost: 1.5
+};
+
+const timeDistortionEvent = {
+  active: false,
+  background: "linear-gradient(180deg, #003333, #001a1a)",
+  incomeBoost: 1.5
+};
 // === ASCENSION SYSTEM ===
 const ascensionLevels = [
   {
@@ -4894,7 +4924,7 @@ function useHeavenlyTotem() {
 window.useHeavenlyTotem = useHeavenlyTotem;
 }, 60000); // Check every minute
 // ========================================
-// TOTEM SUMMONING FUNCTIONS (FIXED)
+// TOTEM SUMMONING FUNCTIONS (FIXED - DIRECT SPAWN)
 // ========================================
 
 function useVoidTotem() {
@@ -4919,8 +4949,11 @@ function useVoidTotem() {
     const index = playerInventory.Totems.indexOf(totem);
     if (index > -1) playerInventory.Totems.splice(index, 1);
   }
-  
-  // Spawn boss
+  // Start Void Rift event
+  voidRiftEvent.active = true;
+  document.body.style.background = voidRiftEvent.background;
+  updateEventIndicator();
+  // DIRECTLY spawn boss - no event
   voidBoss.visible = true;
   voidBoss.hitsRemaining = voidBoss.hitsToDie;
   voidBoss.playerHits = 0;
@@ -4938,7 +4971,7 @@ function useVoidTotem() {
   voidBoss.voidRifts = [];
   voidBoss.darkPulses = [];
   
-  alert("🌌 VOID BOSS SUMMONED!\n\n⚠️ Use your Void Blade (Z key) to attack!\n💀 Boss HP: " + voidBoss.hitsRemaining + "/" + voidBoss.hitsToDie + "\n❤️ Your HP: " + voidBoss.playerCurrentHP + "/" + voidBoss.playerMaxHP);
+  alert("🌌 VOID BOSS SPAWNED!\n\n⚠️ Press Z to attack with Void Blade!\n💀 Boss HP: " + voidBoss.hitsRemaining + "/" + voidBoss.hitsToDie + "\n❤️ Your HP: " + voidBoss.playerCurrentHP + "/" + voidBoss.playerMaxHP);
   updateInventoryDisplay();
 }
 
@@ -4962,7 +4995,11 @@ function useDragonTotem() {
     const index = playerInventory.Totems.indexOf(totem);
     if (index > -1) playerInventory.Totems.splice(index, 1);
   }
-  
+  // Start Dragon's Lair event
+  dragonsLairEvent.active = true;
+  document.body.style.background = dragonsLairEvent.background;
+  updateEventIndicator();
+  // DIRECTLY spawn boss - no event
   dragonBoss.visible = true;
   dragonBoss.hitsRemaining = dragonBoss.hitsToDie;
   dragonBoss.playerHits = 0;
@@ -4979,7 +5016,7 @@ function useDragonTotem() {
   dragonBoss.meteorShower = [];
   dragonBoss.dragonRoar = [];
   
-  alert("🐉 DRAGON BOSS SUMMONED!\n\n⚠️ Use your Dragon Slayer (Z key) to attack!\n💀 Boss HP: " + dragonBoss.hitsRemaining + "/" + dragonBoss.hitsToDie + "\n❤️ Your HP: " + dragonBoss.playerCurrentHP + "/" + dragonBoss.playerMaxHP);
+  alert("🐉 DRAGON BOSS SPAWNED!\n\n⚠️ Press Z to attack with Dragon Slayer!\n💀 Boss HP: " + dragonBoss.hitsRemaining + "/" + dragonBoss.hitsToDie + "\n❤️ Your HP: " + dragonBoss.playerCurrentHP + "/" + dragonBoss.playerMaxHP);
   updateInventoryDisplay();
 }
 
@@ -5003,7 +5040,11 @@ function useCelestialTotem() {
     const index = playerInventory.Totems.indexOf(totem);
     if (index > -1) playerInventory.Totems.splice(index, 1);
   }
-  
+  // Start Cosmic Ascension event
+  cosmicAscensionEvent.active = true;
+  document.body.style.background = cosmicAscensionEvent.background;
+  updateEventIndicator();
+  // DIRECTLY spawn boss - no event
   celestialBoss.visible = true;
   celestialBoss.hitsRemaining = celestialBoss.hitsToDie;
   celestialBoss.playerHits = 0;
@@ -5020,7 +5061,7 @@ function useCelestialTotem() {
   celestialBoss.cosmicNova = [];
   celestialBoss.divineLight = [];
   
-  alert("✨ CELESTIAL BOSS SUMMONED!\n\n⚠️ Use your Celestial Blade (Z key) to attack!\n💀 Boss HP: " + celestialBoss.hitsRemaining + "/" + celestialBoss.hitsToDie + "\n❤️ Your HP: " + celestialBoss.playerCurrentHP + "/" + celestialBoss.playerMaxHP);
+  alert("✨ CELESTIAL BOSS SPAWNED!\n\n⚠️ Press Z to attack with Celestial Blade!\n💀 Boss HP: " + celestialBoss.hitsRemaining + "/" + celestialBoss.hitsToDie + "\n❤️ Your HP: " + celestialBoss.playerCurrentHP + "/" + celestialBoss.playerMaxHP);
   updateInventoryDisplay();
 }
 
@@ -5044,7 +5085,11 @@ function useMythrilTotem() {
     const index = playerInventory.Totems.indexOf(totem);
     if (index > -1) playerInventory.Totems.splice(index, 1);
   }
-  
+  // Start Ancient Forge event
+  ancientForgeEvent.active = true;
+  document.body.style.background = ancientForgeEvent.background;
+  updateEventIndicator();
+  // DIRECTLY spawn boss - no event
   mythrilBoss.visible = true;
   mythrilBoss.hitsRemaining = mythrilBoss.hitsToDie;
   mythrilBoss.playerHits = 0;
@@ -5061,7 +5106,7 @@ function useMythrilTotem() {
   mythrilBoss.forgeExplosion = [];
   mythrilBoss.ironWall = [];
   
-  alert("⛏️ MYTHRIL BOSS SUMMONED!\n\n⚠️ Use your Mythril Greatsword (Z key) to attack!\n💀 Boss HP: " + mythrilBoss.hitsRemaining + "/" + mythrilBoss.hitsToDie + "\n❤️ Your HP: " + mythrilBoss.playerCurrentHP + "/" + mythrilBoss.playerMaxHP);
+  alert("⛏️ MYTHRIL BOSS SPAWNED!\n\n⚠️ Press Z to attack with Mythril Greatsword!\n💀 Boss HP: " + mythrilBoss.hitsRemaining + "/" + mythrilBoss.hitsToDie + "\n❤️ Your HP: " + mythrilBoss.playerCurrentHP + "/" + mythrilBoss.playerMaxHP);
   updateInventoryDisplay();
 }
 
@@ -5085,7 +5130,11 @@ function useInfinityTotem() {
     const index = playerInventory.Totems.indexOf(totem);
     if (index > -1) playerInventory.Totems.splice(index, 1);
   }
-  
+  // Start Time Distortion event
+  timeDistortionEvent.active = true;
+  document.body.style.background = timeDistortionEvent.background;
+  updateEventIndicator();
+  // DIRECTLY spawn boss - no event
   infinityBoss.visible = true;
   infinityBoss.hitsRemaining = infinityBoss.hitsToDie;
   infinityBoss.playerHits = 0;
@@ -5102,7 +5151,7 @@ function useInfinityTotem() {
   infinityBoss.realityWarp = [];
   infinityBoss.endlessVoid = [];
   
-  alert("♾️ INFINITY BOSS SUMMONED!\n\n⚠️ Use your Infinity Blade (Z key) to attack!\n💀 Boss HP: " + infinityBoss.hitsRemaining + "/" + infinityBoss.hitsToDie + "\n❤️ Your HP: " + infinityBoss.playerCurrentHP + "/" + infinityBoss.playerMaxHP);
+  alert("♾️ INFINITY BOSS SPAWNED!\n\n⚠️ Press Z to attack with Infinity Blade!\n💀 Boss HP: " + infinityBoss.hitsRemaining + "/" + infinityBoss.hitsToDie + "\n❤️ Your HP: " + infinityBoss.playerCurrentHP + "/" + infinityBoss.playerMaxHP);
   updateInventoryDisplay();
 }
 
@@ -5111,10 +5160,6 @@ function useEnchantedLeviathanTotem() {
   
   if (!totem || totem.count < 1) {
     alert("❌ No Enchanted Leviathan Totems available!");
-    return;
-  }
-  
-  if (!confirm("✨🌊 Use Enchanted Leviathan Totem?\n\nDIRECTLY summons Enchanted Leviathan!\n⚠️ Skip regular Leviathan!\n⚠️ Requires Harpoon!\n\nContinue?")) {
     return;
   }
   
@@ -5131,23 +5176,27 @@ function useEnchantedLeviathanTotem() {
     if (index > -1) playerInventory.Totems.splice(index, 1);
   }
   
-  // Reset player HP
-  leviathanBoss.playerCurrentHP = leviathanBoss.playerMaxHP;
-  
-  // Spawn Enchanted Leviathan DIRECTLY
-  enchantedLeviathanBoss.x = W - enchantedLeviathanBoss.w - 50;
-  enchantedLeviathanBoss.y = H / 2 - enchantedLeviathanBoss.h / 2;
+  // DIRECTLY spawn Enchanted Leviathan - no event, no regular Leviathan
+  enchantedLeviathanBoss.x = canvas.width - enchantedLeviathanBoss.w - 50;
+  enchantedLeviathanBoss.y = canvas.height / 2 - enchantedLeviathanBoss.h / 2;
   enchantedLeviathanBoss.visible = true;
   enchantedLeviathanBoss.hitsRemaining = enchantedLeviathanBoss.hitsToDie;
   enchantedLeviathanBoss.playerHits = 0;
-  enchantedLeviathanBoss.attackTimer = 2000;
+  enchantedLeviathanBoss.playerCurrentHP = enchantedLeviathanBoss.playerMaxHP;
+  enchantedLeviathanBoss.phase = 1;
+  enchantedLeviathanBoss.attackTimer = 2500;
+  enchantedLeviathanBoss.flash = false;
+  
+  // Clear attack arrays
+  waterBalls = [];
+  tidalWaves = [];
+  whirlpools = [];
+  iceSpikes = [];
+  lightningBolts = [];
   
   harpoon.equipped = true;
   
-  // Start Forgotten Altar event
-  startForgottenAltar();
-  
-  console.log("✨🌊 ENCHANTED LEVIATHAN SUMMONED DIRECTLY!");
+  alert("✨🌊 ENCHANTED LEVIATHAN SPAWNED!\n\n⚠️ Press X to attack with Harpoon!\n💀 Boss HP: " + enchantedLeviathanBoss.hitsRemaining + "/" + enchantedLeviathanBoss.hitsToDie + "\n❤️ Your HP: " + enchantedLeviathanBoss.playerCurrentHP + "/" + enchantedLeviathanBoss.playerMaxHP);
   updateInventoryDisplay();
 }
 
@@ -8452,18 +8501,56 @@ window.showAdventCalendar = showAdventCalendar;
 function updateEventIndicator() {
   const indicator = document.getElementById('eventIndicator');
   if (!indicator) return;
-    // Check for Forgotten Altar event first
+  
+  // Check for Void Rift event
+  if (voidRiftEvent.active) {
+    indicator.textContent = "🌌";
+    indicator.title = `Active: Void Rift (Void Boss Battle +50% income)`;
+    return;
+  }
+  
+  // Check for Dragon's Lair event
+  if (dragonsLairEvent.active) {
+    indicator.textContent = "🐉";
+    indicator.title = `Active: Dragon's Lair (Dragon Boss Battle +50% income)`;
+    return;
+  }
+  
+  // Check for Cosmic Ascension event
+  if (cosmicAscensionEvent.active) {
+    indicator.textContent = "✨";
+    indicator.title = `Active: Cosmic Ascension (Celestial Boss Battle +50% income)`;
+    return;
+  }
+  
+  // Check for Ancient Forge event
+  if (ancientForgeEvent.active) {
+    indicator.textContent = "⛏️";
+    indicator.title = `Active: Ancient Forge (Mythril Boss Battle +50% income)`;
+    return;
+  }
+  
+  // Check for Time Distortion event
+  if (timeDistortionEvent.active) {
+    indicator.textContent = "♾️";
+    indicator.title = `Active: Time Distortion (Infinity Boss Battle +50% income)`;
+    return;
+  }
+  
+  // Check for Forgotten Altar event
   if (forgottenAltar.active) {
     indicator.textContent = "❄️";
     indicator.title = `Active: Forgotten Altar (Leviathan Battle)`;
     return;
   }
-    // Check for Heavenly event first
+  
+  // Check for Heavenly event
   if (heavenlyEvent.active) {
     indicator.textContent = "✨";
     indicator.title = `Active: Heavenly Event (+35% income)`;
     return;
   }
+  
   // Check for Christmas event first (highest priority for seasonal)
   if (christmasEvent.active) {
     indicator.textContent = "🎄";
@@ -10877,6 +10964,155 @@ if (enchantedLeviathanBoss.visible) {
   ctx.fillStyle = '#fff';
   ctx.fillText(`Player HP: ${leviathanBoss.playerCurrentHP}/${leviathanBoss.playerMaxHP}`, W/2, H - 45);
 }
+}
+
+// 🌌 Draw Void Boss
+if (voidBoss.visible) {
+  ctx.fillStyle = voidBoss.flash ? "#9932CC" : voidBoss.color;
+  ctx.fillRect(voidBoss.x, voidBoss.y, voidBoss.w, voidBoss.h);
+  ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+  ctx.strokeRect(voidBoss.x + 0.5, voidBoss.y + 0.5, voidBoss.w - 1, voidBoss.h - 1);
+  ctx.font = '48px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(voidBoss.emoji, voidBoss.x + voidBoss.w / 2, voidBoss.y + voidBoss.h / 2);
+  
+  const voidBarWidth = 250;
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - voidBarWidth/2, 50, voidBarWidth, 12);
+  ctx.fillStyle = '#9932CC';
+  ctx.fillRect(W/2 - voidBarWidth/2, 50, voidBarWidth * (voidBoss.hitsRemaining / voidBoss.hitsToDie), 12);
+  ctx.fillStyle = '#fff';
+  ctx.font = '14px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(`🌌 Void Boss HP: ${voidBoss.hitsRemaining}/${voidBoss.hitsToDie}`, W/2, 45);
+  
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - voidBarWidth/2, H - 40, voidBarWidth, 12);
+  ctx.fillStyle = '#00ff00';
+  ctx.fillRect(W/2 - voidBarWidth/2, H - 40, voidBarWidth * (voidBoss.playerCurrentHP / voidBoss.playerMaxHP), 12);
+  ctx.fillStyle = '#fff';
+  ctx.fillText(`Player HP: ${voidBoss.playerCurrentHP}/${voidBoss.playerMaxHP}`, W/2, H - 45);
+}
+
+// 🐉 Draw Dragon Boss
+if (dragonBoss.visible) {
+  ctx.fillStyle = dragonBoss.flash ? "#FF4500" : dragonBoss.color;
+  ctx.fillRect(dragonBoss.x, dragonBoss.y, dragonBoss.w, dragonBoss.h);
+  ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+  ctx.strokeRect(dragonBoss.x + 0.5, dragonBoss.y + 0.5, dragonBoss.w - 1, dragonBoss.h - 1);
+  ctx.font = '48px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(dragonBoss.emoji, dragonBoss.x + dragonBoss.w / 2, dragonBoss.y + dragonBoss.h / 2);
+  
+  const dragonBarWidth = 250;
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - dragonBarWidth/2, 50, dragonBarWidth, 12);
+  ctx.fillStyle = '#FF4500';
+  ctx.fillRect(W/2 - dragonBarWidth/2, 50, dragonBarWidth * (dragonBoss.hitsRemaining / dragonBoss.hitsToDie), 12);
+  ctx.fillStyle = '#fff';
+  ctx.font = '14px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(`🐉 Dragon Boss HP: ${dragonBoss.hitsRemaining}/${dragonBoss.hitsToDie}`, W/2, 45);
+  
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - dragonBarWidth/2, H - 40, dragonBarWidth, 12);
+  ctx.fillStyle = '#00ff00';
+  ctx.fillRect(W/2 - dragonBarWidth/2, H - 40, dragonBarWidth * (dragonBoss.playerCurrentHP / dragonBoss.playerMaxHP), 12);
+  ctx.fillStyle = '#fff';
+  ctx.fillText(`Player HP: ${dragonBoss.playerCurrentHP}/${dragonBoss.playerMaxHP}`, W/2, H - 45);
+}
+
+// ✨ Draw Celestial Boss
+if (celestialBoss.visible) {
+  ctx.fillStyle = celestialBoss.flash ? "#FFD700" : celestialBoss.color;
+  ctx.fillRect(celestialBoss.x, celestialBoss.y, celestialBoss.w, celestialBoss.h);
+  ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+  ctx.strokeRect(celestialBoss.x + 0.5, celestialBoss.y + 0.5, celestialBoss.w - 1, celestialBoss.h - 1);
+  ctx.font = '48px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(celestialBoss.emoji, celestialBoss.x + celestialBoss.w / 2, celestialBoss.y + celestialBoss.h / 2);
+  
+  const celestialBarWidth = 250;
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - celestialBarWidth/2, 50, celestialBarWidth, 12);
+  ctx.fillStyle = '#FFD700';
+  ctx.fillRect(W/2 - celestialBarWidth/2, 50, celestialBarWidth * (celestialBoss.hitsRemaining / celestialBoss.hitsToDie), 12);
+  ctx.fillStyle = '#fff';
+  ctx.font = '14px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(`✨ Celestial Boss HP: ${celestialBoss.hitsRemaining}/${celestialBoss.hitsToDie}`, W/2, 45);
+  
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - celestialBarWidth/2, H - 40, celestialBarWidth, 12);
+  ctx.fillStyle = '#00ff00';
+  ctx.fillRect(W/2 - celestialBarWidth/2, H - 40, celestialBarWidth * (celestialBoss.playerCurrentHP / celestialBoss.playerMaxHP), 12);
+  ctx.fillStyle = '#fff';
+  ctx.fillText(`Player HP: ${celestialBoss.playerCurrentHP}/${celestialBoss.playerMaxHP}`, W/2, H - 45);
+}
+
+// ⛏️ Draw Mythril Boss
+if (mythrilBoss.visible) {
+  ctx.fillStyle = mythrilBoss.flash ? "#C0C0C0" : mythrilBoss.color;
+  ctx.fillRect(mythrilBoss.x, mythrilBoss.y, mythrilBoss.w, mythrilBoss.h);
+  ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+  ctx.strokeRect(mythrilBoss.x + 0.5, mythrilBoss.y + 0.5, mythrilBoss.w - 1, mythrilBoss.h - 1);
+  ctx.font = '48px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(mythrilBoss.emoji, mythrilBoss.x + mythrilBoss.w / 2, mythrilBoss.y + mythrilBoss.h / 2);
+  
+  const mythrilBarWidth = 250;
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - mythrilBarWidth/2, 50, mythrilBarWidth, 12);
+  ctx.fillStyle = '#708090';
+  ctx.fillRect(W/2 - mythrilBarWidth/2, 50, mythrilBarWidth * (mythrilBoss.hitsRemaining / mythrilBoss.hitsToDie), 12);
+  ctx.fillStyle = '#fff';
+  ctx.font = '14px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(`⛏️ Mythril Boss HP: ${mythrilBoss.hitsRemaining}/${mythrilBoss.hitsToDie}`, W/2, 45);
+  
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - mythrilBarWidth/2, H - 40, mythrilBarWidth, 12);
+  ctx.fillStyle = '#00ff00';
+  ctx.fillRect(W/2 - mythrilBarWidth/2, H - 40, mythrilBarWidth * (mythrilBoss.playerCurrentHP / mythrilBoss.playerMaxHP), 12);
+  ctx.fillStyle = '#fff';
+  ctx.fillText(`Player HP: ${mythrilBoss.playerCurrentHP}/${mythrilBoss.playerMaxHP}`, W/2, H - 45);
+}
+
+// ♾️ Draw Infinity Boss
+if (infinityBoss.visible) {
+  ctx.fillStyle = infinityBoss.flash ? "#00FFFF" : infinityBoss.color;
+  ctx.fillRect(infinityBoss.x, infinityBoss.y, infinityBoss.w, infinityBoss.h);
+  ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+  ctx.strokeRect(infinityBoss.x + 0.5, infinityBoss.y + 0.5, infinityBoss.w - 1, infinityBoss.h - 1);
+  ctx.font = '48px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(infinityBoss.emoji, infinityBoss.x + infinityBoss.w / 2, infinityBoss.y + infinityBoss.h / 2);
+  
+  const infinityBarWidth = 250;
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - infinityBarWidth/2, 50, infinityBarWidth, 12);
+  ctx.fillStyle = '#00CED1';
+  ctx.fillRect(W/2 - infinityBarWidth/2, 50, infinityBarWidth * (infinityBoss.hitsRemaining / infinityBoss.hitsToDie), 12);
+  ctx.fillStyle = '#fff';
+  ctx.font = '14px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(`♾️ Infinity Boss HP: ${infinityBoss.hitsRemaining}/${infinityBoss.hitsToDie}`, W/2, 45);
+  
+  ctx.fillStyle = '#222';
+  ctx.fillRect(W/2 - infinityBarWidth/2, H - 40, infinityBarWidth, 12);
+  ctx.fillStyle = '#00ff00';
+  ctx.fillRect(W/2 - infinityBarWidth/2, H - 40, infinityBarWidth * (infinityBoss.playerCurrentHP / infinityBoss.playerMaxHP), 12);
+  ctx.fillStyle = '#fff';
+  ctx.fillText(`Player HP: ${infinityBoss.playerCurrentHP}/${infinityBoss.playerMaxHP}`, W/2, H - 45);
+}
+
+// Draw Leviathan attack projectiles
+function drawLeviathanAttacks(ctx, boss) {
 // Draw Leviathan attack projectiles
 function drawLeviathanAttacks(ctx, boss) {
   const isEnchanted = boss === enchantedLeviathanBoss;

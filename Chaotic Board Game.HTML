@@ -1,0 +1,3364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chaos Royale - The Ultimate Rule-Breaking Board Game</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #FF6B35;
+            --secondary: #F7931E;
+            --accent: #FDC830;
+            --dark: #2D1B4E;
+            --light: #FFF5E6;
+            --success: #4ECDC4;
+            --danger: #FF3E88;
+            --purple: #9D4EDD;
+            --blue: #4CC9F0;
+        }
+        
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        #root {
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .title {
+            font-family: 'Bungee', cursive;
+            font-size: 4rem;
+            text-align: center;
+            color: var(--accent);
+            text-shadow: 4px 4px 0 var(--primary), 8px 8px 0 var(--dark);
+            margin: 30px 0;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .btn {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+            position: relative;
+            top: 0;
+        }
+        
+        .btn:hover {
+            top: 3px;
+            box-shadow: 0 3px 0 rgba(0,0,0,0.2);
+        }
+        
+        .btn:active {
+            top: 6px;
+            box-shadow: 0 0 0 rgba(0,0,0,0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--success), var(--blue));
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), var(--purple));
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #4ECDC4, #44A08D);
+            color: white;
+        }
+        
+        .menu-screen {
+            text-align: center;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 400px;
+            margin: 40px auto;
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .setting-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .setting-card h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .setting-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .option-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--primary);
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+        }
+        
+        .option-btn.selected {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .game-board {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .board-grid {
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .board-space {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+            padding: 5px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .board-space:hover {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+        
+        .space-normal { background: linear-gradient(135deg, #e0e0e0, #f5f5f5); color: #333; }
+        .space-money { background: linear-gradient(135deg, #4ECDC4, #44A08D); color: white; }
+        .space-lose { background: linear-gradient(135deg, #FF3E88, #E91E63); color: white; }
+        .space-shop { background: linear-gradient(135deg, #F7931E, #FDC830); color: white; }
+        .space-gamble { background: linear-gradient(135deg, #9D4EDD, #C77DFF); color: white; }
+        .space-dragon { background: linear-gradient(135deg, #DC2F02, #F48C06); color: white; }
+        .space-crown { background: linear-gradient(135deg, #FFD700, #FFA500); color: white; }
+        .space-blackmarket { background: linear-gradient(135deg, #1A1A1D, #4E4E50); color: white; }
+        .space-evolution { background: linear-gradient(135deg, #06FFA5, #00C9A7); color: white; }
+        .space-creator { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .space-empty { background: #f9f9f9; color: #999; border: 2px dashed #ddd; }
+        
+        .player-piece {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            z-index: 5;
+        }
+        
+        .player-info-bar {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .player-card {
+            flex: 1;
+            min-width: 200px;
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .player-card.active {
+            border-color: var(--accent);
+            transform: scale(1.05);
+            animation: pulse 2s infinite;
+        }
+        
+        .player-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .player-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .dice-roller {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+        
+        .dice-display {
+            font-size: 4rem;
+            font-weight: 700;
+            color: white;
+            margin: 20px 0;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+        }
+        
+        .dice-animation {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        .rules-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .rule-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .rule-item.godly {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-left: 4px solid #FF6B35;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            animation: pulse 2s infinite, slideIn 0.5s ease-out;
+            font-weight: 700;
+            color: #2D1B4E;
+        }
+        
+        .shop-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .shop-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s;
+        }
+        
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .shop-item {
+            padding: 15px;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .shop-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            margin: 10px 0;
+        }
+        
+        .game-code {
+            font-family: 'Bungee', cursive;
+            font-size: 2rem;
+            color: var(--accent);
+            text-align: center;
+            padding: 20px;
+            background: var(--dark);
+            border-radius: 15px;
+            letter-spacing: 5px;
+        }
+        
+        .friends-list {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .friend-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .character-customizer {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            padding: 20px;
+        }
+        
+        .character-preview {
+            text-align: center;
+        }
+        
+        .character-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 20px auto;
+            border: 5px solid var(--primary);
+        }
+        
+        .skin-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+        }
+        
+        .skin-option {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .skin-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .skin-option.selected {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent);
+        }
+        
+        .weather-banner {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 100;
+            animation: slideIn 0.5s;
+        }
+        
+        .minigame-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+            z-index: 1001;
+            animation: slideIn 0.3s;
+        }
+        
+        .ability-selector {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .ability-card {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--blue), var(--success));
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .ability-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s;
+            z-index: 1000;
+        }
+        
+        .notification.godly {
+            background: linear-gradient(135deg, #FFD700, #FF6B35);
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 20px 30px;
+            animation: pulse 1s infinite, slideIn 0.3s;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+        }
+        
+        .theme-banner {
+            background: linear-gradient(135deg, var(--purple), var(--danger));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        .loading-spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .lobby-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .lobby-players {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .lobby-player-card {
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 3px solid transparent;
+        }
+        
+        .lobby-player-card.ready {
+            border-color: var(--success);
+        }
+        
+        .lobby-player-card.cpu {
+            border-color: var(--purple);
+        }
+        
+        .lobby-player-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            border: 3px solid white;
+        }
+        
+        .lobby-empty-slot {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Game Data - Rules, Items, Themes, etc.
+        const GAME_DATA = {
+            // 500 rules - categorized by timing (early game = weaker, late game = stronger)
+            rules: {
+                early: [
+                    "All players get +5 coins",
+                    "Next roll is doubled",
+                    "Skip the next player's turn",
+                    "Swap positions with the player ahead of you",
+                    "Get a free reroll",
+                    "All players move backward 1 space",
+                    "Gain 1 crown",
+                    "Change your dice to a 4-sided dice",
+                    "Teleport to a random money space",
+                    "Steal 10 coins from the player in last place",
+                    "All players with more than 50 coins lose 10",
+                    "Move to the nearest shop",
+                    "All dice become 6-sided for this round",
+                    "Swap coins with a random player",
+                    "All players gain 3 coins",
+                    "Reverse turn order for one round",
+                    "Copy another player's dice type",
+                    "Get 20 coins if you're in last place",
+                    "All players gain 8 coins",
+                    "Move forward 3 spaces",
+                    "Move backward 2 spaces",
+                    "Steal 5 coins from random player",
+                    "All players with less than 20 coins gain 15",
+                    "Teleport to nearest crown space",
+                    "Gain 10 coins",
+                    "Lose 5 coins, gain 1 crown",
+                    "All players swap positions clockwise",
+                    "Double coins if you have less than 30",
+                    "Steal 1 crown from random player",
+                    "All dice become 8-sided for 1 turn",
+                    "Gain 2 coins per crown you have",
+                    "Move to random gamble space",
+                    "All players lose 3 coins",
+                    "Teleport forward 5 spaces",
+                    "Gain coins equal to your position divided by 10",
+                    "All money spaces give +5 extra for 2 turns",
+                    "Next dragon attack is halved",
+                    "Change dice to match leader's dice",
+                    "Gain 1 coin per rule active",
+                    "All players in front of you move back 1",
+                    "Steal 8 coins from player ahead of you",
+                    "Gain 15 coins if in last place",
+                    "All players roll 1 extra dice next turn",
+                    "Transform next space to crown space",
+                    "All gambles pay double for 1 turn",
+                    "Gain 5 coins per player in game",
+                    "Move to middle of board",
+                    "All players with 4-sided dice upgrade to 6",
+                    "Lose 10 coins, move forward 5 spaces",
+                    "Steal half coins from last place player",
+                    "All shops give 1 free item for 1 turn",
+                    "Gain 20 coins, skip next turn",
+                    "All dice rolls +2 for 1 round",
+                    "Teleport to random shop",
+                    "All players gain coins equal to their crowns",
+                    "Move backward to nearest money space",
+                    "Gain 1 crown if you have 0 crowns",
+                    "All losing spaces give coins instead for 1 turn",
+                    "Swap dice with random player",
+                    "Gain 12 coins",
+                    "All players move forward 2 spaces",
+                    "Next shop visit is free",
+                    "Gain 3 coins per 10 spaces traveled",
+                    "All players with 6-sided dice get +1 coin",
+                    "Teleport to space 25",
+                    "Double next gamble winnings",
+                    "All players in last place gain 25 coins",
+                    "Move forward equal to your crowns",
+                    "Gain 1 crown, lose 20 coins",
+                    "All normal spaces become money for 1 turn",
+                    "Next roll cannot be less than 4",
+                    "Steal 3 coins from all players",
+                    "Gain 18 coins",
+                    "All players lose 1 coin per crown",
+                    "Move to nearest dragon space",
+                    "Gain 2 crowns if in 1st place",
+                    "All dice become 10-sided for 1 turn",
+                    "Swap crowns with last place player",
+                    "Gain 25 coins if you have most crowns",
+                    "All players roll half dice next turn",
+                    "Teleport to random normal space",
+                    "Gain 5 coins, all others gain 2",
+                    "Next 2 rolls are doubled",
+                    "All money spaces become +25 for 1 turn",
+                    "Lose 15 coins, gain 2 crowns",
+                    "All players with 8+ sided dice lose 5 coins",
+                    "Move forward to next special space",
+                    "Gain coins equal to highest roll so far",
+                    "All gambles are free for 1 turn",
+                    "Steal 1 coin from each player per crown you have",
+                    "Gain 30 coins if in 3rd place or worse",
+                    "All players swap coins with person on right",
+                    "Double your dice sides for 1 turn",
+                    "Gain 22 coins",
+                    "Move backward 5 spaces, gain 15 coins",
+                    "All crown spaces give 2 crowns for 1 turn",
+                    "Next dragon attack misses you",
+                    "Gain 1 crown per 30 coins you have",
+                    "All players lose smallest die side",
+                    "Teleport to space 50",
+                ],
+                mid: [
+                    "All players' dice become 8-sided",
+                    "Steal a random item from another player",
+                    "Gain coins equal to your current position number",
+                    "The dragon attacks the player in 1st place",
+                    "Swap your position with the 1st place player",
+                    "All players must pay 30 coins or lose a crown",
+                    "All dice become 4-sided for 3 turns",
+                    "Teleport all players to random spaces",
+                    "Gain 50 coins but all other players gain 20",
+                    "Double your crown count",
+                    "All losing spaces now take 50% of coins instead",
+                    "Steal all coins from the player in 2nd place",
+                    "All players' dice upgrade by 2 sides",
+                    "Gain 3 crowns if in last place",
+                    "All money spaces give double for 3 turns",
+                    "Steal 20 coins from each player",
+                    "All gambles pay triple for 2 turns",
+                    "Teleport to space 75",
+                    "Gain 1 crown per 25 coins you have",
+                    "All players lose half their coins",
+                    "Double all your stats for 1 turn",
+                    "Steal all crowns from last place",
+                    "All dragon spaces removed for 3 turns",
+                    "Gain 75 coins",
+                    "All shops 50% off for 2 turns",
+                    "Swap positions with all players",
+                    "Gain 2 crowns, lose 40 coins",
+                    "All dice become 12-sided for 1 turn",
+                    "Steal dice sides from all players (take 1 from each)",
+                    "Gain coins equal to total crowns in game",
+                    "All players in 1st place lose 2 crowns",
+                    "Teleport to furthest crown space",
+                    "All normal spaces become gamble for 2 turns",
+                    "Gain 40 coins if you have fewest crowns",
+                    "All players roll maximum next turn",
+                    "Steal 1 crown from each player with 2+ crowns",
+                    "All losing spaces become crown spaces for 1 turn",
+                    "Gain 100 coins, all others gain 30",
+                    "Double everyone's crowns except last place",
+                    "All money spaces become +50 for 2 turns",
+                    "Teleport all players to space 100",
+                    "Gain 5 crowns if you have 0 coins",
+                    "All dice become 6-sided for 5 turns",
+                    "Steal half coins from 1st place player",
+                    "All crown spaces give 3 crowns for 2 turns",
+                    "Gain coins equal to 10x your crowns",
+                    "All players swap dice types randomly",
+                    "Teleport to random Black Market",
+                    "Gain 2 crowns per 50 coins you have",
+                    "All gambles always win for 1 turn",
+                    "Steal all coins from players with fewer crowns",
+                    "All players lose biggest die side",
+                    "Gain 60 coins",
+                    "All shops give 2 items for price of 1",
+                    "Swap crowns with 1st place player",
+                    "All dice rolls +3 for 2 turns",
+                    "Gain 1 crown per player in game",
+                    "All dragon attacks give coins instead for 2 turns",
+                    "Steal 25 coins from random player",
+                    "All players move to nearest shop",
+                    "Gain 80 coins if in 2nd place",
+                    "All losing spaces give crowns for 1 turn",
+                    "Double dice for all players for 1 turn",
+                    "Steal 2 crowns from richest player",
+                    "All money spaces become +100 for 1 turn",
+                    "Gain coins equal to your position",
+                    "All players with 10+ sided dice gain 20 coins",
+                    "Teleport to space 120",
+                    "Gain 3 crowns, lose half your coins",
+                    "All gambles cost nothing for 2 turns",
+                    "Steal all coins from players behind you",
+                    "All normal spaces become money for 3 turns",
+                    "Gain 90 coins",
+                    "All players must pay you 20 coins",
+                    "Swap your stats with random player",
+                    "All dice become 20-sided for 1 turn",
+                    "Gain 1 crown per 15 coins you have",
+                    "All crown spaces give 5 crowns for 1 turn",
+                    "Steal dice from all players (yours becomes sum)",
+                    "Teleport everyone backward 10 spaces",
+                    "Gain 120 coins if in last place",
+                    "All shops free for 1 turn",
+                    "Double crowns for players with 1-2 crowns",
+                    "All money spaces become +75 for 2 turns",
+                    "Gain 4 crowns if you have most coins",
+                    "All players roll minimum next turn",
+                    "Steal 30 coins from each player with items",
+                    "All losing spaces removed for 3 turns",
+                    "Gain coins equal to 15x your crowns",
+                    "All dice rolls doubled for 2 turns",
+                    "Teleport to random Evolution space",
+                    "Gain 5 crowns, give 50 coins to each player",
+                    "All gambles pay 5x for 1 turn",
+                    "Steal half crowns from all players",
+                    "All normal spaces become crown for 1 turn",
+                    "Gain 110 coins",
+                    "All players' coins become equal (average)",
+                    "Swap positions with furthest player",
+                    "All dice become 16-sided for 2 turns",
+                    "Gain 2 crowns per unique space visited",
+                ],
+                late: [
+                    "All players' dice become 12-sided",
+                    "Gain 200 coins",
+                    "Gain crowns equal to the number of rules active",
+                    "Double everyone's crowns except yours, then triple yours",
+                    "Steal half the coins from all other players",
+                    "Force all players to pay you 50 coins each",
+                    "Double all your stats (coins, crowns)",
+                    "All other players lose half their crowns",
+                    "Teleport all players backward to the start",
+                    "Gain 5 crowns instantly",
+                    "All players' dice become 20-sided",
+                    "Steal 100 coins from each player",
+                    "Gain 10 crowns if you have most coins",
+                    "All losing spaces become money permanently",
+                    "Triple your crown count",
+                    "All money spaces give +200 for rest of game",
+                    "Steal all crowns from all players, then gain 3",
+                    "Gain 300 coins",
+                    "All dragon spaces removed permanently",
+                    "Quadruple your coins",
+                    "All other players' dice become 4-sided",
+                    "Gain 1 crown per 10 coins you have",
+                    "Steal 75 coins from each player",
+                    "All crown spaces give 10 crowns for 5 turns",
+                    "Gain 8 crowns instantly",
+                    "All gambles always win for rest of game",
+                    "Teleport to space 140",
+                    "Double everyone's crowns, then quadruple yours",
+                    "Steal all coins from players with fewer crowns than you",
+                    "All dice become 30-sided for 3 turns",
+                    "Gain 15 crowns if in last place",
+                    "All shops free forever",
+                    "All players lose 3 crowns except you",
+                    "Gain coins equal to 50x your crowns",
+                    "All money spaces become +500 for 2 turns",
+                    "Steal half crowns from all players",
+                    "Teleport all players to random spaces",
+                    "Gain 400 coins",
+                    "All dice rolls are maximum for 5 turns",
+                    "Win 1 crown per rule you've added",
+                    "All other players must give you half their coins",
+                    "Double all your stats 3 times",
+                    "Gain 12 crowns instantly",
+                    "All normal spaces become crown for 3 turns",
+                    "Steal 150 coins from richest player",
+                    "All players' crowns become equal (average), you gain 5",
+                    "Gain 20 crowns if you have 0 crowns",
+                    "All dice become 50-sided for 1 turn",
+                    "Steal all coins from 1st and 2nd place",
+                    "All crown spaces give 20 crowns for 1 turn",
+                    "Gain coins equal to 100x your crowns",
+                    "All players lose all coins, you gain them all",
+                    "Teleport to space 145",
+                    "Gain 10 crowns, all others lose 2",
+                    "All losing spaces give crowns for rest of game",
+                    "Quadruple your crown count",
+                    "Steal 2 crowns from each player",
+                    "All money spaces give +1000 for 1 turn",
+                    "Gain 500 coins",
+                    "All dice rolls +10 for 3 turns",
+                    "Swap all your coins for crowns (1 crown per 20 coins)",
+                    "All players must pay you 100 coins",
+                    "Gain 15 crowns instantly",
+                    "All other players' dice become 2-sided",
+                    "Steal half stats from all players",
+                    "All gambles pay 10x for 2 turns",
+                    "Gain 1 crown per space on board / 10",
+                    "All crown spaces give 50 crowns for 1 turn",
+                    "Teleport everyone to space 1",
+                    "Gain 600 coins",
+                    "All shops give all items free for 1 turn",
+                    "Triple everyone's crowns, then 10x yours",
+                    "Steal all crowns from top 3 players",
+                    "All dice become 100-sided for 1 turn",
+                    "Gain 20 crowns if you have fewest coins",
+                    "All players lose 5 crowns, you gain 10",
+                    "All money spaces give +2000 for 1 turn",
+                    "Gain coins equal to 200x your crowns",
+                    "All normal spaces become money permanently",
+                    "Steal 200 coins from each player",
+                    "Gain 25 crowns instantly",
+                    "All other players skip next 2 turns",
+                    "Double all stats for all players, triple yours",
+                    "All crown spaces give 100 crowns for 1 turn",
+                    "Gain 1000 coins",
+                    "All dice rolls are maximum for rest of game",
+                    "Steal 5 crowns from each player with 5+ crowns",
+                    "All players teleport to you, you gain 5 crowns",
+                    "Gain 30 crowns if in 3rd place or worse",
+                    "All losing spaces removed permanently",
+                    "Quintuple your crown count",
+                    "All money spaces give +5000 for 1 turn",
+                    "Steal half dice sides from all players",
+                    "Gain 2000 coins",
+                    "All shops give 10 items for price of 1",
+                    "Gain 1 crown per coin you have / 5",
+                    "All other players' crowns divided by 2",
+                    "All dice become 1000-sided for 1 turn",
+                    "Steal all stats from last place player",
+                    "Gain 50 crowns instantly",
+                ],
+                // Super rare GODLY rules - 0.1% chance
+                godly: [
+                    "⭐ DIVINE BLESSING ⭐ - All players receive 100 coins!",
+                    "⭐ GOLDEN RAIN ⭐ - Everyone gains 100 coins and 2 crowns!",
+                    "⭐ PROSPERITY WAVE ⭐ - All players get 100 coins and their dice evolves!",
+                    "⭐ CHAOS BLESSING ⭐ - Everyone receives 100 coins and a random powerful item!",
+                    "⭐ FORTUNE'S FAVOR ⭐ - All players gain 100 coins and all spaces become money spaces for 1 round!",
+                ],
+                bonus: [
+                    "Gain 35 coins",
+                    "Gain 45 coins",
+                    "Gain 55 coins",
+                    "Gain 65 coins",
+                    "Gain 70 coins",
+                    "Gain 85 coins",
+                    "Gain 95 coins",
+                    "Gain 125 coins",
+                    "Gain 175 coins",
+                    "Gain 225 coins",
+                    "Steal 12 coins from random player",
+                    "Steal 18 coins from random player",
+                    "Steal 22 coins from random player",
+                    "Steal 28 coins from random player",
+                    "Steal 35 coins from random player",
+                    "Steal 45 coins from random player",
+                    "Steal 60 coins from random player",
+                    "Steal 80 coins from random player",
+                    "Steal 120 coins from random player",
+                    "Move forward 4 spaces",
+                    "Move forward 6 spaces",
+                    "Move forward 8 spaces",
+                    "Move forward 9 spaces",
+                    "Move forward 11 spaces",
+                    "Move forward 12 spaces",
+                    "Move forward 13 spaces",
+                    "Move forward 14 spaces",
+                    "Move forward 20 spaces",
+                    "Move backward 3 spaces",
+                    "Move backward 4 spaces",
+                    "Move backward 6 spaces",
+                    "Move backward 7 spaces",
+                    "Move backward 8 spaces",
+                    "Teleport to space 10",
+                    "Teleport to space 20",
+                    "Teleport to space 30",
+                    "Teleport to space 40",
+                    "Teleport to space 60",
+                    "Teleport to space 70",
+                    "Teleport to space 80",
+                    "Teleport to space 90",
+                    "Teleport to space 110",
+                    "Teleport to space 130",
+                    "Swap with 2nd place player",
+                    "Swap with 3rd place player",
+                    "Swap with player behind you",
+                    "Swap with player 2 spaces ahead",
+                    "All players gain 7 coins",
+                    "All players gain 12 coins",
+                    "All players gain 15 coins",
+                    "All players gain 18 coins",
+                    "All players gain 25 coins",
+                    "All players lose 2 coins",
+                    "All players lose 7 coins",
+                    "All players lose 12 coins",
+                    "All players lose 15 coins",
+                    "Gain 1.5 crowns worth (round up)",
+                    "Gain 2.5 crowns worth (round up)",
+                    "Gain 4 crowns",
+                    "Gain 6 crowns",
+                    "Gain 7 crowns",
+                    "Gain 8 crowns",
+                    "Gain 9 crowns",
+                    "Gain 11 crowns",
+                    "Gain 12 crowns",
+                    "Gain 13 crowns",
+                    "Gain 14 crowns",
+                    "Gain 16 crowns",
+                    "Gain 17 crowns",
+                    "Gain 18 crowns",
+                    "Gain 19 crowns",
+                    "Gain 20 crowns",
+                    "Gain 22 crowns",
+                    "Gain 25 crowns",
+                    "Gain 30 crowns",
+                    "Gain 35 crowns",
+                    "Gain 40 crowns",
+                    "Gain 45 crowns",
+                    "Steal 3 coins from each player",
+                    "Steal 4 coins from each player",
+                    "Steal 6 coins from each player",
+                    "Steal 7 coins from each player",
+                    "Steal 8 coins from each player",
+                    "Steal 9 coins from each player",
+                    "Steal 12 coins from each player",
+                    "Steal 15 coins from each player",
+                    "Steal 18 coins from each player",
+                    "Steal 25 coins from each player",
+                    "Steal 40 coins from each player",
+                    "Steal 60 coins from each player",
+                    "Multiply coins by 1.25",
+                    "Multiply coins by 1.75",
+                    "Multiply coins by 2.5",
+                    "Multiply coins by 3.5",
+                    "Multiply coins by 5",
+                    "Multiply coins by 10",
+                    "Divide coins by 3, gain 3 crowns",
+                    "Divide coins by 4, gain 4 crowns",
+                    "All dice become 5-sided for 1 turn",
+                    "All dice become 7-sided for 1 turn",
+                    "All dice become 9-sided for 1 turn",
+                    "All dice become 11-sided for 1 turn",
+                    "All dice become 14-sided for 1 turn",
+                    "All dice become 15-sided for 1 turn",
+                    "All dice become 18-sided for 1 turn",
+                    "All dice become 24-sided for 1 turn",
+                    "All dice become 25-sided for 1 turn",
+                    "All dice become 40-sided for 1 turn",
+                    "All dice become 60-sided for 1 turn",
+                    "All dice become 80-sided for 1 turn",
+                    "All dice become 100-sided for 1 turn",
+                    "All dice become 200-sided for 1 turn",
+                    "All dice become 500-sided for 1 turn",
+                    "Your dice becomes 15-sided",
+                    "Your dice becomes 18-sided",
+                    "Your dice becomes 22-sided",
+                    "Your dice becomes 25-sided",
+                    "Your dice becomes 35-sided",
+                    "Your dice becomes 40-sided",
+                    "Your dice becomes 45-sided",
+                    "Your dice becomes 60-sided",
+                    "Your dice becomes 75-sided",
+                    "Your dice becomes 90-sided",
+                    "Your dice becomes 120-sided",
+                    "Next roll +1",
+                    "Next roll +2",
+                    "Next roll +3",
+                    "Next roll +4",
+                    "Next roll +5",
+                    "Next roll +6",
+                    "Next roll +7",
+                    "Next roll +8",
+                    "Next roll +9",
+                    "Next roll +15",
+                    "Next roll +25",
+                    "Next roll +50",
+                    "Next 2 rolls +5",
+                    "Next 3 rolls +4",
+                    "Next 4 rolls +3",
+                    "Next 5 rolls +2",
+                    "All money spaces +10 for 2 turns",
+                    "All money spaces +15 for 2 turns",
+                    "All money spaces +30 for 2 turns",
+                    "All money spaces +40 for 2 turns",
+                    "All money spaces +60 for 2 turns",
+                    "All money spaces +80 for 2 turns",
+                    "All money spaces +150 for 1 turn",
+                    "All money spaces +250 for 1 turn",
+                    "All money spaces +300 for 1 turn",
+                    "All crown spaces +1 crown for 2 turns",
+                    "All crown spaces +3 crowns for 1 turn",
+                    "All crown spaces +4 crowns for 1 turn",
+                    "All crown spaces +5 crowns for 1 turn",
+                    "All crown spaces +7 crowns for 1 turn",
+                    "All losing spaces -5 coins instead for 2 turns",
+                    "All losing spaces -10 coins instead for 2 turns",
+                    "All losing spaces -25 coins instead for 2 turns",
+                    "All losing spaces give coins for 1 turn",
+                    "All dragon spaces give 20 coins for 1 turn",
+                    "All dragon spaces give 50 coins for 1 turn",
+                    "All dragon spaces removed for 1 turn",
+                    "All dragon spaces removed for 2 turns",
+                    "All dragon spaces removed for 4 turns",
+                    "All gamble spaces triple payout for 1 turn",
+                    "All gamble spaces always win for 1 turn",
+                    "All gamble spaces 5x payout for 1 turn",
+                    "All shops 25% off for 1 turn",
+                    "All shops 30% off for 2 turns",
+                    "All shops 40% off for 1 turn",
+                    "All shops 60% off for 1 turn",
+                    "All shops 75% off for 1 turn",
+                    "All shops free for 1 turn",
+                    "Everyone moves forward 3 spaces",
+                    "Everyone moves forward 4 spaces",
+                    "Everyone moves forward 6 spaces",
+                    "Everyone moves forward 8 spaces",
+                    "Everyone moves backward 3 spaces",
+                    "Everyone moves backward 4 spaces",
+                    "Everyone swaps with person on left",
+                    "Everyone swaps with person on right",
+                    "Richest player loses 50 coins",
+                    "Richest player loses 80 coins",
+                    "Richest player loses 100 coins",
+                    "Poorest player gains 40 coins",
+                    "Poorest player gains 60 coins",
+                    "Poorest player gains 80 coins",
+                    "Poorest player gains 2 crowns",
+                    "Poorest player gains 3 crowns",
+                    "Leader loses 1 crown",
+                    "Leader loses 2 crowns",
+                    "Leader loses 3 crowns",
+                    "Leader loses 4 crowns",
+                    "Last place gains 4 crowns",
+                    "Last place gains 5 crowns",
+                    "Last place gains 6 crowns",
+                    "Skip next 3 players",
+                    "Reverse order for 2 rounds",
+                    "Reverse order for 3 rounds",
+                    "Double next 2 rolls",
+                    "Double next 3 rolls",
+                    "Triple next roll",
+                    "Set next roll to 7",
+                    "Set next roll to 9",
+                    "Set next roll to 10",
+                    "Set next roll to 11",
+                    "Set next roll to 15",
+                    "Set next roll to 18",
+                    "Set next roll to 25",
+                    "Roll 5 dice take highest",
+                    "Everyone rolls, lowest loses 20 coins",
+                    "Everyone rolls, highest gains 50 coins",
+                    "Everyone rolls, middle gains 2 crowns",
+                ]
+            },
+            
+            shopItems: [
+                { name: "Double Dice", cost: 25, effect: "Roll two dice and add them together" },
+                { name: "Coin Magnet", cost: 30, effect: "Gain 5 extra coins from money spaces" },
+                { name: "Shield", cost: 35, effect: "Block the next negative effect" },
+                { name: "Teleporter", cost: 40, effect: "Move to any space on the board" },
+                { name: "Crown Stealer", cost: 50, effect: "Steal 1 crown from another player" },
+                { name: "Dice Upgrade", cost: 45, effect: "Increase your dice by 2 sides" },
+                { name: "Time Stop", cost: 60, effect: "Take an extra turn immediately" },
+                { name: "Coin Doubler", cost: 35, effect: "Double your current coins" },
+                { name: "Luck Charm", cost: 30, effect: "Reroll any roll for free 3 times" },
+                { name: "Space Swap", cost: 40, effect: "Swap two spaces on the board" },
+                { name: "Dragon Repellent", cost: 45, effect: "Immune to dragon attacks" },
+                { name: "Golden Ticket", cost: 55, effect: "Turn any space into a crown space" },
+                { name: "Reverse Card", cost: 35, effect: "Reverse the turn order" },
+                { name: "Copy Cat", cost: 40, effect: "Copy another player's last action" },
+                { name: "Money Printer", cost: 50, effect: "Gain 10 coins every turn for 3 turns" },
+                { name: "Sabotage Kit", cost: 45, effect: "Make another player lose their next turn" },
+                { name: "Speed Boots", cost: 30, effect: "Move an extra space for 5 turns" },
+                { name: "Gambler's Luck", cost: 40, effect: "Never lose on gamble spaces" },
+                { name: "Rule Eraser", cost: 65, effect: "Remove one active rule" },
+                { name: "Item Duplicator", cost: 55, effect: "Duplicate one of your items" },
+                { name: "Position Locker", cost: 35, effect: "Lock your position for 2 turns" },
+                { name: "Coin Thief", cost: 30, effect: "Steal 20 coins from a random player" },
+                { name: "Chaos Orb", cost: 70, effect: "Random major effect happens" },
+                { name: "Crown Protector", cost: 50, effect: "Can't lose crowns for 5 turns" },
+                { name: "Board Scrambler", cost: 60, effect: "Randomize all space types" },
+                { name: "Dice Freezer", cost: 45, effect: "All other players keep their current dice for 3 turns" },
+                { name: "Fortune Cookie", cost: 25, effect: "Get a random beneficial rule" },
+                { name: "Warp Whistle", cost: 55, effect: "Move forward 10 spaces" },
+                { name: "Coin Insurance", cost: 40, effect: "If you lose coins, lose only half" },
+                { name: "Rainbow Dice", cost: 50, effect: "Your dice shows all numbers at once - pick one" },
+            ],
+            
+            blackMarketItems: [
+                { name: "Chaos Crown", cost: 100, effect: "Gain 3 crowns but all players target you" },
+                { name: "Master Key", cost: 80, effect: "Unlock all spaces - teleport anywhere anytime" },
+                { name: "Time Machine", cost: 90, effect: "Reverse the last 3 turns" },
+                { name: "Dragon Summoner", cost: 75, effect: "Summon dragon on any player" },
+                { name: "Infinity Dice", cost: 120, effect: "Your dice has no maximum" },
+                { name: "Board Breaker", cost: 85, effect: "Destroy 5 random spaces" },
+                { name: "Golden Crown", cost: 150, effect: "This crown counts as 3 crowns" },
+                { name: "Coin Vacuum", cost: 95, effect: "Take 10% of all players' coins" },
+                { name: "Rule Dominator", cost: 110, effect: "Your rules can't be removed" },
+                { name: "Space Creator", cost: 100, effect: "Add any 5 spaces to the board" },
+                { name: "Dice Destroyer", cost: 80, effect: "Make all other players use 1-sided dice for 2 turns" },
+                { name: "Mega Shield", cost: 90, effect: "Total immunity to everything for 5 turns" },
+                { name: "Crown Multiplier", cost: 130, effect: "All crown gains are tripled" },
+                { name: "Bankruptcy Bomb", cost: 85, effect: "All players lose half their coins" },
+                { name: "Evolution Stone", cost: 95, effect: "Evolve your dice to 20-sided" },
+                { name: "Shop Monopoly", cost: 100, effect: "Only you can access shops for 10 turns" },
+                { name: "Gamble Master", cost: 75, effect: "Control the outcome of all gambles" },
+                { name: "Position Swapper Pro", cost: 80, effect: "Swap positions with all players" },
+                { name: "Rule Creator", cost: 140, effect: "Create 3 custom rules" },
+                { name: "Ultimate Dice", cost: 160, effect: "Your dice becomes a 100-sided dice" },
+            ],
+            
+            abilities: [
+                "Gain 10 Coins",
+                "Gain 20 Coins",
+                "Gain 5 Coins",
+                "Steal 10 Coins from Random Player",
+                "Steal 15 Coins from Leader",
+                "Move Forward 3 Spaces",
+                "Move Forward 5 Spaces",
+                "Move Backward 2 Spaces",
+                "Teleport to Random Space",
+                "Swap Positions with Random Player",
+                "Double Your Next Roll",
+                "Halve Next Player's Roll",
+                "Skip Next Player's Turn",
+                "Everyone Moves Backward 1 Space",
+                "Roll Again Immediately",
+                "Gain 1 Crown",
+                "Lose 5 Coins, Gain 1 Crown",
+                "Lose 1 Crown, Gain 30 Coins",
+                "All Players Gain 5 Coins",
+                "All Players Lose 5 Coins",
+                "Upgrade Dice +2 Sides for 1 Turn",
+                "Downgrade All Other Dice -2 Sides for 1 Turn",
+                "Teleport to Nearest Crown Space",
+                "Teleport to Nearest Money Space",
+                "Teleport to Nearest Shop",
+                "Flip Coin: Heads = 25 coins, Tails = Lose 10 coins",
+                "Flip Coin: Heads = 1 Crown, Tails = Nothing",
+                "Gamble 20 Coins: Win 50 or Lose All",
+                "Trade 10 Coins for Random Positive Effect",
+                "Trade 15 Coins to Skip 5 Spaces Forward",
+                "Protect from Next Negative Space",
+                "Immunity from Dragon for 2 Turns",
+                "Next Money Space Gives Double",
+                "Next Crown Space Gives 2 Crowns",
+                "Force All Players to Pay You 5 Coins",
+                "Take 5 Coins from Each Player",
+                "Give 10 Coins to Last Place Player",
+                "Swap Coins with Random Player",
+                "Swap Crowns with Random Player",
+                "Multiply Your Coins by 1.5",
+                "Divide Your Coins by 2, Gain 2 Crowns",
+                "Move to Random Player's Position",
+                "Send Random Player Back 5 Spaces",
+                "Send All Players Back 2 Spaces",
+                "Advance All Players Forward 2 Spaces",
+                "Reverse the Player Order for 1 Round",
+                "Change Your Dice to 8-Sided for 1 Turn",
+                "Change Your Dice to 12-Sided for 1 Turn",
+                "Roll Two Dice and Take Higher",
+                "Roll Two Dice and Take Lower",
+                "Add 10 to Your Next Roll",
+                "Subtract 5 from Next Player's Roll",
+                "Steal Position from 1st Place Player",
+                "Teleport Back 10 Spaces",
+                "Turn Next Space into Money Space",
+                "Turn Next Space into Crown Space",
+                "Turn Random Space into Dragon Space",
+                "Remove 1 Random Active Rule",
+                "Copy Last Player's Ability",
+                "Repeat Your Last Ability",
+                "Negate Next Player's Ability",
+                "Double All Money Gains This Turn",
+                "Triple Next Shop Discount",
+                "Free Shop Visit (Teleport There)",
+                "Gain Coins Equal to Your Position Number",
+                "Gain Coins Equal to Dice Size",
+                "Lose Coins Equal to Dice Size, Move Forward That Much",
+                "Predict Next Roll: Correct = 30 Coins",
+                "Set Your Next Roll to 6",
+                "Set Your Next Roll to Maximum",
+                "Minimum Roll Next Turn",
+                "Freeze 1 Random Player (Skip Their Turn)",
+                "Unfreeze Yourself if Frozen",
+                "Become Immune to Abilities for 1 Turn",
+                "Target Player Loses 10 Coins",
+                "Target Player Moves Back 3 Spaces",
+                "Swap Dice Type with Random Player",
+                "All Empty Spaces Become Money Spaces This Turn",
+                "All Money Spaces Become Crown Spaces This Turn",
+                "Weather Event: Random Positive Effect",
+                "Weather Event: Random Negative Effect",
+                "Chaos: Random Major Effect",
+                "Rewind: Go Back to Previous Space",
+                "Fast Forward: Move Ahead 7 Spaces",
+                "Warp: Teleport to Space 100",
+                "Bounce: Move Backward Then Forward Same Amount",
+                "Spiral: Move in Random Direction (±1-10)",
+                "Anchor: Stay in Current Position Next Turn",
+                "Boost: +10 Speed This Turn Only",
+                "Slow All: Everyone's Next Roll -2",
+                "Haste Self: Roll Twice This Turn",
+                "Coins to Crowns: Trade 50 Coins for 1 Crown",
+                "Crowns to Coins: Trade 1 Crown for 40 Coins",
+                "Lucky Streak: Next 3 Rolls +3",
+                "Unlucky Curse on Random Player: -3 Their Next Roll",
+                "Bribe Shop: 20 Coins for Random Item",
+                "Tax Everyone: All Pay 3 Coins to You",
+                "Charity: Give 5 Coins, Gain 1 Crown",
+                "Greed: Steal 5 from Everyone, Lose 1 Crown",
+                "Invest: Lose 10 Now, Gain 25 Next Turn",
+                "Loan: Gain 20 Now, Lose 25 Next Turn"
+            ],
+            
+            themes: [
+                "🌈 Rainbow Chaos", "🌙 Midnight Madness", "🔥 Dragon's Fury", 
+                "❄️ Frozen Frenzy", "🌸 Spring Bloom", "🎃 Spooky Season",
+                "🎄 Winter Wonderland", "🏖️ Summer Vibes", "🍂 Autumn Harvest",
+                "⚡ Electric Storm", "🌊 Ocean Waves", "🌋 Volcanic Eruption",
+                "🎪 Circus Mayhem", "🏰 Medieval Times", "🚀 Space Odyssey",
+                "🦄 Unicorn Dreams", "🏴‍☠️ Pirate Adventure", "🎮 Retro Gaming",
+                "🌟 Starry Night", "🎨 Art Gallery"
+            ],
+            
+            weatherEvents: [
+                { name: "☀️ Sunny Day", effect: "All players gain 10 coins" },
+                { name: "🌧️ Rainy Day", effect: "All money spaces give double" },
+                { name: "⚡ Thunderstorm", effect: "Random player gets struck - teleport to start" },
+                { name: "❄️ Blizzard", effect: "All players move half speed (round down)" },
+                { name: "🌪️ Tornado", effect: "All players swap positions randomly" },
+                { name: "🌈 Rainbow", effect: "All shop items free this turn" },
+                { name: "☁️ Cloudy", effect: "All special spaces become normal" },
+                { name: "🌙 Eclipse", effect: "All Black Market spaces appear" },
+                { name: "💨 Windy", effect: "All dice rolls +3" },
+                { name: "🌸 Spring Breeze", effect: "Evolve everyone's dice by 2 sides" },
+            ],
+            
+            skins: [
+                { name: "Classic Red", color: "#FF3E88", cost: 0, owned: true },
+                { name: "Ocean Blue", color: "#4CC9F0", cost: 0, owned: true },
+                { name: "Forest Green", color: "#4ECDC4", cost: 0, owned: true },
+                { name: "Sunset Orange", color: "#FF6B35", cost: 0, owned: true },
+                { name: "Royal Purple", color: "#9D4EDD", cost: 0, owned: true },
+                { name: "Golden Yellow", color: "#FDC830", cost: 0, owned: true },
+                { name: "Midnight Black", color: "#2D1B4E", cost: 0, owned: true },
+                { name: "Cloud White", color: "#F5F5F5", cost: 0, owned: true },
+                { name: "Cherry Pink", color: "#FF69B4", cost: 50, owned: false },
+                { name: "Lime Green", color: "#32CD32", cost: 50, owned: false },
+                { name: "Electric Blue", color: "#00FFFF", cost: 75, owned: false },
+                { name: "Magenta", color: "#FF00FF", cost: 75, owned: false },
+                { name: "Crimson", color: "#DC143C", cost: 100, owned: false },
+                { name: "Aquamarine", color: "#7FFFD4", cost: 100, owned: false },
+                { name: "Gold Rush", color: "#FFD700", cost: 150, owned: false },
+                { name: "Platinum", color: "#E5E4E2", cost: 150, owned: false },
+                { name: "Rainbow", color: "linear-gradient(135deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #4B0082, #9400D3)", cost: 250, owned: false },
+                { name: "Galaxy", color: "linear-gradient(135deg, #000428, #004e92)", cost: 250, owned: false },
+                { name: "Lava", color: "linear-gradient(135deg, #FF0000, #FF8C00)", cost: 300, owned: false },
+                { name: "Aurora", color: "linear-gradient(135deg, #00F5A0, #00D9F5)", cost: 300, owned: false },
+            ]
+        };
+
+        // Main Game Component
+        function ChaosRoyaleGame() {
+            const [screen, setScreen] = useState('menu');
+            const [gameSettings, setGameSettings] = useState({
+                players: 4,
+                turns: 20,
+                mode: 'normal',
+                cpuPlayers: 0,
+                cpuDifficulty: 'medium',
+                localMultiplayer: false,
+                customSeed: ''
+            });
+            const [gameState, setGameState] = useState(null);
+            const [username, setUsername] = useState('');
+            const [userCode, setUserCode] = useState('');
+            const [gameCode, setGameCode] = useState('');
+            const [friends, setFriends] = useState([]);
+            const [selectedSkin, setSelectedSkin] = useState(0);
+            const [notification, setNotification] = useState('');
+            const [notificationGodly, setNotificationGodly] = useState(false);
+            const [lobby, setLobby] = useState(null);
+            const [gameHistory, setGameHistory] = useState([]);
+            const [showJoinGame, setShowJoinGame] = useState(false);
+            const [joinGameCode, setJoinGameCode] = useState('');
+            const [starPoints, setStarPoints] = useState(0);
+            const [localPlayerNames, setLocalPlayerNames] = useState(['Player 1', 'Player 2', 'Player 3', 'Player 4']);
+            
+            useEffect(() => {
+                // Auto-save every 30 seconds
+                const saveInterval = setInterval(() => {
+                    if (gameState) {
+                        localStorage.setItem('chaosRoyaleSave', JSON.stringify(gameState));
+                        saveToHistory(gameState);
+                    }
+                }, 30000);
+                
+                return () => clearInterval(saveInterval);
+            }, [gameState]);
+            
+            useEffect(() => {
+                // Generate user code on mount
+                const savedCode = localStorage.getItem('currentUserCode');
+                if (savedCode) {
+                    setUserCode(savedCode);
+                    const savedData = localStorage.getItem(`user_${savedCode}`);
+                    if (savedData) {
+                        const data = JSON.parse(savedData);
+                        setUsername(data.username || '');
+                        setStarPoints(data.starPoints || 0);
+                    }
+                } else {
+                    const newCode = generateCode(8);
+                    setUserCode(newCode);
+                    localStorage.setItem('currentUserCode', newCode);
+                }
+                
+                // Load game history
+                const history = localStorage.getItem('chaosRoyaleHistory');
+                if (history) {
+                    setGameHistory(JSON.parse(history));
+                }
+            }, []);
+            
+            const saveStarPoints = (points) => {
+                setStarPoints(points);
+                if (userCode) {
+                    const savedData = localStorage.getItem(`user_${userCode}`);
+                    const data = savedData ? JSON.parse(savedData) : {};
+                    data.starPoints = points;
+                    localStorage.setItem(`user_${userCode}`, JSON.stringify(data));
+                }
+            };
+            
+            const deleteGameHistory = (gameCode) => {
+                const newHistory = gameHistory.filter(g => g.code !== gameCode);
+                localStorage.setItem('chaosRoyaleHistory', JSON.stringify(newHistory));
+                setGameHistory(newHistory);
+                showNotification('Game deleted!');
+            };
+            
+            const saveToHistory = (game) => {
+                const history = JSON.parse(localStorage.getItem('chaosRoyaleHistory') || '[]');
+                const gameInfo = {
+                    code: game.gameCode,
+                    turn: game.turn,
+                    maxTurns: game.maxTurns,
+                    players: game.players.length,
+                    timestamp: new Date().toLocaleString(),
+                    state: game
+                };
+                
+                // Keep only last 3 games
+                const newHistory = [gameInfo, ...history.filter(g => g.code !== game.gameCode)].slice(0, 3);
+                localStorage.setItem('chaosRoyaleHistory', JSON.stringify(newHistory));
+                setGameHistory(newHistory);
+            };
+            
+            const loadGame = (savedGame) => {
+                if (savedGame) {
+                    setGameState(savedGame);
+                    setScreen('game');
+                    showNotification('Game loaded successfully!');
+                } else {
+                    showNotification('No saved game found!');
+                }
+            };
+            
+            const generateCode = (length) => {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let code = '';
+                for (let i = 0; i < length; i++) {
+                    code += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return code;
+            };
+            
+            const startNewGame = () => {
+                const code = generateCode(6);
+                setGameCode(code);
+                
+                // Use custom seed if provided, otherwise generate random
+                const gameSeed = gameSettings.customSeed || Math.random().toString(36).substring(7);
+                
+                // Create lobby instead of starting game immediately
+                const lobbyPlayers = [];
+                
+                if (gameSettings.localMultiplayer) {
+                    // Local multiplayer mode - all human players
+                    for (let i = 0; i < gameSettings.players; i++) {
+                        lobbyPlayers.push({
+                            id: i,
+                            name: localPlayerNames[i] || `Player ${i + 1}`,
+                            ready: true,
+                            isCPU: false,
+                            skin: GAME_DATA.skins[i % 8] // Cycle through free skins
+                        });
+                    }
+                } else {
+                    // Normal mode - one human + CPUs
+                    lobbyPlayers.push({
+                        id: 0,
+                        name: username,
+                        ready: true,
+                        isCPU: false,
+                        skin: GAME_DATA.skins[selectedSkin]
+                    });
+                    
+                    // Add CPU players if selected
+                    for (let i = 0; i < gameSettings.cpuPlayers; i++) {
+                        lobbyPlayers.push({
+                            id: lobbyPlayers.length,
+                            name: `CPU ${i + 1}`,
+                            ready: true,
+                            isCPU: true,
+                            difficulty: gameSettings.cpuDifficulty,
+                            skin: GAME_DATA.skins[(i + 1) % GAME_DATA.skins.length]
+                        });
+                    }
+                }
+                
+                setLobby({
+                    code: code,
+                    players: lobbyPlayers,
+                    maxPlayers: gameSettings.players,
+                    settings: gameSettings,
+                    seed: gameSeed,
+                    isCustomSeed: !!gameSettings.customSeed
+                });
+                
+                setScreen('lobby');
+                
+                if (gameSettings.customSeed) {
+                    showNotification(`Lobby Created with Seed: ${gameSeed}\n⚠️ Custom seed - No StarPoints will be awarded!`);
+                } else {
+                    showNotification(`Lobby Created! Code: ${code}`);
+                }
+            };
+            
+            const startGameFromLobby = () => {
+                if (lobby.players.length < 2) {
+                    showNotification('Need at least 2 players to start!');
+                    return;
+                }
+                
+                // Use lobby seed (which may be custom or random)
+                const seed = lobby.seed || Math.random().toString(36).substring(7);
+                const board = generateBoard(seed);
+                
+                const players = lobby.players.map(p => ({
+                    ...p,
+                    position: 0,
+                    coins: 10,  // Changed from 50 to 10
+                    crowns: 0,
+                    dice: 6,
+                    items: [],
+                    active: true
+                }));
+                
+                setGameState({
+                    board,
+                    players,
+                    currentPlayer: 0,
+                    turn: 0,
+                    maxTurns: gameSettings.turns,
+                    activeRules: [],
+                    theme: GAME_DATA.themes[Math.floor(Math.random() * GAME_DATA.themes.length)],
+                    weather: null,
+                    seed: seed,
+                    gameCode: lobby.code,
+                    lastRoll: null,
+                    isCustomSeed: lobby.isCustomSeed || false
+                });
+                
+                setScreen('game');
+                
+                if (lobby.isCustomSeed) {
+                    showNotification(`Game Started with Custom Seed!\n⚠️ No StarPoints will be awarded`);
+                } else {
+                    showNotification(`Game Started!`);
+                }
+            };
+            
+            const generateBoard = (seed) => {
+                const board = [];
+                const totalSpaces = 150; // Much longer map!
+                
+                // Use seed for deterministic randomness
+                let seedValue = 0;
+                if (seed) {
+                    for (let i = 0; i < seed.length; i++) {
+                        seedValue += seed.charCodeAt(i);
+                    }
+                }
+                
+                // Seeded random function
+                const seededRandom = (index) => {
+                    if (!seed) return Math.random();
+                    const x = Math.sin(seedValue + index) * 10000;
+                    return x - Math.floor(x);
+                };
+                
+                // Define space distribution - proportional to longer board
+                const spaceTypes = [
+                    { type: 'money', count: 35 },
+                    { type: 'lose', count: 25 },
+                    { type: 'shop', count: 18 },
+                    { type: 'gamble', count: 15 },
+                    { type: 'dragon', count: 5 },
+                    { type: 'crown', count: 12 },
+                    { type: 'normal', count: 20 }, // Changed from 'empty' to 'normal'
+                ];
+                
+                // Add special rare spaces using seeded random
+                if (seededRandom(1000) > 0.5) spaceTypes.push({ type: 'blackmarket', count: 3 });
+                if (seededRandom(2000) > 0.6) spaceTypes.push({ type: 'evolution', count: 4 });
+                if (seededRandom(3000) > 0.8) spaceTypes.push({ type: 'creator', count: 2 });
+                
+                // Fill remaining with normal spaces
+                const totalSpecial = spaceTypes.reduce((sum, s) => sum + s.count, 0);
+                spaceTypes.push({ type: 'normal', count: totalSpaces - totalSpecial });
+                
+                // Generate board
+                spaceTypes.forEach(({ type, count }) => {
+                    for (let i = 0; i < count; i++) {
+                        board.push({
+                            type,
+                            id: board.length,
+                            players: []
+                        });
+                    }
+                });
+                
+                // Shuffle board using seeded random (except start)
+                for (let i = board.length - 1; i > 0; i--) {
+                    const j = Math.floor(seededRandom(i + 4000) * (i + 1));
+                    [board[i], board[j]] = [board[j], board[i]];
+                }
+                
+                return board;
+            };
+            
+            const showNotification = (message, isGodly = false) => {
+                setNotification(message);
+                setNotificationGodly(isGodly);
+                setTimeout(() => {
+                    setNotification('');
+                    setNotificationGodly(false);
+                }, isGodly ? 5000 : 3000); // Godly notifications last longer
+            };
+            
+            const addFriend = (code) => {
+                if (code && !friends.includes(code)) {
+                    setFriends([...friends, code]);
+                    showNotification('Friend added!');
+                }
+            };
+            
+            return (
+                <div className="container">
+                    <h1 className="title">CHAOS ROYALE</h1>
+                    
+                    {screen === 'menu' && (
+                        <MenuScreen 
+                            setScreen={setScreen}
+                            username={username}
+                            setUsername={setUsername}
+                            userCode={userCode}
+                            setUserCode={setUserCode}
+                            loadGame={loadGame}
+                            gameHistory={gameHistory}
+                            deleteGameHistory={deleteGameHistory}
+                            showJoinGame={showJoinGame}
+                            setShowJoinGame={setShowJoinGame}
+                            joinGameCode={joinGameCode}
+                            setJoinGameCode={setJoinGameCode}
+                            starPoints={starPoints}
+                        />
+                    )}
+                    
+                    {screen === 'settings' && (
+                        <SettingsScreen 
+                            gameSettings={gameSettings}
+                            setGameSettings={setGameSettings}
+                            setScreen={setScreen}
+                            startNewGame={startNewGame}
+                            localPlayerNames={localPlayerNames}
+                            setLocalPlayerNames={setLocalPlayerNames}
+                        />
+                    )}
+                    
+                    {screen === 'customize' && (
+                        <CustomizeScreen 
+                            selectedSkin={selectedSkin}
+                            setSelectedSkin={setSelectedSkin}
+                            setScreen={setScreen}
+                            userCode={userCode}
+                        />
+                    )}
+                    
+                    {screen === 'shop' && (
+                        <ShopScreen 
+                            starPoints={starPoints}
+                            saveStarPoints={saveStarPoints}
+                            selectedSkin={selectedSkin}
+                            setSelectedSkin={setSelectedSkin}
+                            setScreen={setScreen}
+                            userCode={userCode}
+                            showNotification={showNotification}
+                        />
+                    )}
+                    
+                    {screen === 'friends' && (
+                        <FriendsScreen 
+                            friends={friends}
+                            addFriend={addFriend}
+                            userCode={userCode}
+                            setScreen={setScreen}
+                        />
+                    )}
+                    
+                    {screen === 'lobby' && lobby && (
+                        <LobbyScreen 
+                            lobby={lobby}
+                            setLobby={setLobby}
+                            startGameFromLobby={startGameFromLobby}
+                            setScreen={setScreen}
+                            showNotification={showNotification}
+                        />
+                    )}
+                    
+                    {screen === 'game' && gameState && (
+                        <GameScreen 
+                            gameState={gameState}
+                            setGameState={setGameState}
+                            showNotification={showNotification}
+                            setScreen={setScreen}
+                        />
+                    )}
+                    
+                    {notification && (
+                        <div className={`notification ${notificationGodly ? 'godly' : ''}`}>
+                            {notification}
+                        </div>
+                    )}
+                </div>
+            );
+        }
+        
+        // Menu Screen Component
+        function MenuScreen({ setScreen, username, setUsername, userCode, setUserCode, loadGame, gameHistory, deleteGameHistory, showJoinGame, setShowJoinGame, joinGameCode, setJoinGameCode, starPoints }) {
+            const [showLoadGames, setShowLoadGames] = useState(false);
+            const [showLoadUserCode, setShowLoadUserCode] = useState(false);
+            const [inputUserCode, setInputUserCode] = useState('');
+            
+            const handleLoadUserCode = () => {
+                if (inputUserCode.length === 8) {
+                    const savedData = localStorage.getItem(`user_${inputUserCode}`);
+                    if (savedData) {
+                        // Load existing user
+                        const data = JSON.parse(savedData);
+                        setUsername(data.username || '');
+                        setUserCode(inputUserCode);
+                        localStorage.setItem('currentUserCode', inputUserCode);
+                        alert(`Loaded user profile: ${data.username || 'Unknown'}`);
+                    } else {
+                        // Create new profile for this code
+                        const newData = {
+                            username: username || 'Player',
+                            code: inputUserCode,
+                            starPoints: 0
+                        };
+                        localStorage.setItem(`user_${inputUserCode}`, JSON.stringify(newData));
+                        setUserCode(inputUserCode);
+                        localStorage.setItem('currentUserCode', inputUserCode);
+                        alert(`New user profile created with code: ${inputUserCode}`);
+                    }
+                    setInputUserCode('');
+                    setShowLoadUserCode(false);
+                } else {
+                    alert('Please enter a valid 8-character user code');
+                }
+            };
+            
+            const handleJoinGame = () => {
+                if (joinGameCode.length === 6) {
+                    // In a real multiplayer setup, this would connect to the game
+                    alert(`Attempting to join game with code: ${joinGameCode}\n\nNote: Online multiplayer requires a backend server. This is a local demo.`);
+                    setJoinGameCode('');
+                    setShowJoinGame(false);
+                } else {
+                    alert('Please enter a valid 6-character game code');
+                }
+            };
+            
+            // Save username when it changes
+            const handleUsernameChange = (newUsername) => {
+                setUsername(newUsername);
+                if (userCode) {
+                    const savedData = localStorage.getItem(`user_${userCode}`);
+                    const data = savedData ? JSON.parse(savedData) : {};
+                    const userData = {
+                        ...data,
+                        username: newUsername,
+                        code: userCode
+                    };
+                    localStorage.setItem(`user_${userCode}`, JSON.stringify(userData));
+                }
+            };
+            
+            return (
+                <div className="menu-screen">
+                    <div style={{ background: 'white', padding: '30px', borderRadius: '20px', maxWidth: '500px', margin: '0 auto' }}>
+                        <h2 style={{ color: 'var(--dark)', marginBottom: '20px' }}>Welcome!</h2>
+                        <input 
+                            type="text"
+                            className="input-field"
+                            placeholder="Enter your username"
+                            value={username}
+                            onChange={(e) => handleUsernameChange(e.target.value)}
+                        />
+                        <p style={{ margin: '15px 0', color: '#666' }}>Your User Code: <strong>{userCode}</strong></p>
+                        <div style={{ 
+                            background: 'linear-gradient(135deg, #FFD700, #FFA500)', 
+                            padding: '15px', 
+                            borderRadius: '10px',
+                            textAlign: 'center',
+                            marginTop: '15px'
+                        }}>
+                            <p style={{ color: 'white', fontSize: '1.2rem', fontWeight: '700' }}>
+                                ⭐ {starPoints} StarPoints
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div className="menu-buttons">
+                        <button className="btn btn-primary" onClick={() => setScreen('settings')}>
+                            🎮 New Game
+                        </button>
+                        
+                        <button className="btn btn-primary" onClick={() => setScreen('shop')}>
+                            🛒 StarPoint Shop
+                        </button>
+                        
+                        <button className="btn btn-success" onClick={() => setShowLoadGames(!showLoadGames)}>
+                            💾 Load Game {showLoadGames ? '▼' : '▶'}
+                        </button>
+                        
+                        {showLoadGames && (
+                            <div style={{ 
+                                background: 'white', 
+                                padding: '20px', 
+                                borderRadius: '15px', 
+                                marginTop: '10px',
+                                animation: 'slideIn 0.3s'
+                            }}>
+                                <h3 style={{ color: 'var(--dark)', marginBottom: '15px' }}>Recent Games</h3>
+                                {gameHistory.length === 0 ? (
+                                    <p style={{ color: '#999', textAlign: 'center' }}>No saved games found</p>
+                                ) : (
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                        {gameHistory.map((game, index) => (
+                                            <div 
+                                                key={index}
+                                                style={{
+                                                    padding: '15px',
+                                                    background: 'linear-gradient(135deg, #f5f5f5, #e0e0e0)',
+                                                    borderRadius: '10px',
+                                                    border: '2px solid var(--primary)'
+                                                }}
+                                            >
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                    <div style={{ flex: 1 }}>
+                                                        <p style={{ fontWeight: '700', color: 'var(--dark)' }}>
+                                                            Game #{game.code}
+                                                        </p>
+                                                        <p style={{ fontSize: '0.85rem', color: '#666' }}>
+                                                            Turn {game.turn}/{game.maxTurns} • {game.players} players
+                                                        </p>
+                                                        <p style={{ fontSize: '0.75rem', color: '#999', marginTop: '5px' }}>
+                                                            {game.timestamp}
+                                                        </p>
+                                                    </div>
+                                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                                        <button 
+                                                            className="btn btn-primary" 
+                                                            style={{ padding: '8px 15px', fontSize: '0.9rem' }}
+                                                            onClick={() => loadGame(game.state)}
+                                                        >
+                                                            Load
+                                                        </button>
+                                                        <button 
+                                                            className="btn btn-danger" 
+                                                            style={{ padding: '8px 15px', fontSize: '0.9rem' }}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                if (confirm('Delete this save?')) {
+                                                                    deleteGameHistory(game.code);
+                                                                }
+                                                            }}
+                                                        >
+                                                            🗑️
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                        
+                        <button className="btn btn-secondary" onClick={() => setShowLoadUserCode(!showLoadUserCode)}>
+                            👤 Load User Code {showLoadUserCode ? '▼' : '▶'}
+                        </button>
+                        
+                        {showLoadUserCode && (
+                            <div style={{ 
+                                background: 'white', 
+                                padding: '20px', 
+                                borderRadius: '15px', 
+                                marginTop: '10px',
+                                animation: 'slideIn 0.3s'
+                            }}>
+                                <h3 style={{ color: 'var(--dark)', marginBottom: '15px' }}>Load User Code</h3>
+                                <input 
+                                    type="text"
+                                    className="input-field"
+                                    placeholder="Enter user code"
+                                    value={inputUserCode}
+                                    onChange={(e) => setInputUserCode(e.target.value.toUpperCase())}
+                                />
+                                <button 
+                                    className="btn btn-primary" 
+                                    style={{ width: '100%', marginTop: '10px' }}
+                                    onClick={handleLoadUserCode}
+                                >
+                                    Load Code
+                                </button>
+                                <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '10px', textAlign: 'center' }}>
+                                    Enter an 8-character code to load or create a user profile
+                                </p>
+                            </div>
+                        )}
+                        
+                        <button className="btn btn-secondary" onClick={() => setShowJoinGame(!showJoinGame)}>
+                            🔗 Join Game {showJoinGame ? '▼' : '▶'}
+                        </button>
+                        
+                        {showJoinGame && (
+                            <div style={{ 
+                                background: 'white', 
+                                padding: '20px', 
+                                borderRadius: '15px', 
+                                marginTop: '10px',
+                                animation: 'slideIn 0.3s'
+                            }}>
+                                <h3 style={{ color: 'var(--dark)', marginBottom: '15px' }}>Join Game</h3>
+                                <input 
+                                    type="text"
+                                    className="input-field"
+                                    placeholder="Enter 6-character game code"
+                                    value={joinGameCode}
+                                    onChange={(e) => setJoinGameCode(e.target.value.toUpperCase())}
+                                    maxLength={6}
+                                />
+                                <button 
+                                    className="btn btn-primary" 
+                                    style={{ width: '100%', marginTop: '10px' }}
+                                    onClick={handleJoinGame}
+                                >
+                                    Join Game
+                                </button>
+                                <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '10px', textAlign: 'center' }}>
+                                    Enter the 6-character code from your friend's game
+                                </p>
+                            </div>
+                        )}
+                        
+                        <button className="btn btn-primary" onClick={() => setScreen('customize')}>
+                            🎨 Customize Character
+                        </button>
+                        <button className="btn btn-secondary" onClick={() => setScreen('friends')}>
+                            👥 Friends List
+                        </button>
+                        <button className="btn btn-primary" onClick={() => alert('How to Play:\n\n1. Roll dice to move on the board\n2. Land on spaces for effects (coins, crowns, shops)\n3. Choose from 5 rules to add to the game\n4. Buy items from shops to gain special abilities\n5. Items give you powers you can use\n6. Collect crowns to win!\n7. Watch for GODLY RULES! (⭐0.1% chance⭐)\n8. Win games to earn StarPoints!\n9. Buy skins in the shop with StarPoints!\n10. Embrace the CHAOS!')}>
+                            ❓ How to Play
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+        
+        // Settings Screen Component
+        function SettingsScreen({ gameSettings, setGameSettings, setScreen, startNewGame, localPlayerNames, setLocalPlayerNames }) {
+            const maxCPUs = gameSettings.players - 1; // Leave at least 1 slot for human player
+            
+            return (
+                <div className="menu-screen">
+                    <h2 style={{ color: 'white', marginBottom: '30px', fontSize: '2rem' }}>Game Settings</h2>
+                    
+                    <div className="settings-grid">
+                        <div className="setting-card">
+                            <h3>Game Mode</h3>
+                            <div className="setting-options">
+                                <button
+                                    className={`option-btn ${!gameSettings.localMultiplayer ? 'selected' : ''}`}
+                                    onClick={() => setGameSettings({...gameSettings, localMultiplayer: false})}
+                                >
+                                    Single Player + CPUs
+                                </button>
+                                <button
+                                    className={`option-btn ${gameSettings.localMultiplayer ? 'selected' : ''}`}
+                                    onClick={() => setGameSettings({...gameSettings, localMultiplayer: true, cpuPlayers: 0})}
+                                >
+                                    Local Multiplayer
+                                </button>
+                            </div>
+                            <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '10px' }}>
+                                {gameSettings.localMultiplayer 
+                                    ? '👥 All players play on same device' 
+                                    : '🤖 You vs CPU opponents'}
+                            </p>
+                        </div>
+                        
+                        <div className="setting-card">
+                            <h3>Map Seed (Optional)</h3>
+                            <input 
+                                type="text"
+                                className="input-field"
+                                placeholder="Leave blank for random"
+                                value={gameSettings.customSeed}
+                                onChange={(e) => setGameSettings({...gameSettings, customSeed: e.target.value})}
+                                style={{ 
+                                    width: '100%', 
+                                    margin: '10px 0',
+                                    fontSize: '0.9rem',
+                                    padding: '10px'
+                                }}
+                            />
+                            <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '5px' }}>
+                                🎲 Random map or 🔁 replay with seed
+                            </p>
+                            {gameSettings.customSeed && (
+                                <p style={{ fontSize: '0.85rem', color: '#ff6b35', marginTop: '10px', fontWeight: '600' }}>
+                                    ⚠️ Custom seed: No StarPoints will be awarded!
+                                </p>
+                            )}
+                        </div>
+                        
+                        <div className="setting-card">
+                            <h3>Number of Players</h3>
+                            <div className="setting-options">
+                                {[4, 6, 8].map(num => (
+                                    <button
+                                        key={num}
+                                        className={`option-btn ${gameSettings.players === num ? 'selected' : ''}`}
+                                        onClick={() => {
+                                            setGameSettings({
+                                                ...gameSettings, 
+                                                players: num,
+                                                // Adjust CPUs if exceeds limit
+                                                cpuPlayers: Math.min(gameSettings.cpuPlayers, num - 1)
+                                            });
+                                        }}
+                                    >
+                                        {num} Players
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        
+                        <div className="setting-card">
+                            <h3>Number of Turns</h3>
+                            <div className="setting-options">
+                                {[10, 20, 30, 40, 50].map(num => (
+                                    <button
+                                        key={num}
+                                        className={`option-btn ${gameSettings.turns === num ? 'selected' : ''}`}
+                                        onClick={() => setGameSettings({...gameSettings, turns: num})}
+                                    >
+                                        {num} Turns
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        
+                        {!gameSettings.localMultiplayer && (
+                            <>
+                                <div className="setting-card">
+                                    <h3>CPU Players (Max: {maxCPUs})</h3>
+                                    <div className="setting-options">
+                                        {[0, 1, 2, 3, 4, 5, 6, 7].map(num => (
+                                            <button
+                                                key={num}
+                                                className={`option-btn ${gameSettings.cpuPlayers === num ? 'selected' : ''}`}
+                                                onClick={() => setGameSettings({...gameSettings, cpuPlayers: num})}
+                                                disabled={num > maxCPUs}
+                                                style={{ 
+                                                    opacity: num > maxCPUs ? 0.3 : 1,
+                                                    cursor: num > maxCPUs ? 'not-allowed' : 'pointer'
+                                                }}
+                                            >
+                                                {num} CPU
+                                            </button>
+                                        ))}
+                                    </div>
+                                    {gameSettings.cpuPlayers > maxCPUs && (
+                                        <p style={{ color: 'red', fontSize: '0.85rem', marginTop: '10px' }}>
+                                            Too many CPUs! Reduce to {maxCPUs} or increase player count.
+                                        </p>
+                                    )}
+                                </div>
+                                
+                                <div className="setting-card">
+                                    <h3>CPU Difficulty</h3>
+                                    <div className="setting-options">
+                                        {['easy', 'medium', 'hard', 'insane'].map(diff => (
+                                            <button
+                                                key={diff}
+                                                className={`option-btn ${gameSettings.cpuDifficulty === diff ? 'selected' : ''}`}
+                                                onClick={() => setGameSettings({...gameSettings, cpuDifficulty: diff})}
+                                            >
+                                                {diff.charAt(0).toUpperCase() + diff.slice(1)}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                    
+                    {gameSettings.localMultiplayer && (
+                        <div style={{ 
+                            background: 'white', 
+                            padding: '30px', 
+                            borderRadius: '20px', 
+                            marginTop: '30px',
+                            animation: 'slideIn 0.3s'
+                        }}>
+                            <h3 style={{ color: 'var(--dark)', marginBottom: '20px' }}>
+                                👥 Enter Player Names
+                            </h3>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
+                                {Array.from({ length: gameSettings.players }).map((_, index) => (
+                                    <div key={index}>
+                                        <label style={{ fontSize: '0.9rem', color: '#666', marginBottom: '5px', display: 'block' }}>
+                                            Player {index + 1}
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="input-field"
+                                            value={localPlayerNames[index] || ''}
+                                            onChange={(e) => {
+                                                const newNames = [...localPlayerNames];
+                                                newNames[index] = e.target.value;
+                                                setLocalPlayerNames(newNames);
+                                            }}
+                                            placeholder={`Player ${index + 1}`}
+                                            style={{ margin: 0 }}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                            <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '15px', textAlign: 'center' }}>
+                                💡 Pass the device between players during the game
+                            </p>
+                        </div>
+                    )}
+                    
+                    <div className="menu-buttons" style={{ marginTop: '30px' }}>
+                        <button className="btn btn-primary" onClick={startNewGame}>
+                            🎲 Create Lobby!
+                        </button>
+                        <button className="btn btn-secondary" onClick={() => setScreen('menu')}>
+                            ← Back to Menu
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+        
+        // StarPoint Shop Screen
+        function ShopScreen({ starPoints, saveStarPoints, selectedSkin, setSelectedSkin, setScreen, userCode, showNotification }) {
+            const [ownedSkins, setOwnedSkins] = useState(() => {
+                const saved = localStorage.getItem(`skins_${userCode}`);
+                return saved ? JSON.parse(saved) : [0, 1, 2, 3, 4, 5, 6, 7]; // First 8 are free
+            });
+            
+            const buySkin = (index, cost) => {
+                if (starPoints >= cost) {
+                    const newOwnedSkins = [...ownedSkins, index];
+                    setOwnedSkins(newOwnedSkins);
+                    saveStarPoints(starPoints - cost);
+                    localStorage.setItem(`skins_${userCode}`, JSON.stringify(newOwnedSkins));
+                    showNotification(`Purchased ${GAME_DATA.skins[index].name}!`);
+                } else {
+                    showNotification('Not enough StarPoints!');
+                }
+            };
+            
+            return (
+                <div className="menu-screen">
+                    <div style={{ background: 'white', padding: '30px', borderRadius: '20px', maxWidth: '900px', margin: '0 auto' }}>
+                        <h2 style={{ color: 'var(--dark)', marginBottom: '20px' }}>⭐ StarPoint Shop</h2>
+                        
+                        <div style={{ 
+                            background: 'linear-gradient(135deg, #FFD700, #FFA500)', 
+                            padding: '20px', 
+                            borderRadius: '15px',
+                            textAlign: 'center',
+                            marginBottom: '30px'
+                        }}>
+                            <p style={{ color: 'white', fontSize: '1.5rem', fontWeight: '700' }}>
+                                Your Balance: ⭐ {starPoints} StarPoints
+                            </p>
+                        </div>
+                        
+                        <h3 style={{ color: 'var(--dark)', marginBottom: '15px' }}>Available Skins</h3>
+                        
+                        <div style={{ 
+                            display: 'grid', 
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', 
+                            gap: '15px',
+                            marginBottom: '20px'
+                        }}>
+                            {GAME_DATA.skins.map((skin, index) => {
+                                const owned = ownedSkins.includes(index);
+                                const canAfford = starPoints >= skin.cost;
+                                
+                                return (
+                                    <div 
+                                        key={index}
+                                        style={{
+                                            background: owned ? 'linear-gradient(135deg, #4ECDC4, #44A08D)' : '#f5f5f5',
+                                            padding: '15px',
+                                            borderRadius: '15px',
+                                            textAlign: 'center',
+                                            border: selectedSkin === index ? '3px solid var(--accent)' : '3px solid transparent',
+                                            opacity: (!owned && !canAfford) ? 0.5 : 1
+                                        }}
+                                    >
+                                        <div 
+                                            style={{ 
+                                                width: '80px', 
+                                                height: '80px', 
+                                                borderRadius: '50%',
+                                                background: skin.color,
+                                                margin: '0 auto 10px',
+                                                border: '3px solid white'
+                                            }}
+                                        />
+                                        <p style={{ fontWeight: '700', fontSize: '0.9rem', marginBottom: '5px', color: 'var(--dark)' }}>
+                                            {skin.name}
+                                        </p>
+                                        {owned ? (
+                                            <>
+                                                <p style={{ color: 'white', fontSize: '0.85rem', marginBottom: '8px' }}>
+                                                    ✓ Owned
+                                                </p>
+                                                <button 
+                                                    className="btn btn-secondary"
+                                                    style={{ padding: '6px 12px', fontSize: '0.8rem', width: '100%' }}
+                                                    onClick={() => setSelectedSkin(index)}
+                                                >
+                                                    {selectedSkin === index ? 'Equipped' : 'Equip'}
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <p style={{ color: 'var(--primary)', fontSize: '0.9rem', fontWeight: '700', marginBottom: '8px' }}>
+                                                    ⭐ {skin.cost}
+                                                </p>
+                                                <button 
+                                                    className="btn btn-primary"
+                                                    style={{ padding: '6px 12px', fontSize: '0.8rem', width: '100%' }}
+                                                    onClick={() => buySkin(index, skin.cost)}
+                                                    disabled={!canAfford}
+                                                >
+                                                    {canAfford ? 'Buy' : 'Locked'}
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        
+                        <div style={{ 
+                            background: '#f0f0f0', 
+                            padding: '20px', 
+                            borderRadius: '15px',
+                            marginTop: '20px'
+                        }}>
+                            <h4 style={{ color: 'var(--dark)', marginBottom: '10px' }}>💡 How to Earn StarPoints</h4>
+                            <ul style={{ color: '#666', lineHeight: '1.8' }}>
+                                <li>🥇 <strong>Win a game:</strong> 100 StarPoints</li>
+                                <li>🤖 <strong>Beat Medium CPUs:</strong> +25 bonus</li>
+                                <li>🤖 <strong>Beat Hard CPUs:</strong> +50 bonus</li>
+                                <li>🤖 <strong>Beat Insane CPUs:</strong> +100 bonus</li>
+                                <li>🥈 <strong>2nd Place:</strong> 30 StarPoints</li>
+                                <li>🥉 <strong>3rd Place:</strong> 15 StarPoints</li>
+                                <li>🎮 <strong>Participation:</strong> 5 StarPoints</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div className="menu-buttons" style={{ marginTop: '30px' }}>
+                        <button className="btn btn-primary" onClick={() => setScreen('menu')}>
+                            ← Back to Menu
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+        
+        // Character Customization Screen
+        function CustomizeScreen({ selectedSkin, setSelectedSkin, setScreen, userCode }) {
+            const ownedSkins = (() => {
+                const saved = localStorage.getItem(`skins_${userCode}`);
+                return saved ? JSON.parse(saved) : [0, 1, 2, 3, 4, 5, 6, 7];
+            })();
+            
+            const availableSkins = GAME_DATA.skins.filter((_, index) => ownedSkins.includes(index));
+            
+            return (
+                <div className="menu-screen">
+                    <div style={{ background: 'white', padding: '30px', borderRadius: '20px', maxWidth: '800px', margin: '0 auto' }}>
+                        <h2 style={{ color: 'var(--dark)', marginBottom: '30px' }}>Customize Your Character</h2>
+                        
+                        <div className="character-customizer">
+                            <div className="character-preview">
+                                <h3>Preview</h3>
+                                <div 
+                                    className="character-avatar"
+                                    style={{ background: GAME_DATA.skins[selectedSkin].color }}
+                                />
+                                <p style={{ marginTop: '20px', fontWeight: '600', color: 'var(--dark)' }}>
+                                    {GAME_DATA.skins[selectedSkin].name}
+                                </p>
+                            </div>
+                            
+                            <div>
+                                <h3 style={{ marginBottom: '20px', color: 'var(--dark)' }}>Your Skins ({availableSkins.length})</h3>
+                                <div className="skin-options">
+                                    {GAME_DATA.skins.map((skin, index) => {
+                                        if (!ownedSkins.includes(index)) return null;
+                                        return (
+                                            <div
+                                                key={index}
+                                                className={`skin-option ${selectedSkin === index ? 'selected' : ''}`}
+                                                style={{ background: skin.color }}
+                                                onClick={() => setSelectedSkin(index)}
+                                            />
+                                        );
+                                    })}
+                                </div>
+                                <p style={{ marginTop: '15px', color: '#666', fontSize: '0.9rem' }}>
+                                    💡 Unlock more skins in the StarPoint Shop!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="menu-buttons" style={{ marginTop: '30px' }}>
+                        <button className="btn btn-primary" onClick={() => setScreen('menu')}>
+                            ✓ Save & Return
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+        
+        // Friends Screen
+        function FriendsScreen({ friends, addFriend, userCode, setScreen }) {
+            const [friendCode, setFriendCode] = useState('');
+            
+            return (
+                <div className="menu-screen">
+                    <div style={{ background: 'white', padding: '30px', borderRadius: '20px', maxWidth: '600px', margin: '0 auto' }}>
+                        <h2 style={{ color: 'var(--dark)', marginBottom: '20px' }}>Friends List</h2>
+                        
+                        <div style={{ marginBottom: '30px' }}>
+                            <p style={{ marginBottom: '10px' }}>Your User Code: <strong>{userCode}</strong></p>
+                            <input 
+                                type="text"
+                                className="input-field"
+                                placeholder="Enter friend's code"
+                                value={friendCode}
+                                onChange={(e) => setFriendCode(e.target.value)}
+                            />
+                            <button 
+                                className="btn btn-primary" 
+                                style={{ width: '100%', marginTop: '10px' }}
+                                onClick={() => {
+                                    addFriend(friendCode);
+                                    setFriendCode('');
+                                }}
+                            >
+                                Add Friend
+                            </button>
+                        </div>
+                        
+                        <div className="friends-list">
+                            <h3 style={{ marginBottom: '15px', color: 'var(--dark)' }}>Your Friends ({friends.length})</h3>
+                            {friends.length === 0 ? (
+                                <p style={{ color: '#999', textAlign: 'center', padding: '20px' }}>
+                                    No friends added yet. Share your code!
+                                </p>
+                            ) : (
+                                friends.map((friend, index) => (
+                                    <div key={index} className="friend-item">
+                                        <span>{friend}</span>
+                                        <button className="btn btn-secondary" style={{ padding: '8px 15px', fontSize: '0.9rem' }}>
+                                            Invite
+                                        </button>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                    
+                    <div className="menu-buttons" style={{ marginTop: '30px' }}>
+                        <button className="btn btn-primary" onClick={() => setScreen('menu')}>
+                            ← Back to Menu
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+        
+        // Lobby Screen Component
+        function LobbyScreen({ lobby, setLobby, startGameFromLobby, setScreen, showNotification }) {
+            const emptySlots = lobby.maxPlayers - lobby.players.length;
+            
+            return (
+                <div className="menu-screen">
+                    <div className="lobby-container">
+                        <h2 style={{ color: 'var(--dark)', marginBottom: '20px' }}>Game Lobby</h2>
+                        
+                        <div className="game-code" style={{ marginBottom: '30px' }}>
+                            {lobby.code}
+                        </div>
+                        
+                        <p style={{ textAlign: 'center', color: '#666', marginBottom: '20px' }}>
+                            Players: {lobby.players.length} / {lobby.maxPlayers}
+                        </p>
+                        
+                        <div className="lobby-players">
+                            {lobby.players.map(player => (
+                                <div 
+                                    key={player.id}
+                                    className={`lobby-player-card ${player.ready ? 'ready' : ''} ${player.isCPU ? 'cpu' : ''}`}
+                                >
+                                    <div 
+                                        className="lobby-player-avatar"
+                                        style={{ background: player.skin.color }}
+                                    />
+                                    <h4 style={{ color: 'var(--dark)', marginBottom: '5px' }}>
+                                        {player.name}
+                                    </h4>
+                                    {player.isCPU && (
+                                        <p style={{ fontSize: '0.85rem', color: '#666' }}>
+                                            🤖 CPU ({player.difficulty})
+                                        </p>
+                                    )}
+                                    {player.ready && (
+                                        <p style={{ color: 'var(--success)', fontSize: '0.9rem', marginTop: '5px' }}>
+                                            ✓ Ready
+                                        </p>
+                                    )}
+                                </div>
+                            ))}
+                            
+                            {[...Array(emptySlots)].map((_, i) => (
+                                <div key={`empty-${i}`} className="lobby-empty-slot">
+                                    Waiting...
+                                </div>
+                            ))}
+                        </div>
+                        
+                        <div style={{ marginTop: '30px', textAlign: 'center' }}>
+                            <button 
+                                className="btn btn-primary"
+                                style={{ fontSize: '1.3rem', padding: '20px 40px' }}
+                                onClick={startGameFromLobby}
+                            >
+                                🎮 Start Game!
+                            </button>
+                            <p style={{ marginTop: '15px', color: '#666', fontSize: '0.9rem' }}>
+                                You can start with {lobby.players.length} players or wait for more to join
+                            </p>
+                        </div>
+                        
+                        <div style={{ marginTop: '20px', textAlign: 'center' }}>
+                            <button 
+                                className="btn btn-secondary"
+                                onClick={() => setScreen('menu')}
+                            >
+                                ← Cancel & Return to Menu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        
+        // Main Game Screen Component
+        function GameScreen({ gameState, setGameState, showNotification, setScreen }) {
+            const [rolling, setRolling] = useState(false);
+            const [showShop, setShowShop] = useState(false);
+            const [showAbilities, setShowAbilities] = useState(false);
+            const [selectedAbilities, setSelectedAbilities] = useState([]);
+            const [showMinigame, setShowMinigame] = useState(false);
+            const [availableRules, setAvailableRules] = useState([]);
+            const [selectedRule, setSelectedRule] = useState(null);
+            
+            useEffect(() => {
+                // Random weather event every 5 turns
+                if (gameState.turn % 5 === 0 && gameState.turn > 0) {
+                    const weather = GAME_DATA.weatherEvents[Math.floor(Math.random() * GAME_DATA.weatherEvents.length)];
+                    setGameState(prev => ({ ...prev, weather }));
+                    showNotification(`Weather Event: ${weather.name} - ${weather.effect}`);
+                }
+                
+                // Random minigame every 10 turns
+                if (gameState.turn % 10 === 0 && gameState.turn > 0) {
+                    setShowMinigame(true);
+                }
+                
+                // Generate random rules for turn (NO abilities - those come from items!)
+                if (showAbilities) {
+                    const turnProgress = gameState.turn / gameState.maxTurns;
+                    const rules = [];
+                    
+                    for (let i = 0; i < 5; i++) {
+                        const godlyChance = Math.random();
+                        let newRule;
+                        
+                        // 0.1% chance for GODLY rule!
+                        if (godlyChance < 0.001) {
+                            newRule = GAME_DATA.rules.godly[Math.floor(Math.random() * GAME_DATA.rules.godly.length)];
+                        } else {
+                            // 10% chance for bonus rule (any tier)
+                            const bonusChance = Math.random();
+                            if (bonusChance < 0.10) {
+                                newRule = GAME_DATA.rules.bonus[Math.floor(Math.random() * GAME_DATA.rules.bonus.length)];
+                            } else {
+                                // Add chance for higher tier rules to appear early
+                                const randomRoll = Math.random();
+                                
+                                if (turnProgress < 0.3) {
+                                    // Early game: 70% early, 25% mid, 5% late
+                                    if (randomRoll < 0.70) {
+                                        newRule = GAME_DATA.rules.early[Math.floor(Math.random() * GAME_DATA.rules.early.length)];
+                                    } else if (randomRoll < 0.95) {
+                                        newRule = GAME_DATA.rules.mid[Math.floor(Math.random() * GAME_DATA.rules.mid.length)];
+                                    } else {
+                                        newRule = GAME_DATA.rules.late[Math.floor(Math.random() * GAME_DATA.rules.late.length)];
+                                    }
+                                } else if (turnProgress < 0.7) {
+                                    // Mid game: 20% early, 60% mid, 20% late
+                                    if (randomRoll < 0.20) {
+                                        newRule = GAME_DATA.rules.early[Math.floor(Math.random() * GAME_DATA.rules.early.length)];
+                                    } else if (randomRoll < 0.80) {
+                                        newRule = GAME_DATA.rules.mid[Math.floor(Math.random() * GAME_DATA.rules.mid.length)];
+                                    } else {
+                                        newRule = GAME_DATA.rules.late[Math.floor(Math.random() * GAME_DATA.rules.late.length)];
+                                    }
+                                } else {
+                                    // Late game: 5% early, 25% mid, 70% late
+                                    if (randomRoll < 0.05) {
+                                        newRule = GAME_DATA.rules.early[Math.floor(Math.random() * GAME_DATA.rules.early.length)];
+                                    } else if (randomRoll < 0.30) {
+                                        newRule = GAME_DATA.rules.mid[Math.floor(Math.random() * GAME_DATA.rules.mid.length)];
+                                    } else {
+                                        newRule = GAME_DATA.rules.late[Math.floor(Math.random() * GAME_DATA.rules.late.length)];
+                                    }
+                                }
+                            }
+                        }
+                        rules.push(newRule);
+                    }
+                    setAvailableRules(rules);
+                }
+            }, [gameState.turn, showAbilities]);
+            
+            const rollDice = () => {
+                setRolling(true);
+                const currentPlayer = gameState.players[gameState.currentPlayer];
+                const diceResult = Math.floor(Math.random() * currentPlayer.dice) + 1;
+                
+                setTimeout(() => {
+                    // Move player
+                    const newPosition = (currentPlayer.position + diceResult) % gameState.board.length;
+                    const landedSpace = gameState.board[newPosition];
+                    
+                    // Update player position
+                    const updatedPlayers = gameState.players.map((p, i) => 
+                        i === gameState.currentPlayer 
+                            ? { ...p, position: newPosition }
+                            : p
+                    );
+                    
+                    // Handle space effect
+                    handleSpaceEffect(landedSpace, updatedPlayers[gameState.currentPlayer]);
+                    
+                    // Check if player reached the end of the board
+                    if (newPosition >= gameState.board.length - 1) {
+                        setTimeout(() => {
+                            endGame();
+                        }, 2000);
+                        return;
+                    }
+                    
+                    setGameState(prev => ({
+                        ...prev,
+                        players: updatedPlayers,
+                        lastRoll: diceResult
+                    }));
+                    
+                    setRolling(false);
+                    setShowAbilities(true);
+                    showNotification(`Rolled ${diceResult}!`);
+                    
+                    // Auto-play for CPU players
+                    if (currentPlayer.isCPU) {
+                        setTimeout(() => {
+                            cpuPlayTurn(currentPlayer);
+                        }, 1500);
+                    }
+                }, 1000);
+            };
+            
+            const executeAbility = (ability) => {
+                const currentPlayer = gameState.players[gameState.currentPlayer];
+                const otherPlayers = gameState.players.filter((_, i) => i !== gameState.currentPlayer);
+                
+                // Apply ability effects
+                if (ability.includes('Gain 10 Coins')) {
+                    currentPlayer.coins += 10;
+                } else if (ability.includes('Gain 20 Coins')) {
+                    currentPlayer.coins += 20;
+                } else if (ability.includes('Gain 5 Coins')) {
+                    currentPlayer.coins += 5;
+                } else if (ability.includes('Steal 10 Coins from Random Player')) {
+                    const target = otherPlayers[Math.floor(Math.random() * otherPlayers.length)];
+                    const stolen = Math.min(10, target.coins);
+                    target.coins -= stolen;
+                    currentPlayer.coins += stolen;
+                } else if (ability.includes('Steal 15 Coins from Leader')) {
+                    const leader = gameState.players.reduce((prev, curr) => curr.crowns > prev.crowns ? curr : prev);
+                    if (leader.id !== currentPlayer.id) {
+                        const stolen = Math.min(15, leader.coins);
+                        leader.coins -= stolen;
+                        currentPlayer.coins += stolen;
+                    }
+                } else if (ability.includes('Move Forward 3 Spaces')) {
+                    currentPlayer.position = Math.min(currentPlayer.position + 3, gameState.board.length - 1);
+                } else if (ability.includes('Move Forward 5 Spaces')) {
+                    currentPlayer.position = Math.min(currentPlayer.position + 5, gameState.board.length - 1);
+                } else if (ability.includes('Move Backward 2 Spaces')) {
+                    currentPlayer.position = Math.max(currentPlayer.position - 2, 0);
+                } else if (ability.includes('Teleport to Random Space')) {
+                    currentPlayer.position = Math.floor(Math.random() * gameState.board.length);
+                } else if (ability.includes('Swap Positions with Random Player')) {
+                    const target = otherPlayers[Math.floor(Math.random() * otherPlayers.length)];
+                    const temp = currentPlayer.position;
+                    currentPlayer.position = target.position;
+                    target.position = temp;
+                } else if (ability.includes('Gain 1 Crown')) {
+                    currentPlayer.crowns += 1;
+                } else if (ability.includes('Lose 5 Coins, Gain 1 Crown')) {
+                    currentPlayer.coins -= 5;
+                    currentPlayer.crowns += 1;
+                } else if (ability.includes('Lose 1 Crown, Gain 30 Coins')) {
+                    if (currentPlayer.crowns > 0) {
+                        currentPlayer.crowns -= 1;
+                        currentPlayer.coins += 30;
+                    }
+                } else if (ability.includes('All Players Gain 5 Coins')) {
+                    gameState.players.forEach(p => p.coins += 5);
+                } else if (ability.includes('All Players Lose 5 Coins')) {
+                    gameState.players.forEach(p => p.coins = Math.max(0, p.coins - 5));
+                } else if (ability.includes('Upgrade Dice +2 Sides for 1 Turn')) {
+                    currentPlayer.dice += 2;
+                } else if (ability.includes('Teleport to Nearest Crown Space')) {
+                    const crownSpaces = gameState.board.map((s, i) => s.type === 'crown' ? i : -1).filter(i => i !== -1);
+                    if (crownSpaces.length > 0) {
+                        const nearest = crownSpaces.reduce((prev, curr) => 
+                            Math.abs(curr - currentPlayer.position) < Math.abs(prev - currentPlayer.position) ? curr : prev
+                        );
+                        currentPlayer.position = nearest;
+                    }
+                } else if (ability.includes('Teleport to Nearest Money Space')) {
+                    const moneySpaces = gameState.board.map((s, i) => s.type === 'money' ? i : -1).filter(i => i !== -1);
+                    if (moneySpaces.length > 0) {
+                        const nearest = moneySpaces.reduce((prev, curr) => 
+                            Math.abs(curr - currentPlayer.position) < Math.abs(prev - currentPlayer.position) ? curr : prev
+                        );
+                        currentPlayer.position = nearest;
+                    }
+                } else if (ability.includes('Teleport to Nearest Shop')) {
+                    const shopSpaces = gameState.board.map((s, i) => s.type === 'shop' ? i : -1).filter(i => i !== -1);
+                    if (shopSpaces.length > 0) {
+                        const nearest = shopSpaces.reduce((prev, curr) => 
+                            Math.abs(curr - currentPlayer.position) < Math.abs(prev - currentPlayer.position) ? curr : prev
+                        );
+                        currentPlayer.position = nearest;
+                    }
+                } else if (ability.includes('Flip Coin: Heads = 25 coins')) {
+                    if (Math.random() > 0.5) {
+                        currentPlayer.coins += 25;
+                        showNotification('Coin flip: Heads! +25 coins');
+                    } else {
+                        currentPlayer.coins = Math.max(0, currentPlayer.coins - 10);
+                        showNotification('Coin flip: Tails! -10 coins');
+                    }
+                } else if (ability.includes('Flip Coin: Heads = 1 Crown')) {
+                    if (Math.random() > 0.5) {
+                        currentPlayer.crowns += 1;
+                        showNotification('Coin flip: Heads! +1 crown');
+                    } else {
+                        showNotification('Coin flip: Tails! Nothing');
+                    }
+                } else if (ability.includes('Force All Players to Pay You 5 Coins')) {
+                    otherPlayers.forEach(p => {
+                        const payment = Math.min(5, p.coins);
+                        p.coins -= payment;
+                        currentPlayer.coins += payment;
+                    });
+                } else if (ability.includes('Swap Coins with Random Player')) {
+                    const target = otherPlayers[Math.floor(Math.random() * otherPlayers.length)];
+                    const temp = currentPlayer.coins;
+                    currentPlayer.coins = target.coins;
+                    target.coins = temp;
+                } else if (ability.includes('Swap Crowns with Random Player')) {
+                    const target = otherPlayers[Math.floor(Math.random() * otherPlayers.length)];
+                    const temp = currentPlayer.crowns;
+                    currentPlayer.crowns = target.crowns;
+                    target.crowns = temp;
+                } else if (ability.includes('Multiply Your Coins by 1.5')) {
+                    currentPlayer.coins = Math.floor(currentPlayer.coins * 1.5);
+                } else if (ability.includes('Send Random Player Back 5 Spaces')) {
+                    const target = otherPlayers[Math.floor(Math.random() * otherPlayers.length)];
+                    target.position = Math.max(0, target.position - 5);
+                } else if (ability.includes('Gain Coins Equal to Your Position Number')) {
+                    currentPlayer.coins += currentPlayer.position;
+                } else if (ability.includes('Trade 50 Coins for 1 Crown') || ability.includes('Coins to Crowns')) {
+                    if (currentPlayer.coins >= 50) {
+                        currentPlayer.coins -= 50;
+                        currentPlayer.crowns += 1;
+                    }
+                } else if (ability.includes('Trade 1 Crown for 40 Coins') || ability.includes('Crowns to Coins')) {
+                    if (currentPlayer.crowns > 0) {
+                        currentPlayer.crowns -= 1;
+                        currentPlayer.coins += 40;
+                    }
+                }
+                
+                // Update game state
+                setGameState(prev => ({...prev, players: [...gameState.players]}));
+                
+                showNotification(`Used ability: ${ability}`);
+            };
+            
+            const cpuPlayTurn = (player) => {
+                // CPU might remove a rule first if it has coins and there are many rules
+                if (player.coins >= 5 && gameState.activeRules.length > 5 && Math.random() > 0.7) {
+                    player.coins -= 5;
+                    const randomIndex = Math.floor(Math.random() * gameState.activeRules.length);
+                    const removedRule = gameState.activeRules[randomIndex];
+                    
+                    setGameState(prev => ({
+                        ...prev,
+                        activeRules: prev.activeRules.filter((_, i) => i !== randomIndex)
+                    }));
+                    
+                    showNotification(`${player.name} removed rule: ${removedRule.rule}`);
+                    
+                    // Wait a moment before adding new rule
+                    setTimeout(() => {
+                        continueAddingRule();
+                    }, 800);
+                } else {
+                    continueAddingRule();
+                }
+                
+                function continueAddingRule() {
+                    // CPU selects a rule
+                    const selectedRule = availableRules[Math.floor(Math.random() * availableRules.length)];
+                    
+                    // Apply godly rule effects
+                    if (selectedRule.includes('DIVINE BLESSING') || selectedRule.includes('GOLDEN RAIN') || 
+                        selectedRule.includes('PROSPERITY WAVE') || selectedRule.includes('CHAOS BLESSING') || 
+                        selectedRule.includes('FORTUNE\'S FAVOR')) {
+                        gameState.players.forEach(p => {
+                            p.coins += 100;
+                            if (selectedRule.includes('GOLDEN RAIN')) p.crowns += 2;
+                            if (selectedRule.includes('PROSPERITY WAVE')) p.dice += 2;
+                        });
+                        showNotification('🌟 GODLY RULE ACTIVATED! 🌟', true);
+                    }
+                    
+                    // Add rule to game
+                    setGameState(prev => ({
+                        ...prev,
+                        activeRules: [...prev.activeRules, { rule: selectedRule, turn: prev.turn }]
+                    }));
+                    
+                    showNotification(`${player.name} added rule: ${selectedRule}`);
+                    
+                    setTimeout(() => {
+                        nextTurn();
+                    }, 1500);
+                }
+            };
+            
+            const handleSpaceEffect = (space, player) => {
+                switch(space.type) {
+                    case 'money':
+                        player.coins += 20;
+                        showNotification(`${player.name} gained 20 coins!`);
+                        break;
+                    case 'lose':
+                        player.coins = Math.max(0, player.coins - 15);
+                        showNotification(`${player.name} lost 15 coins!`);
+                        break;
+                    case 'shop':
+                        // Only show shop UI for human players
+                        if (!player.isCPU) {
+                            setShowShop(true);
+                        } else {
+                            // CPU just skips the shop
+                            showNotification(`${player.name} visited the shop but didn't buy anything`);
+                        }
+                        break;
+                    case 'gamble':
+                        const gambleResult = Math.random() > 0.5;
+                        if (gambleResult) {
+                            player.coins += 30;
+                            showNotification(`${player.name} won the gamble! +30 coins!`);
+                        } else {
+                            player.coins = Math.max(0, player.coins - 20);
+                            showNotification(`${player.name} lost the gamble! -20 coins!`);
+                        }
+                        break;
+                    case 'dragon':
+                        player.coins = Math.floor(player.coins * 0.5);
+                        showNotification(`🐉 Dragon attacked ${player.name}! Lost 50% of coins!`);
+                        break;
+                    case 'crown':
+                        player.crowns += 1;
+                        showNotification(`${player.name} gained a crown! 👑`);
+                        break;
+                    case 'blackmarket':
+                        // Only show shop UI for human players
+                        if (!player.isCPU) {
+                            showNotification(`${player.name} entered the Black Market!`);
+                            setShowShop('blackmarket');
+                        } else {
+                            showNotification(`${player.name} visited the Black Market but didn't buy anything`);
+                        }
+                        break;
+                    case 'evolution':
+                        player.dice += 2;
+                        showNotification(`${player.name}'s dice evolved to ${player.dice}-sided!`);
+                        break;
+                    case 'creator':
+                        showNotification(`${player.name} landed on Creator Space! Choose 5 rules!`);
+                        break;
+                }
+            };
+            
+            const nextTurn = () => {
+                setShowAbilities(false);
+                const nextPlayer = (gameState.currentPlayer + 1) % gameState.players.filter(p => p.active).length;
+                const newTurn = nextPlayer === 0 ? gameState.turn + 1 : gameState.turn;
+                
+                // Check if game is over
+                if (newTurn >= gameState.maxTurns) {
+                    endGame();
+                    return;
+                }
+                
+                setGameState(prev => ({
+                    ...prev,
+                    currentPlayer: nextPlayer,
+                    turn: newTurn
+                }));
+                
+                // Show pass device prompt for local multiplayer
+                const isLocalMultiplayer = gameState.players.every(p => !p.isCPU);
+                if (isLocalMultiplayer) {
+                    const nextPlayerName = gameState.players[nextPlayer].name;
+                    setTimeout(() => {
+                        showNotification(`📱 Pass device to ${nextPlayerName}!`, false);
+                    }, 500);
+                }
+            };
+            
+            const endGame = () => {
+                const winner = gameState.players.reduce((prev, current) => 
+                    current.crowns > prev.crowns ? current : prev
+                );
+                
+                // Award StarPoints only if NOT using custom seed and NOT local multiplayer
+                let pointsEarned = 0;
+                const isLocalMultiplayer = gameState.players.every(p => !p.isCPU);
+                const isCustomSeed = gameState.isCustomSeed || false;
+                
+                if (!isLocalMultiplayer && !isCustomSeed) {
+                    const humanPlayer = gameState.players.find(p => !p.isCPU);
+                    
+                    if (humanPlayer) {
+                        // Check if human won
+                        if (humanPlayer.id === winner.id) {
+                            pointsEarned = 100; // Base points for winning
+                            
+                            // Bonus points for CPU difficulty
+                            const cpuPlayers = gameState.players.filter(p => p.isCPU);
+                            if (cpuPlayers.length > 0) {
+                                const difficulty = cpuPlayers[0].difficulty;
+                                if (difficulty === 'medium') pointsEarned += 25;
+                                if (difficulty === 'hard') pointsEarned += 50;
+                                if (difficulty === 'insane') pointsEarned += 100;
+                            }
+                        } else {
+                            // Participation points based on placement
+                            const sortedPlayers = [...gameState.players].sort((a, b) => b.crowns - a.crowns);
+                            const placement = sortedPlayers.findIndex(p => p.id === humanPlayer.id) + 1;
+                            
+                            if (placement === 2) pointsEarned = 30;
+                            else if (placement === 3) pointsEarned = 15;
+                            else pointsEarned = 5;
+                        }
+                        
+                        saveStarPoints(starPoints + pointsEarned);
+                    }
+                }
+                
+                let message = `🎉 GAME OVER! 🎉\n\n${winner.name} wins with ${winner.crowns} crowns!\n\nSeed: ${gameState.seed}\nGame Code: ${gameState.gameCode}`;
+                
+                if (pointsEarned > 0) {
+                    message += `\n\n⭐ You earned ${pointsEarned} StarPoints!\n⭐ Total: ${starPoints + pointsEarned} StarPoints`;
+                } else if (isCustomSeed) {
+                    message += `\n\n⚠️ Custom seed used - No StarPoints awarded`;
+                }
+                
+                alert(message);
+                setScreen('menu');
+            };
+            
+            const currentPlayer = gameState.players[gameState.currentPlayer];
+            
+            // Auto-roll for CPU players
+            useEffect(() => {
+                if (currentPlayer && currentPlayer.isCPU && !rolling && !showAbilities) {
+                    setTimeout(() => {
+                        rollDice();
+                    }, 2000);
+                }
+            }, [gameState.currentPlayer, rolling, showAbilities]);
+            
+            return (
+                <div>
+                    {gameState.weather && (
+                        <div className="weather-banner">
+                            {gameState.weather.name}: {gameState.weather.effect}
+                        </div>
+                    )}
+                    
+                    <div className="theme-banner">
+                        {gameState.theme} | Turn {gameState.turn + 1}/{gameState.maxTurns}
+                    </div>
+                    
+                    <div className="game-code">
+                        Game Code: {gameState.gameCode}
+                    </div>
+                    
+                    <div className="player-info-bar">
+                        {gameState.players.map((player, index) => (
+                            <div 
+                                key={player.id} 
+                                className={`player-card ${index === gameState.currentPlayer ? 'active' : ''}`}
+                                style={{ borderColor: player.skin.color }}
+                            >
+                                <div className="player-name" style={{ color: player.skin.color }}>
+                                    {player.name}
+                                </div>
+                                <div className="player-stats">
+                                    <div className="stat">💰 {player.coins}</div>
+                                    <div className="stat">👑 {player.crowns}</div>
+                                    <div className="stat">🎲 D{player.dice}</div>
+                                    <div className="stat">🎒 {player.items.length}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    
+                    <div className="game-board">
+                        <div className="board-grid">
+                            {gameState.board.map((space, index) => (
+                                <div 
+                                    key={index}
+                                    className={`board-space space-${space.type}`}
+                                    title={`Space ${index}: ${space.type}`}
+                                >
+                                    {space.type === 'normal' ? '' : 
+                                     space.type === 'money' ? '💰' :
+                                     space.type === 'lose' ? '💸' :
+                                     space.type === 'shop' ? '🏪' :
+                                     space.type === 'gamble' ? '🎰' :
+                                     space.type === 'dragon' ? '🐉' :
+                                     space.type === 'crown' ? '👑' :
+                                     space.type === 'blackmarket' ? '🌑' :
+                                     space.type === 'evolution' ? '⚡' :
+                                     space.type === 'creator' ? '✨' : ''}
+                                    
+                                    {gameState.players.map((player, pIndex) => 
+                                        player.position === index && (
+                                            <div 
+                                                key={pIndex}
+                                                className="player-piece"
+                                                style={{ 
+                                                    background: player.skin.color,
+                                                    left: `${(pIndex % 2) * 20}px`,
+                                                    top: `${Math.floor(pIndex / 2) * 20}px`
+                                                }}
+                                            />
+                                        )
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    
+                    <div className="dice-roller">
+                        <h2 style={{ color: 'white', marginBottom: '20px' }}>
+                            {currentPlayer.name}'s Turn {currentPlayer.isCPU ? '🤖' : ''}
+                        </h2>
+                        <div className={`dice-display ${rolling ? 'dice-animation' : ''}`}>
+                            🎲 {gameState.lastRoll || '?'}
+                        </div>
+                        {!showAbilities && !currentPlayer.isCPU && (
+                            <button 
+                                className="btn btn-primary"
+                                onClick={rollDice}
+                                disabled={rolling}
+                                style={{ fontSize: '1.5rem', padding: '20px 40px' }}
+                            >
+                                {rolling ? 'Rolling...' : 'Roll Dice!'}
+                            </button>
+                        )}
+                        {!showAbilities && currentPlayer.isCPU && (
+                            <div style={{ padding: '20px' }}>
+                                <div className="loading-spinner"></div>
+                                <p style={{ color: 'white', marginTop: '15px', fontSize: '1.1rem' }}>
+                                    CPU is rolling...
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                    
+                    {showAbilities && !currentPlayer.isCPU && (
+                        <div style={{ background: 'white', padding: '20px', borderRadius: '15px', margin: '20px 0' }}>
+                            <h3 style={{ marginBottom: '15px' }}>Choose a Rule to Add</h3>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                {availableRules.map((rule, index) => (
+                                    <div 
+                                        key={index}
+                                        className={`rule-item ${rule.includes('⭐') ? 'godly' : ''}`}
+                                        style={{ 
+                                            cursor: 'pointer',
+                                            transition: 'transform 0.2s, box-shadow 0.2s'
+                                        }}
+                                        onClick={() => {
+                                            // Apply godly rule effects
+                                            if (rule.includes('DIVINE BLESSING') || rule.includes('GOLDEN RAIN') || 
+                                                rule.includes('PROSPERITY WAVE') || rule.includes('CHAOS BLESSING') || 
+                                                rule.includes('FORTUNE\'S FAVOR')) {
+                                                gameState.players.forEach(p => {
+                                                    p.coins += 100;
+                                                    if (rule.includes('GOLDEN RAIN')) p.crowns += 2;
+                                                    if (rule.includes('PROSPERITY WAVE')) p.dice += 2;
+                                                });
+                                                showNotification('🌟 GODLY RULE ACTIVATED! 🌟', true);
+                                            }
+                                            
+                                            // Add rule to game
+                                            setGameState(prev => ({
+                                                ...prev,
+                                                activeRules: [...prev.activeRules, { rule: rule, turn: prev.turn }]
+                                            }));
+                                            
+                                            showNotification(`Rule added: ${rule}`);
+                                            nextTurn();
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.transform = 'translateX(10px)';
+                                            e.currentTarget.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.transform = 'translateX(0)';
+                                            e.currentTarget.style.boxShadow = 'none';
+                                        }}
+                                    >
+                                        {rule}
+                                    </div>
+                                ))}
+                            </div>
+                            
+                            <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
+                                <button 
+                                    className="btn btn-secondary"
+                                    onClick={() => {
+                                        if (currentPlayer.coins >= 5) {
+                                            currentPlayer.coins -= 5;
+                                            
+                                            // Generate NEW rules
+                                            const turnProgress = gameState.turn / gameState.maxTurns;
+                                            const newRules = [];
+                                            
+                                            for (let i = 0; i < 5; i++) {
+                                                const godlyChance = Math.random();
+                                                let newRule;
+                                                
+                                                if (godlyChance < 0.001) {
+                                                    newRule = GAME_DATA.rules.godly[Math.floor(Math.random() * GAME_DATA.rules.godly.length)];
+                                                } else {
+                                                    // 10% chance for bonus rule
+                                                    const bonusChance = Math.random();
+                                                    if (bonusChance < 0.10) {
+                                                        newRule = GAME_DATA.rules.bonus[Math.floor(Math.random() * GAME_DATA.rules.bonus.length)];
+                                                    } else {
+                                                        const randomRoll = Math.random();
+                                                        
+                                                        if (turnProgress < 0.3) {
+                                                            if (randomRoll < 0.70) {
+                                                                newRule = GAME_DATA.rules.early[Math.floor(Math.random() * GAME_DATA.rules.early.length)];
+                                                            } else if (randomRoll < 0.95) {
+                                                                newRule = GAME_DATA.rules.mid[Math.floor(Math.random() * GAME_DATA.rules.mid.length)];
+                                                            } else {
+                                                                newRule = GAME_DATA.rules.late[Math.floor(Math.random() * GAME_DATA.rules.late.length)];
+                                                            }
+                                                        } else if (turnProgress < 0.7) {
+                                                            if (randomRoll < 0.20) {
+                                                                newRule = GAME_DATA.rules.early[Math.floor(Math.random() * GAME_DATA.rules.early.length)];
+                                                            } else if (randomRoll < 0.80) {
+                                                                newRule = GAME_DATA.rules.mid[Math.floor(Math.random() * GAME_DATA.rules.mid.length)];
+                                                            } else {
+                                                                newRule = GAME_DATA.rules.late[Math.floor(Math.random() * GAME_DATA.rules.late.length)];
+                                                            }
+                                                        } else {
+                                                            if (randomRoll < 0.05) {
+                                                                newRule = GAME_DATA.rules.early[Math.floor(Math.random() * GAME_DATA.rules.early.length)];
+                                                            } else if (randomRoll < 0.30) {
+                                                                newRule = GAME_DATA.rules.mid[Math.floor(Math.random() * GAME_DATA.rules.mid.length)];
+                                                            } else {
+                                                                newRule = GAME_DATA.rules.late[Math.floor(Math.random() * GAME_DATA.rules.late.length)];
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                newRules.push(newRule);
+                                            }
+                                            setAvailableRules(newRules);
+                                            
+                                            showNotification('Rerolled rules! -5 coins');
+                                        } else {
+                                            showNotification('Not enough coins to reroll!');
+                                        }
+                                    }}
+                                >
+                                    🔄 Reroll Rules (5 coins)
+                                </button>
+                                
+                                <button 
+                                    className="btn btn-danger"
+                                    onClick={() => {
+                                        if (currentPlayer.coins >= 5) {
+                                            if (gameState.activeRules.length > 0) {
+                                                currentPlayer.coins -= 5;
+                                                
+                                                // Remove random active rule
+                                                const randomIndex = Math.floor(Math.random() * gameState.activeRules.length);
+                                                const removedRule = gameState.activeRules[randomIndex];
+                                                
+                                                setGameState(prev => ({
+                                                    ...prev,
+                                                    activeRules: prev.activeRules.filter((_, i) => i !== randomIndex)
+                                                }));
+                                                
+                                                showNotification(`Removed rule: ${removedRule.rule}`);
+                                            } else {
+                                                showNotification('No rules to remove!');
+                                            }
+                                        } else {
+                                            showNotification('Not enough coins to remove rule!');
+                                        }
+                                    }}
+                                >
+                                    🗑️ Remove Random Rule (5 coins)
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                    
+                    {showAbilities && currentPlayer.isCPU && (
+                        <div style={{ background: 'white', padding: '20px', borderRadius: '15px', margin: '20px 0', textAlign: 'center' }}>
+                            <h3 style={{ color: 'var(--purple)' }}>🤖 CPU is thinking...</h3>
+                            <div className="loading-spinner"></div>
+                        </div>
+                    )}
+                    
+                    <div className="rules-panel">
+                        <h3 style={{ marginBottom: '15px', color: 'var(--dark)' }}>
+                            Active Rules ({gameState.activeRules.length})
+                        </h3>
+                        {gameState.activeRules.slice(-10).reverse().map((rule, index) => (
+                            <div 
+                                key={index} 
+                                className={`rule-item ${rule.rule.includes('⭐') ? 'godly' : ''}`}
+                            >
+                                {rule.rule} <span style={{ color: '#999', fontSize: '0.85rem' }}>(Turn {rule.turn + 1})</span>
+                            </div>
+                        ))}
+                    </div>
+                    
+                    {showShop && (
+                        <ShopModal 
+                            type={showShop}
+                            currentPlayer={currentPlayer}
+                            onClose={() => setShowShop(false)}
+                            showNotification={showNotification}
+                        />
+                    )}
+                    
+                    {showMinigame && (
+                        <MinigamePopup 
+                            players={gameState.players}
+                            onClose={() => setShowMinigame(false)}
+                            showNotification={showNotification}
+                        />
+                    )}
+                    
+                    <div style={{ textAlign: 'center', marginTop: '30px' }}>
+                        <button 
+                            className="btn btn-danger"
+                            onClick={() => {
+                                if (confirm('Are you sure you want to quit?')) {
+                                    setScreen('menu');
+                                }
+                            }}
+                        >
+                            Quit Game
+                        </button>
+                        <button 
+                            className="btn btn-secondary"
+                            style={{ marginLeft: '15px' }}
+                            onClick={() => {
+                                navigator.clipboard.writeText(gameState.seed);
+                                showNotification('Seed copied to clipboard!');
+                            }}
+                        >
+                            📋 Copy Seed
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+        
+        // Shop Modal Component
+        function ShopModal({ type, currentPlayer, onClose, showNotification }) {
+            const items = type === 'blackmarket' ? GAME_DATA.blackMarketItems : GAME_DATA.shopItems;
+            const displayItems = items.slice(0, type === 'blackmarket' ? 5 : 10);
+            
+            const buyItem = (item) => {
+                if (currentPlayer.coins >= item.cost) {
+                    currentPlayer.coins -= item.cost;
+                    currentPlayer.items.push(item);
+                    showNotification(`Purchased ${item.name}!`);
+                    onClose();
+                } else {
+                    showNotification('Not enough coins!');
+                }
+            };
+            
+            return (
+                <div className="shop-modal" onClick={onClose}>
+                    <div className="shop-content" onClick={(e) => e.stopPropagation()}>
+                        <h2 style={{ color: 'var(--dark)', marginBottom: '20px' }}>
+                            {type === 'blackmarket' ? '🌑 Black Market' : '🏪 Shop'}
+                        </h2>
+                        <p style={{ marginBottom: '20px' }}>Your Coins: 💰 {currentPlayer.coins}</p>
+                        
+                        <div className="shop-grid">
+                            {displayItems.map((item, index) => (
+                                <div 
+                                    key={index}
+                                    className="shop-item"
+                                    onClick={() => buyItem(item)}
+                                >
+                                    <h4 style={{ marginBottom: '10px' }}>{item.name}</h4>
+                                    <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '10px' }}>
+                                        {item.effect}
+                                    </p>
+                                    <p style={{ fontWeight: '700', color: 'var(--primary)' }}>
+                                        💰 {item.cost} coins
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                        
+                        <button 
+                            className="btn btn-secondary"
+                            style={{ marginTop: '20px', width: '100%' }}
+                            onClick={onClose}
+                        >
+                            Close Shop
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+        
+        // Minigame Popup Component
+        function MinigamePopup({ players, onClose, showNotification }) {
+            const [winner, setWinner] = useState(null);
+            
+            const playMinigame = () => {
+                const randomWinner = players[Math.floor(Math.random() * players.length)];
+                randomWinner.coins += 50;
+                setWinner(randomWinner);
+                showNotification(`${randomWinner.name} won the minigame! +50 coins!`);
+                setTimeout(() => onClose(), 2000);
+            };
+            
+            return (
+                <div className="shop-modal">
+                    <div className="minigame-popup">
+                        <h2 style={{ color: 'var(--dark)', marginBottom: '20px' }}>
+                            🎮 Minigame Time!
+                        </h2>
+                        {!winner ? (
+                            <>
+                                <p style={{ marginBottom: '20px' }}>
+                                    Click the button to play a quick reaction game!
+                                </p>
+                                <button 
+                                    className="btn btn-primary"
+                                    onClick={playMinigame}
+                                    style={{ fontSize: '1.5rem', padding: '20px 40px' }}
+                                >
+                                    PLAY!
+                                </button>
+                            </>
+                        ) : (
+                            <div>
+                                <h3 style={{ color: 'var(--success)', marginBottom: '15px' }}>
+                                    🎉 {winner.name} Wins! 🎉
+                                </h3>
+                                <p>+50 coins!</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+        
+        // Render App
+        ReactDOM.render(<ChaosRoyaleGame />, document.getElementById('root'));
+    </script>
+</body>
+</html>
